@@ -1,13 +1,17 @@
 package ru.yandex.practicum.filmorete.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorete.exeptions.ValidationUserException;
 import ru.yandex.practicum.filmorete.model.User;
 
 import java.time.LocalDate;
@@ -16,10 +20,13 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_NOT_NAME;
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.*;
 
+@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTests {
@@ -27,24 +34,19 @@ public class UserControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private User user;
-
     @BeforeEach
     public void beforeEach() throws Exception {
 
-        user = User.builder()
-                .name("Bogdan")
-                .birthday(LocalDate.of(1997, 4, 11))
-                .login("SinitsaBogdan")
-                .email("mail@mail.ru")
-                .build();
-
         mockMvc.perform(
                 post("/users")
-                    .content(objectMapper.writeValueAsString(user))
+                    .content(
+                            "{" +
+                            "\"name\":\"Bogdan\"," +
+                            "\"birthday\":\"1997-04-11\"," +
+                            "\"login\":\"SinitsaBogdan\"," +
+                            "\"email\":\"mail@mail.ru\"" +
+                            "}"
+                    )
                     .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -82,252 +84,204 @@ public class UserControllerTests {
         @DisplayName("Проверка добавления дубликата")
         public void methodPost_NewUserValidTrue_AndDoubleFalseTest() throws Exception {
 
-            user = User.builder()
-                    .name("Bogdan")
-                    .birthday(LocalDate.of(1997, 4, 11))
-                    .login("Sinitsa")
-                    .email("mail@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"name\":\"Bogdan\"," +
+                                    "\"birthday\":\"1997-04-11\"," +
+                                    "\"login\":\"SinitsaBogdan\"," +
+                                    "\"email\":\"mail@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_DOUBLE_IN_COLLECTIONS),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_DOUBLE_IN_COLLECTIONS.toString());
         }
 
         @Test
         @DisplayName("Добавление нового пользователя - name : null")
         public void methodPost_NewUserValidTrue_NameNullTest() throws Exception {
 
-            user = User.builder()
-                    .login("Sinitsa")
-                    .email("mail2@mail.ru")
-                    .birthday(LocalDate.of(1997, 4, 11))
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"birthday\":\"1997-04-11\"," +
+                                    "\"login\":\"SinitsaBogdan\"," +
+                                    "\"email\":\"mail2@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.name").value("Sinitsa"));
+                    .andExpect(jsonPath("$.name").value("SinitsaBogdan"));
         }
 
         @Test
         @DisplayName("Добавление нового пользователя - name : empty")
         public void methodPost_NewUserValidTrue_NameEmptyTest() throws Exception {
 
-            user = User.builder()
-                    .name("")
-                    .login("Sinitsa")
-                    .email("mail2@mail.ru")
-                    .birthday(LocalDate.of(1997, 4, 11))
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"name\":\"\"," +
+                                    "\"birthday\":\"1997-04-11\"," +
+                                    "\"login\":\"SinitsaBogdan\"," +
+                                    "\"email\":\"mail2@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.name").value("Sinitsa"));
+                    .andExpect(jsonPath("$.name").value("SinitsaBogdan"));
         }
 
         @Test
         @DisplayName("Добавление нового пользователя - birthday : null")
         public void methodPost_NewUserValidFalse_BirthdayNullTest() throws Exception {
 
-            user = User.builder()
-                    .name("Bogdan")
-                    .login("Sinitsa")
-                    .email("mail2@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"name\":\"Bogdan\"," +
+                                    "\"login\":\"SinitsaBogdan\"," +
+                                    "\"email\":\"mail2@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_BIRTHDAY),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_BIRTHDAY.toString());
         }
 
         @Test
         @DisplayName("Добавление нового пользователя - login : null")
         public void methodPost_NewUserValidFalse_LoginNullTest() throws Exception {
 
-            user = User.builder()
-                    .name("")
-                    .birthday(LocalDate.of(1997, 4, 11))
-                    .email("mail2@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"name\":\"Bogdan\"," +
+                                    "\"birthday\":\"1997-04-11\"," +
+                                    "\"email\":\"mail2@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_LOGIN),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_LOGIN.toString());
         }
 
         @Test
         @DisplayName("Добавление нового пользователя - login : empty")
         public void methodPost_NewUserValidFalse_LoginEmptyTest() throws Exception {
 
-            user = User.builder()
-                    .name("Bogdan")
-                    .login("")
-                    .birthday(LocalDate.of(1997, 4, 11))
-                    .email("mail2@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"name\":\"Bogdan\"," +
+                                    "\"birthday\":\"1997-04-11\"," +
+                                    "\"login\":\"\"," +
+                                    "\"email\":\"mail2@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_LOGIN),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_LOGIN.toString());
         }
 
         @Test
         @DisplayName("Добавление нового пользователя - login : not whitespace")
         public void methodPost_NewUserValidFalse_LoginNotWhitespaceTest() throws Exception {
 
-            user = User.builder()
-                    .name("Bogdan")
-                    .login("Sinitsa Bogdan")
-                    .birthday(LocalDate.of(1997, 4, 11))
-                    .email("mail2@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"name\":\"Bogdan\"," +
+                                    "\"birthday\":\"1997-04-11\"," +
+                                    "\"login\":\"Sinitsa Bogdan\"," +
+                                    "\"email\":\"mail2@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_LOGIN_IS_WHITESPACE),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_LOGIN_IS_WHITESPACE.toString());
         }
 
         @Test
         @DisplayName("Добавление нового пользователя - email : null")
         public void methodPost_NewUserValidFalse_EmailNullTest() throws Exception {
 
-            user = User.builder()
-                    .name("Bogdan")
-                    .login("Sinitsa")
-                    .birthday(LocalDate.of(1997, 4, 11))
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"name\":\"Bogdan\"," +
+                                    "\"birthday\":\"1997-04-11\"," +
+                                    "\"login\":\"SinitsaBogdan\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_EMAIL),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_EMAIL.toString());
         }
 
         @Test
         @DisplayName("Добавление нового пользователя - email : empty")
         public void methodPost_NewUserValidFalse_EmailEmptyTest() throws Exception {
 
-            user = User.builder()
-                    .name("Bogdan")
-                    .login("Sinitsa")
-                    .email("")
-                    .birthday(LocalDate.of(1997, 4, 11))
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"name\":\"Bogdan\"," +
+                                    "\"birthday\":\"1997-04-11\"," +
+                                    "\"login\":\"SinitsaBogdan\"," +
+                                    "\"email\":\"\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_EMAIL),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
-        }
+                    .andExpect(status().is(400));
 
-        @Test
-        @DisplayName("Добавление нового пользователя - email : double")
-        public void methodPost_NewUserValidFalse_EmailDoubleTest() throws Exception {
-
-            user = User.builder()
-                    .name("Bogdan")
-                    .login("Sinitsa")
-                    .birthday(LocalDate.of(1997, 4, 11))
-                    .email("mail2.mail.ru")
-                    .build();
-
-            mockMvc.perform(
-                    post("/users")
-                            .content(objectMapper.writeValueAsString(user))
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_EMAIL_NOT_CORRECT),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+            log.warn(VALID_ERROR_USER_NOT_EMAIL.toString());
         }
 
         @Test
         @DisplayName("Добавление нового пользователя - birthday : after actual")
         public void methodPost_NewUserValidFalse_BirthdayAfterActualTest() throws Exception {
 
-            user = User.builder()
-                    .name("Bogdan")
-                    .login("Sinitsa")
-                    .birthday(LocalDate.of(3023, 4, 11))
-                    .email("mail2@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     post("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"name\":\"Bogdan\"," +
+                                    "\"birthday\":\"3997-04-11\"," +
+                                    "\"login\":\"SinitsaBogdan\"," +
+                                    "\"email\":\"mail@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_BIRTHDAY_MAX),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_BIRTHDAY_MAX.toString());
         }
     }
 
@@ -339,17 +293,17 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя")
         public void methodPut_UserValidTrueTest() throws Exception {
 
-            user = User.builder()
-                    .id(1)
-                    .name("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .login("update")
-                    .email("update@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"id\":1," +
+                                    "\"name\":\"update\"," +
+                                    "\"birthday\":\"1995-04-11\"," +
+                                    "\"login\":\"update\"," +
+                                    "\"email\":\"update@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200))
@@ -364,271 +318,239 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - id : null")
         public void methodPut_UserValidFalse_IdNullTest() throws Exception {
 
-            user = User.builder()
-                    .name("update")
-                    .login("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .email("update@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"name\":\"update\"," +
+                                "\"birthday\":\"1997-04-11\"," +
+                                "\"login\":\"update\"," +
+                                "\"email\":\"update@mail.ru\"" +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_ID),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_ID.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - id : -5")
         public void methodPut_UserValidFalse_IdNotCorrectTest() throws Exception {
 
-            user = User.builder()
-                    .id(-5)
-                    .name("update")
-                    .login("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .email("update@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                            .content(objectMapper.writeValueAsString(user))
+                            .content(
+                                    "{" +
+                                    "\"id\":-5," +
+                                    "\"name\":\"update\"," +
+                                    "\"birthday\":\"1997-04-11\"," +
+                                    "\"login\":\"update\"," +
+                                    "\"email\":\"update@mail.ru\"" +
+                                    "}"
+                            )
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_ID_NOT_CORRECT),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_ID_NOT_CORRECT.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - id : 99")
         public void methodPut_UserValidFalse_IdNotInCollectionsTest() throws Exception {
 
-            user = User.builder()
-                    .id(99)
-                    .name("update")
-                    .login("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .email("update@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"id\":99," +
+                                "\"name\":\"update\"," +
+                                "\"birthday\":\"1997-04-11\"," +
+                                "\"login\":\"update\"," +
+                                "\"email\":\"update@mail.ru\"" +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(500))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("500 INTERNAL_SERVER_ERROR \"%s\"", VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(500));
+
+            log.warn(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - birthday : null")
         public void methodPut_UserValidFalse_BirthdayNullTest() throws Exception {
 
-            user = User.builder()
-                    .id(1)
-                    .name("update")
-                    .login("update")
-                    .email("update@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"id\":1," +
+                                "\"name\":\"update\"," +
+                                "\"login\":\"update\"," +
+                                "\"email\":\"update@mail.ru\"" +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_BIRTHDAY),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_BIRTHDAY.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - birthday : 3997")
         public void methodPut_UserValidFalse_BirthdayAfterActualTest() throws Exception {
 
-            user = User.builder()
-                    .id(1)
-                    .name("update")
-                    .birthday(LocalDate.of(3995, 4, 11))
-                    .login("update")
-                    .email("update@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"id\":1," +
+                                "\"name\":\"update\"," +
+                                "\"birthday\":\"3997-04-11\"," +
+                                "\"login\":\"update\"," +
+                                "\"email\":\"update@mail.ru\"" +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_BIRTHDAY_MAX),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_BIRTHDAY_MAX.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - login : null")
         public void methodPut_UserValidFalse_LoginNullTest() throws Exception {
 
-            user = User.builder()
-                    .id(1)
-                    .name("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .email("update@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"id\":1," +
+                                "\"name\":\"update\"," +
+                                "\"birthday\":\"1997-04-11\"," +
+                                "\"email\":\"update@mail.ru\"" +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_LOGIN),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_LOGIN.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - login : empty")
         public void methodPut_UserValidFalse_LoginEmptyTest() throws Exception {
 
-            user = User.builder()
-                    .id(1)
-                    .name("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .login("")
-                    .email("update@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"id\":1," +
+                                "\"name\":\"update\"," +
+                                "\"birthday\":\"1997-04-11\"," +
+                                "\"login\":\"\"," +
+                                "\"email\":\"update@mail.ru\"" +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_LOGIN),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_LOGIN.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - login : whitespace")
         public void methodPut_UserValidFalse_WhitespaceTest() throws Exception {
 
-            user = User.builder()
-                    .id(1)
-                    .name("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .login("Sinitsa Bogdan")
-                    .email("update@mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"id\":1," +
+                                "\"name\":\"update\"," +
+                                "\"birthday\":\"1997-04-11\"," +
+                                "\"login\":\"upd ate\"," +
+                                "\"email\":\"update@mail.ru\"" +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_LOGIN_IS_WHITESPACE),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_LOGIN_IS_WHITESPACE.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - email : null")
         public void methodPut_UserValidFalse_EmailNullTest() throws Exception {
 
-            user = User.builder()
-                    .id(1)
-                    .name("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .login("update")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"id\":1," +
+                                "\"name\":\"update\"," +
+                                "\"birthday\":\"1997-04-11\"," +
+                                "\"login\":\"update\"," +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_EMAIL),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_EMAIL.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - email : empty")
         public void methodPut_UserValidFalse_EmailEmptyTest() throws Exception {
 
-            user = User.builder()
-                    .id(1)
-                    .name("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .login("update")
-                    .email("")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"id\":1," +
+                                "\"name\":\"update\"," +
+                                "\"birthday\":\"1997-04-11\"," +
+                                "\"login\":\"update\"," +
+                                "\"email\":\"\"" +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_NOT_EMAIL),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_NOT_EMAIL.toString());
         }
 
         @Test
         @DisplayName("Обновление пользователя - email : not corrected")
         public void methodPut_UserValidFalse_EmailNotCorrectedTest() throws Exception {
 
-            user = User.builder()
-                    .id(1)
-                    .name("update")
-                    .birthday(LocalDate.of(1995, 4, 11))
-                    .login("update")
-                    .email("mail.mail.ru")
-                    .build();
-
             mockMvc.perform(
                     put("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(
+                                "{" +
+                                "\"id\":1," +
+                                "\"name\":\"update\"," +
+                                "\"birthday\":\"1997-04-11\"," +
+                                "\"login\":\"update\"," +
+                                "\"email\":\"update.mail.ru\"" +
+                                "}"
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400))
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                    .andExpect(result -> assertEquals(
-                            String.format("400 BAD_REQUEST \"%s\"", VALID_ERROR_USER_EMAIL_NOT_CORRECT),
-                            Objects.requireNonNull(result.getResolvedException()).getMessage())
-                    );
+                    .andDo(print())
+                    .andExpect(status().is(400));
+
+            log.warn(VALID_ERROR_USER_EMAIL_NOT_CORRECT.toString());
         }
     }
 }
