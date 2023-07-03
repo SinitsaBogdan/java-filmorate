@@ -21,7 +21,7 @@ public class FilmController {
 
     @GetMapping()
     public Collection<Film> findAll() {
-        log.debug("Запрос всех фильмов: {}", films.size());
+        log.info("Запрос всех фильмов: {}", films.size());
         return films.values();
     }
 
@@ -34,7 +34,7 @@ public class FilmController {
             film.setId(getLastIdentification());
             films.put(film.getId(), film);
             names.add(film.getName());
-            log.debug(String.format("Добавление нового фильма: %s", film.getName()));
+            log.info(String.format("Добавление нового фильма: %s", film.getName()));
             return film;
         }
     }
@@ -58,7 +58,7 @@ public class FilmController {
         names.add(film.getName());
 
         films.put(film.getId(), film);
-        log.debug("Обновление фильма: {}", film.getName());
+        log.info("Обновление фильма: {}", film.getName());
         return film;
     }
 
@@ -67,6 +67,7 @@ public class FilmController {
         films.clear();
         names.clear();
         lastIdentification = 1;
+        log.info("Очистка хранилища Фильмов!");
     }
 
     private void validatorFilms(Film film) throws ValidationFilmException {

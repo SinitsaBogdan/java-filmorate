@@ -31,7 +31,7 @@ public class UserController {
             user.setId(getLastIdentification());
             users.put(user.getId(), user);
             emails.add(user.getEmail());
-            log.debug("Добавлен новый пользователь!");
+            log.info("Добавлен новый пользователь!");
             return user;
         } else {
             throw new ValidationUserException(VALID_ERROR_USER_DOUBLE_IN_COLLECTIONS, 400);
@@ -52,7 +52,7 @@ public class UserController {
         }
         validatorUser(user);
         users.put(user.getId(), user);
-        log.debug("Пользователь {} успешно обновлен!", user.getName());
+        log.info("Пользователь {} успешно обновлен!", user.getName());
         return user;
     }
 
@@ -61,6 +61,7 @@ public class UserController {
         users.clear();
         emails.clear();
         lastIdentification = 1;
+        log.info("Очистка хранилища Пользователей!");
     }
 
     private void validatorUser(User user) throws ValidationUserException {
