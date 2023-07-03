@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorete.exeptions.ValidationUserException;
 import ru.yandex.practicum.filmorete.model.User;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.*;
 
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.*;
