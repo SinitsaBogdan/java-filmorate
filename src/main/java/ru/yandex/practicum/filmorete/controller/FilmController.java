@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorete.exeptions.ValidationFilmException;
 import ru.yandex.practicum.filmorete.model.Film;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -26,7 +27,7 @@ public class FilmController {
     }
 
     @PostMapping()
-    public Film create(@RequestBody Film film) throws ValidationFilmException {
+    public Film create(@Valid @RequestBody Film film) throws ValidationFilmException {
         if (names.contains(film.getName())) {
             throw new ValidationFilmException(VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS, 400);
         } else {
@@ -40,19 +41,15 @@ public class FilmController {
     }
 
     @PutMapping()
-    public Film update(@RequestBody Film film) throws ValidationFilmException {
+    public Film update(@Valid @RequestBody Film film) throws ValidationFilmException {
         if (film.getId() == null) {
             throw new ValidationFilmException(VALID_ERROR_FILM_NOT_ID, 400);
-        }
-        if (film.getId() < 1) {
-            throw new ValidationFilmException(VALID_ERROR_FILM_ID_MIN, 400);
         }
         if (!films.containsKey(film.getId())) {
             throw new ValidationFilmException(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS, 500);
         }
 
         validatorFilms(film);
-
         Film oldFilm = films.get(film.getId());
         names.remove(oldFilm.getName());
         names.add(film.getName());
@@ -71,26 +68,11 @@ public class FilmController {
     }
 
     private void validatorFilms(Film film) throws ValidationFilmException {
-        if (film.getName() == null || film.getName().isEmpty()) {
-            throw new ValidationFilmException(VALID_ERROR_FILM_NOT_NAME, 400);
-        }
-        if (film.getDescription() == null || film.getDescription().isEmpty()) {
-            throw new ValidationFilmException(VALID_ERROR_FILM_NOT_DESCRIPTION, 400);
-        }
-        if (film.getDescription().length() > 200) {
-            throw new ValidationFilmException(VALID_ERROR_FILM_DESCRIPTION_MAX_LENGTH, 400);
-        }
-        if (film.getReleaseDate() == null || film.getReleaseDate().toString().isEmpty()) {
-            throw new ValidationFilmException(VALID_ERROR_FILM_NOT_RELEASED, 400);
-        }
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new ValidationFilmException(VALID_ERROR_FILM_RELEASED_MIN, 400);
         }
         if (film.getDuration() == null) {
             throw new ValidationFilmException(VALID_ERROR_FILM_NOT_DURATION, 400);
-        }
-        if (film.getDuration() < 1) {
-            throw new ValidationFilmException(VALID_ERROR_FILM_DURATION_MIN, 400);
         }
     }
 

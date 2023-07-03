@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorete.exeptions.ValidationUserException;
 import ru.yandex.practicum.filmorete.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public User create(@RequestBody User user) throws ValidationUserException {
+    public User create(@Valid @RequestBody User user) throws ValidationUserException {
         if (!emails.contains(user.getEmail())) {
             validatorUser(user);
             user.setId(getLastIdentification());
@@ -39,13 +40,10 @@ public class UserController {
     }
 
     @PutMapping()
-    public User update(@RequestBody User user) throws ValidationUserException {
+    public User update(@Valid @RequestBody User user) throws ValidationUserException {
 
         if (user.getId() == null) {
             throw new ValidationUserException(VALID_ERROR_USER_NOT_ID, 400);
-        }
-        if (user.getId() < 1) {
-            throw new ValidationUserException(VALID_ERROR_USER_ID_NOT_CORRECT, 400);
         }
         if (!users.containsKey(user.getId())) {
             throw new ValidationUserException(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS, 500);
@@ -65,23 +63,8 @@ public class UserController {
     }
 
     private void validatorUser(User user) throws ValidationUserException {
-        if (user.getBirthday() == null || user.getBirthday().toString().isEmpty()) {
-            throw new ValidationUserException(VALID_ERROR_USER_NOT_BIRTHDAY, 400);
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationUserException(VALID_ERROR_USER_BIRTHDAY_MAX, 400);
-        }
-        if (user.getLogin() == null || user.getLogin().isEmpty()) {
-            throw new ValidationUserException(VALID_ERROR_USER_NOT_LOGIN, 400);
-        }
         if (user.getLogin().contains(" ")) {
             throw new ValidationUserException(VALID_ERROR_USER_LOGIN_IS_WHITESPACE, 400);
-        }
-        if (user.getEmail() == null || user.getEmail().equals("")) {
-            throw new ValidationUserException(VALID_ERROR_USER_NOT_EMAIL, 400);
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationUserException(VALID_ERROR_USER_EMAIL_NOT_CORRECT, 400);
         }
         if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
