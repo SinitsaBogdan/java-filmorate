@@ -24,11 +24,9 @@ public class User {
     private LocalDate birthday;
 
     @NotBlank
-    @NonNull
     private String login;
 
     @Email
     @NotBlank
-    @NonNull
     private String email;
 }

@@ -17,11 +17,9 @@ public class Film {
     private Integer id;
 
     @NotBlank
-    @NonNull
     private final String name;
 
     @NotBlank
-    @NonNull
     @Size(max = 200)
     private final String description;
 
