@@ -8,13 +8,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
-public class Film {
+public class Film implements Comparable<Film> {
 
     @Positive
-    private Integer id;
+    private Long id;
 
     @NotBlank
     private final String name;
@@ -28,4 +30,26 @@ public class Film {
 
     @Positive
     private final Integer duration;
+
+    @Builder.Default
+    private Set<Long> likeUsers;
+
+    @Builder.Default
+    private long sizeLikes = 0L;
+
+    public void addLike(User user) {
+        likeUsers.add(user.getId());
+        sizeLikes++;
+    }
+
+    public void removeLike(User user) {
+        likeUsers.remove(user.getId());
+        sizeLikes--;
+    }
+
+
+    @Override
+    public int compareTo(Film film) {
+        return Math.toIntExact(film.getSizeLikes());
+    }
 }
