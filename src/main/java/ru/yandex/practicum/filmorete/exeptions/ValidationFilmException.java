@@ -1,18 +1,33 @@
 package ru.yandex.practicum.filmorete.exeptions;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
+import org.jetbrains.annotations.NotNull;
 
 @Slf4j
-@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 public class ValidationFilmException extends RuntimeException {
 
-    public ValidationFilmException(MessageErrorValidFilm message, int statusCode) {
-        super(message.toString());
-        log.debug(message.toString());
-        throw new ResponseStatusException(HttpStatus.valueOf(statusCode), message.toString());
+    private String name;
+    private String description;
+    private Integer httpStatusCode;
+
+    public ValidationFilmException(@NotNull MessageErrorValidFilm error) {
+        super(error.getDescription());
+        this.name = error.getName();
+        this.description = error.getDescription();
+        this.httpStatusCode = error.getHttpStatusCode();
+        log.debug(this.getMessage());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Integer getHttpStatusCode() {
+        return httpStatusCode;
     }
 }
 
