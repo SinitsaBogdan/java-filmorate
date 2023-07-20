@@ -1,0 +1,110 @@
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{"name":"Bogdan","birthday":"1997-04-11","login":"Bogdan","email":"Bogdan@mail.ru"}
+
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{"name":"Max","birthday":"1997-04-11","login":"Max","email":"Max@mail.ru"}
+
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{"name":"Igor","birthday":"1997-04-11","login":"Igor","email":"Igor@mail.ru"}
+
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{"name":"Alex","birthday":"1997-04-11","login":"Alex","email":"Alex@mail.ru"}
+
+###
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{"name":"name1","description":"описание","releaseDate":"2000-04-15","duration":90}
+
+###
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{"name":"name1","description":"описание","releaseDate":"2000-04-15","duration":90}
+
+###
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{"name":"name2","description":"описание","releaseDate":"2000-04-15","duration":90}
+
+###
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{"name":"name3","description":"описание","releaseDate":"2000-04-15","duration":90}
+
+###
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{"name":"name3","description":"описание","releaseDate":"2000-04-15","duration":90}
+
+###
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{"name":"name4","description":"описание","releaseDate":"2000-04-15","duration":90}
+
+###
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{"name":"name5","description":"описание","releaseDate":"2000-04-15","duration":90}
+
+###
+GET http://localhost:8080/users
+
+###
+GET http://localhost:8080/users/1
+
+###
+PUT http://localhost:8080/users/1/friends/2
+
+###
+PUT http://localhost:8080/users/1/friends/3
+
+###
+PUT http://localhost:8080/users/2/friends/3
+
+###
+PUT http://localhost:8080/users/4/friends/2
+
+###
+GET http://localhost:8080/users/2/friends/common/3
+
+###
+PUT http://localhost:8080/films/1/like/1
+
+###
+PUT http://localhost:8080/films/1/like/2
+
+###
+PUT http://localhost:8080/films/1/like/3
+
+###
+PUT http://localhost:8080/films/2/like/2
+
+###
+PUT http://localhost:8080/films/2/like/3
+
+###
+GET http://localhost:8080/films/1
+
+###
+GET http://localhost:8080/films/8888
+
+###
+GET http://localhost:8080/users/2/friends/common/3
+
