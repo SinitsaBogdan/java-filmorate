@@ -25,7 +25,6 @@ public class UserControllerTests {
 
     private static String user1;
     private static String user2;
-    private static String user3;
 
     @BeforeAll
     public static void beforeAll() throws JSONException {
@@ -41,13 +40,6 @@ public class UserControllerTests {
                 .put("birthday", "1997-04-11")
                 .put("login", "User2")
                 .put("email", "User2@mail.ru")
-                .toString();
-
-        user3 = new JSONObject()
-                .put("name", "User3")
-                .put("birthday", "1997-04-11")
-                .put("login", "User3")
-                .put("email", "User3@mail.ru")
                 .toString();
     }
 

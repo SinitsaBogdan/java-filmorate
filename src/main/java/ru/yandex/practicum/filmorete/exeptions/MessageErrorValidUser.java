@@ -58,23 +58,13 @@ public enum MessageErrorValidUser {
         400
     );
 
-    private final String name;
-    private final String description;
-    private final int httpStatusCode;
+    final String name;
+    final String description;
+    final int httpStatusCode;
 
     MessageErrorValidUser(String name, String description, int httpStatusCode) {
         this.name = name;
         this.description = description;
         this.httpStatusCode = httpStatusCode;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public String getDescription() {
-        return description;
-    }
-    public int getHttpStatusCode() {
-        return httpStatusCode;
     }
 }

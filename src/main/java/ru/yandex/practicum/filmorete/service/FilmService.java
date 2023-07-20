@@ -41,22 +41,27 @@ public class FilmService {
     }
 
     public List<Film> getPopularFilms(Integer count) {
-        List<Film> list = new ArrayList<>(filmStorage.getFilm());
-        list.sort(new ComparatorUserToSeizeLike().reversed());
-
-        if (count > filmStorage.getNames().size()) {
-            count = filmStorage.getNames().size();
-        }
 
         try {
+            List<Film> list = new ArrayList<>(filmStorage.getFilm());
+            list.sort(new ComparatorUserToSeizeLike().reversed());
+
+            if (count > filmStorage.getNames().size()) {
+                count = filmStorage.getNames().size();
+            }
             return list.subList(0, count);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new ArrayList<>();
         }
     }
 
     public void removeLike(@NotNull Film film, @NotNull User user) {
+        if (!user.getLikesFilms().contains(film.getId())) {
+            user.removeLikes(film);
+        }
+        if (!film.getLikeUsers().contains(user.getId())) {
+            film.removeLike(user);
+        }
     }
 
     public void addLike(Film film, User user) {

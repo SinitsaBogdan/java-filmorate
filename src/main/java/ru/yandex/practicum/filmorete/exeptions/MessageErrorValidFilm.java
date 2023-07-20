@@ -58,23 +58,14 @@ public enum MessageErrorValidFilm {
         400
     );
 
-    private final String name;
-    private final String description;
-    private final int httpStatusCode;
+    public final String name;
+
+    public final String description;
+    public final int httpStatusCode;
 
     MessageErrorValidFilm(String name, String description, int httpStatusCode) {
         this.name = name;
         this.description = description;
         this.httpStatusCode = httpStatusCode;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public String getDescription() {
-        return description;
-    }
-    public int getHttpStatusCode() {
-        return httpStatusCode;
     }
 }

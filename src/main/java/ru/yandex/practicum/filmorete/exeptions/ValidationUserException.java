@@ -5,15 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ValidationUserException extends RuntimeException {
 
-    private String name;
-    private String description;
-    private Integer httpStatusCode;
+    private final String name;
+    private final String description;
+    private final Integer httpStatusCode;
 
     public ValidationUserException(MessageErrorValidUser error) {
         super(error.toString());
-        this.name = error.getName();
-        this.description = error.getDescription();
-        this.httpStatusCode = error.getHttpStatusCode();
+        this.name = error.name;
+        this.description = error.description;
+        this.httpStatusCode = error.httpStatusCode;
         log.debug(this.getMessage());
     }
 

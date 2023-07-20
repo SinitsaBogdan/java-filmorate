@@ -6,15 +6,15 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class ValidationFilmException extends RuntimeException {
 
-    private String name;
-    private String description;
-    private Integer httpStatusCode;
+    private final String name;
+    private final String description;
+    private final Integer httpStatusCode;
 
     public ValidationFilmException(@NotNull MessageErrorValidFilm error) {
-        super(error.getDescription());
-        this.name = error.getName();
-        this.description = error.getDescription();
-        this.httpStatusCode = error.getHttpStatusCode();
+        super(error.description);
+        this.name = error.name;
+        this.description = error.description;
+        this.httpStatusCode = error.httpStatusCode;
         log.debug(this.getMessage());
     }
 

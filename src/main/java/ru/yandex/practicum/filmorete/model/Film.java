@@ -8,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -31,7 +30,6 @@ public class Film implements Comparable<Film> {
     @Positive
     private final Integer duration;
 
-    @Builder.Default
     private Set<Long> likeUsers;
 
     @Builder.Default
@@ -46,7 +44,6 @@ public class Film implements Comparable<Film> {
         likeUsers.remove(user.getId());
         sizeLikes--;
     }
-
 
     @Override
     public int compareTo(Film film) {

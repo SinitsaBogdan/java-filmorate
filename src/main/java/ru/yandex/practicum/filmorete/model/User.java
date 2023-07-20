@@ -33,10 +33,8 @@ public class User {
     @NotBlank
     private String email;
 
-    @Builder.Default
     private Set<Long> likesFilms;
 
-    @Builder.Default
     private Set<Long> friends;
 
     @Builder.Default
