@@ -45,46 +45,42 @@ class UserServiceTest {
 
     @BeforeEach
     public void beforeEach() {
-        service.storage.addUser(user1);
-        service.storage.addUser(user2);
-        service.storage.addUser(user3);
-        service.addFriend(user1, user2);
-        service.addFriend(user1, user3);
-        service.addFriend(user2, user3);
+        service.createUser(user1);
+        service.createUser(user2);
+        service.createUser(user3);
+        service.addFriend(user1.getId(), user2.getId());
+        service.addFriend(user1.getId(), user3.getId());
+        service.addFriend(user2.getId(), user3.getId());
     }
 
     @AfterEach
     public void afterEach() {
-        service.storage.clear();
+        service.clearStorage();
     }
 
     @Test
     @DisplayName("addFriendsTest")
     public void addFriendsTest() {
-
-        assertEquals(user3, service.getFriends(user2).get(0));
+        assertEquals(user3, service.getFriends(user2.getId()).get(1));
     }
 
     @Test
     @DisplayName("removeFriendsTest")
     public void removeFriendsTest() {
-
-        service.removeFriend(user1, user3);
-        assertEquals(user2, service.getFriends(user1).get(0));
+        service.removeFriend(user1.getId(), user3.getId());
+        assertEquals(user2, service.getFriends(user1.getId()).get(0));
     }
 
     @Test
     @DisplayName("getFriendsTest")
     public void getFriendsTest() {
-
-        assertEquals(user2, service.getFriends(user1).get(0));
-        assertEquals(user3, service.getFriends(user1).get(1));
+        assertEquals(user2, service.getFriends(user1.getId()).get(0));
+        assertEquals(user3, service.getFriends(user1.getId()).get(1));
     }
 
     @Test
     @DisplayName("getSharedFriendsTest")
     public void getSharedFriendsTest() {
-
-        assertEquals(user3, service.getSharedFriends(user1, user2).get(0));
+        assertEquals(user3, service.getFriendsCommon(user1.getId(), user2.getId()).get(0));
     }
 }

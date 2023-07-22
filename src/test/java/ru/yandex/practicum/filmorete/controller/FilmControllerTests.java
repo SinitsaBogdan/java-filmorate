@@ -72,11 +72,9 @@ public class FilmControllerTests {
         @Test
         @DisplayName("Запрос фильма: ID -1")
         public void methodGet_FilmIdMinus1Test() throws Exception {
-
-            mockMvc.perform(
-                    post("/films")
-                        .content(film1)
-                        .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -88,10 +86,9 @@ public class FilmControllerTests {
         @DisplayName("Запрос фильма: ID 1")
         public void methodGet_FilmId1Test() throws Exception {
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -104,10 +101,9 @@ public class FilmControllerTests {
         @DisplayName("Запрос фильма: ID 999")
         public void methodGet_FilmId999Test() throws Exception {
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -119,24 +115,21 @@ public class FilmControllerTests {
         @DisplayName("Запрос списка популярных фильмов: ")
         public void methodGet_PopularFilmsToEmptyTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film2)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film2)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film3)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film3)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -158,17 +151,15 @@ public class FilmControllerTests {
         @DisplayName("Проверка добавления дубликата")
         public void methodPost_NewFilmValidTrue_AndDoubleFalseTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -185,10 +176,9 @@ public class FilmControllerTests {
                     .put("duration", 135)
                     .toString();
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -206,10 +196,9 @@ public class FilmControllerTests {
                     .put("duration", 135)
                     .toString();
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -226,10 +215,9 @@ public class FilmControllerTests {
                     .put("duration", 135)
                     .toString();
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -253,8 +241,7 @@ public class FilmControllerTests {
                     .put("duration", 135)
                     .toString();
 
-            mockMvc.perform(
-                    post("/films")
+            mockMvc.perform(post("/films")
                             .content(film)
                             .contentType(MediaType.APPLICATION_JSON)
             )
@@ -273,10 +260,9 @@ public class FilmControllerTests {
                     .put("duration", 135)
                     .toString();
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -294,10 +280,9 @@ public class FilmControllerTests {
                     .put("duration", 135)
                     .toString();
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -314,10 +299,9 @@ public class FilmControllerTests {
                     .put("releaseDate", "2023-01-01")
                     .toString();
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -335,10 +319,9 @@ public class FilmControllerTests {
                     .put("duration", -1)
                     .toString();
 
-            mockMvc.perform(
-                            post("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -354,10 +337,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма")
         public void methodPut_FilmValidTrueTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -368,10 +350,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200))
                     .andExpect(jsonPath("$.id").isNumber())
@@ -386,10 +367,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - id : null")
         public void methodPut_FilmValidFalse_IdNullTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -399,10 +379,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -413,10 +392,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - id : -5")
         public void methodPut_FilmValidFalse_IdNotCorrectTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -427,10 +405,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(404));
 
@@ -441,10 +418,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - id : 99")
         public void methodPut_FilmValidFalse_IdNotInCollectionsTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -455,10 +431,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(404));
 
@@ -469,10 +444,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - name : null")
         public void methodPut_FilmValidFalse_NameNullTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -482,10 +456,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -496,8 +469,7 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - name : empty")
         public void methodPut_FilmValidFalse_NameEmptyTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
+            mockMvc.perform(post("/films")
                             .content(film1)
                             .contentType(MediaType.APPLICATION_JSON)
             );
@@ -510,10 +482,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -524,10 +495,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - description : null")
         public void methodPut_FilmValidFalse_DescriptionNullTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -537,10 +507,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -551,10 +520,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - description : empty")
         public void methodPut_FilmValidFalse_DescriptionEmptyTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -565,10 +533,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -579,10 +546,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - description : max length")
         public void methodPut_FilmValidFalse_WhitespaceTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -599,10 +565,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -613,10 +578,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - releaseData : null")
         public void methodPut_FilmValidFalse_ReleaseDataNullTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -626,10 +590,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -640,10 +603,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - releaseData : min")
         public void methodPut_FilmValidFalse_ReleaseDataMinTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -654,10 +616,9 @@ public class FilmControllerTests {
                     .put("duration", 90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -668,10 +629,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - duration : null")
         public void methodPut_FilmValidFalse_DurationNullTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -681,10 +641,9 @@ public class FilmControllerTests {
                     .put("releaseDate", "2010-01-01")
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -695,10 +654,9 @@ public class FilmControllerTests {
         @DisplayName("Обновление фильма - duration : min")
         public void methodPut_FilmValidFalse_DurationMinTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/films")
+                    .content(film1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String film = new JSONObject()
@@ -709,10 +667,9 @@ public class FilmControllerTests {
                     .put("duration", -90)
                     .toString();
 
-            mockMvc.perform(
-                            put("/films")
-                                    .content(film)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/films")
+                            .content(film)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 

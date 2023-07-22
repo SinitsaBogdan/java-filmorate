@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorete.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.comparators.ComparatorUserToSeizeLike;
+import ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.storage.FilmStorage;
@@ -12,11 +14,15 @@ import ru.yandex.practicum.filmorete.storage.UserStorage;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.*;
+import static ru.yandex.practicum.filmorete.service.Validators.*;
+
+@Slf4j
 @Service
 public class FilmService {
 
-    public FilmStorage filmStorage;
-    public UserStorage userStorage;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
     @Autowired
     public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
@@ -24,14 +30,46 @@ public class FilmService {
         this.userStorage = userStorage;
     }
 
-    public List<Film> getFilmsLikesToUser(@NotNull User user) {
+    public Film createFilm(Film film) {
 
-        List<Film> result = user.getLikesFilms().stream()
+        checkValidFilmNameContainsStorage(filmStorage, film.getName(), VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS);
+
+        checkValidFilm(film);
+        filmStorage.addFilm(film);
+        log.info(String.format("Добавление нового фильма: %s", film.getName()));
+        return film;
+    }
+
+    public Film updateFilm(Film film) {
+        checkValidIdNotNul(film.getId(), VALID_ERROR_FILM_NOT_ID);
+        checkValidContainsStorage(filmStorage, film.getId(), VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        checkValidFilm(film);
+        filmStorage.updateFilm(film);
+        log.info("Обновление фильма: {}", film.getName());
+        return film;
+    }
+
+    public void removeFilm(Long filmId) {
+        checkValidContainsStorage(filmStorage, filmId, VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        filmStorage.removeFilm(filmStorage.getFilm(filmId));
+    }
+
+    public Collection<Film> getAllFilms() {
+        log.info("Запрос всех фильмов: {}", filmStorage.getFilm().size());
+        return filmStorage.getFilm();
+    }
+
+    public Film getFilm(Long id) {
+        checkValidContainsStorage(filmStorage, id, VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        return filmStorage.getFilm(id);
+    }
+
+    public List<Film> getFilmsLikesToUser(@NotNull User user) {
+        return user.getLikesFilms().stream()
                 .map(filmStorage::getFilm)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        result.remove(null);
-        return result;
     }
 
     public List<User> getUserLikesToFilm(@NotNull Film film) {
@@ -41,7 +79,6 @@ public class FilmService {
     }
 
     public List<Film> getPopularFilms(Integer count) {
-
         try {
             List<Film> list = new ArrayList<>(filmStorage.getFilm());
             list.sort(new ComparatorUserToSeizeLike().reversed());
@@ -55,23 +92,31 @@ public class FilmService {
         }
     }
 
-    public void removeLike(@NotNull Film film, @NotNull User user) {
-        if (!user.getLikesFilms().contains(film.getId())) {
+    public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
+
+        checkValidContainsStorage(filmStorage, filmId, VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        checkValidContainsStorage(userStorage, userId, MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+
+        Film film = filmStorage.getFilm(filmId);
+        User user = userStorage.getUser(userId);
+
+        if (user.getLikesFilms().contains(film.getId())) {
             user.removeLikes(film);
         }
-        if (!film.getLikeUsers().contains(user.getId())) {
+        if (film.getLikeUsers().contains(user.getId())) {
             film.removeLike(user);
         }
     }
 
-    public void addLike(Film film, User user) {
-        if (user.getLikesFilms() == null) {
-            user.setLikesFilms(new HashSet<>());
-        }
+    public void addLike(Long filmId, Long userId) {
+        checkValidContainsStorage(filmStorage, filmId, VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        checkValidContainsStorage(userStorage, userId, MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
 
-        if (film.getLikeUsers() == null) {
-            film.setLikeUsers(new HashSet<>());
-        }
+        Film film = filmStorage.getFilm(filmId);
+        User user = userStorage.getUser(userId);
+
+        checkValidUser(user);
+        checkValidFilm(film);
 
         if (!user.getLikesFilms().contains(film.getId())) {
             user.addLike(film);
@@ -79,5 +124,10 @@ public class FilmService {
         if (!film.getLikeUsers().contains(user.getId())) {
             film.addLike(user);
         }
+    }
+
+    public void clearStorage() {
+        log.info("Очистка хранилища Фильмов!");
+        filmStorage.clear();
     }
 }

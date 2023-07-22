@@ -50,7 +50,7 @@ class FilmServiceTest {
     public void beforeEach() {
         filmStorage.addFilm(film);
         userStorage.addUser(user1);
-        service.addLike(film, user1);
+        service.addLike(film.getId(), user1.getId());
     }
 
     @AfterEach
@@ -75,7 +75,10 @@ class FilmServiceTest {
     @Test
     @DisplayName("removeLikeTest")
     public void removeLikeTest() {
-        service.removeLike(film, user1);
+        System.out.println(film.getLikeUsers());
+        service.removeLike(film.getId(), user1.getId());
+        System.out.println(film.getLikeUsers());
+
         assertTrue(service.getUserLikesToFilm(film).isEmpty());
         System.out.println(service.getFilmsLikesToUser(user1));
         assertTrue(service.getFilmsLikesToUser(user1).isEmpty());
@@ -100,7 +103,7 @@ class FilmServiceTest {
                 .build();
 
         filmStorage.addFilm(film2);
-        service.addLike(film2, user1);
+        service.addLike(film2.getId(), user1.getId());
         List<Film> result = service.getPopularFilms(2);
 
         assertEquals(2, result.size());

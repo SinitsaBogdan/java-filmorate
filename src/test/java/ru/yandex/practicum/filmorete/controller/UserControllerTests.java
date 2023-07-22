@@ -65,10 +65,9 @@ public class UserControllerTests {
         @DisplayName("Запрос пользователя: ID -1")
         public void methodGet_UserIdMinus1Test() throws Exception {
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             mockMvc.perform(get("/users/-1"))
@@ -79,10 +78,9 @@ public class UserControllerTests {
         @DisplayName("Запрос пользователя: ID 1")
         public void methodGet_UserId1Test() throws Exception {
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             mockMvc.perform(get("/users/1"))
@@ -94,10 +92,9 @@ public class UserControllerTests {
         @DisplayName("Запрос пользователя: ID 9999")
         public void methodGet_UserId9999Test() throws Exception {
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             mockMvc.perform(get("/users/9999"))
@@ -108,10 +105,9 @@ public class UserControllerTests {
         @DisplayName("Запрос списка друзей пользователя: ID 1 - []")
         public void methodGet_FriendsUserId1ToEmptyTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             mockMvc.perform(get("/users/1/friends"))
@@ -123,16 +119,14 @@ public class UserControllerTests {
         @DisplayName("Запрос списка общих друзей пользователей: ID 1 и ID 2 - []")
         public void methodGet_CommonFriendsUserId1AndId2ToEmptyTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user2)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user2)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             mockMvc.perform(get("/users/1/friends/common/2"))
@@ -149,16 +143,14 @@ public class UserControllerTests {
         @DisplayName("Проверка добавления дубликата")
         public void methodPost_NewUserValidTrue_AndDoubleFalseTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             )
                     .andExpect(status().is(400));
 
@@ -175,8 +167,7 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                    post("/users")
+            mockMvc.perform(post("/users")
                             .content(user)
                             .contentType(MediaType.APPLICATION_JSON)
             )
@@ -195,10 +186,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200))
                     .andExpect(jsonPath("$.name").value("SinitsaBogdan"));
@@ -214,10 +204,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -234,10 +223,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -255,10 +243,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -276,10 +263,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -296,10 +282,9 @@ public class UserControllerTests {
                     .put("login", "SinitsaBogdan")
                     .toString();
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -317,10 +302,9 @@ public class UserControllerTests {
                     .put("email", "")
                     .toString();
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -338,10 +322,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -357,10 +340,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя")
         public void methodPut_UserValidTrueTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
             String user = new JSONObject()
@@ -371,10 +353,9 @@ public class UserControllerTests {
                     .put("email", "update@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200))
                     .andExpect(jsonPath("$.id").isNumber())
@@ -388,10 +369,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - id : null")
         public void methodPut_UserValidFalse_IdNullTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -402,10 +382,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -416,10 +395,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - id : -5")
         public void methodPut_UserValidFalse_IdNotCorrectTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -431,10 +409,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -445,10 +422,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - id : 99")
         public void methodPut_UserValidFalse_IdNotInCollectionsTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -460,10 +436,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(404));
 
@@ -474,10 +449,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - birthday : null")
         public void methodPut_UserValidFalse_BirthdayNullTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -488,10 +462,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -502,10 +475,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - birthday : 3997")
         public void methodPut_UserValidFalse_BirthdayAfterActualTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -517,10 +489,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -531,10 +502,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - login : null")
         public void methodPut_UserValidFalse_LoginNullTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -545,10 +515,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -559,10 +528,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - login : empty")
         public void methodPut_UserValidFalse_LoginEmptyTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -574,10 +542,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -588,10 +555,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - login : whitespace")
         public void methodPut_UserValidFalse_WhitespaceTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -603,10 +569,9 @@ public class UserControllerTests {
                     .put("email", "User3@mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -617,10 +582,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - email : null")
         public void methodPut_UserValidFalse_EmailNullTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -631,10 +595,9 @@ public class UserControllerTests {
                     .put("login", "SinitsaBogdan")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -645,10 +608,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - email : empty")
         public void methodPut_UserValidFalse_EmailEmptyTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -660,10 +622,9 @@ public class UserControllerTests {
                     .put("email", "")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -674,10 +635,9 @@ public class UserControllerTests {
         @DisplayName("Обновление пользователя - email : not corrected")
         public void methodPut_UserValidFalse_EmailNotCorrectedTest() throws Exception {
 
-            mockMvc.perform(
-                            post("/users")
-                                    .content(user1)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                            .content(user1)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
@@ -689,10 +649,9 @@ public class UserControllerTests {
                     .put("email", "User3.mail.ru")
                     .toString();
 
-            mockMvc.perform(
-                            put("/users")
-                                    .content(user)
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users")
+                            .content(user)
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(400));
 
@@ -703,39 +662,33 @@ public class UserControllerTests {
         @DisplayName("Добавление пользователя в список друзей")
         public void methodPut_AddFriendUserTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user2)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user2)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
-            mockMvc.perform(
-                            put("/users/1/friends/2")
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users/1/friends/2")
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
-            mockMvc.perform(
-                            put("/users/1/friends/9999")
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users/1/friends/9999")
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(404));
 
-            mockMvc.perform(
-                            put("/users/1/friends/-1")
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/users/1/friends/-1")
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(404));
 
-            mockMvc.perform(
-                            get("/users/1/friends")
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(get("/users/1/friends")
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200))
                     .andExpect(content().string("[{\"id\":2,\"name\":\"User2\",\"birthday\":\"1997-04-11\",\"login\":\"User2\",\"email\":\"User2@mail.ru\",\"likesFilms\":[],\"friends\":[1],\"sizeFriends\":1,\"sizeLikes\":0}]"));
@@ -750,39 +703,33 @@ public class UserControllerTests {
         @DisplayName("Удаление пользователя из списка друзей")
         public void methodPut_AddFriendUserTest() throws Exception {
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user1)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user1)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
-            mockMvc.perform(
-                    post("/users")
-                            .content(user2)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/users")
+                    .content(user2)
+                    .contentType(MediaType.APPLICATION_JSON)
             );
 
-            mockMvc.perform(
-                            delete("/users/1/friends/2")
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(delete("/users/1/friends/2")
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
 
-            mockMvc.perform(
-                            delete("/users/1/friends/9999")
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(delete("/users/1/friends/9999")
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(404));
 
-            mockMvc.perform(
-                            delete("/users/1/friends/-1")
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(delete("/users/1/friends/-1")
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(404));
 
-            mockMvc.perform(
-                            get("/users/1/friends")
-                                    .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(get("/users/1/friends")
+                            .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200))
                     .andExpect(content().string("[]"));
