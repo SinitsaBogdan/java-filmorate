@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorete.model.Film;
 import java.util.Collection;
 import java.util.Set;
 
-public interface FilmStorage {
+public interface StorageFilm {
 
     Long getLastIdentification();
 
@@ -19,7 +19,7 @@ public interface FilmStorage {
 
     void updateFilm(Film film);
 
-    Film removeFilm(Film film);
+    Film removeFilm(Long id);
 
     Set<String> getNames();
 

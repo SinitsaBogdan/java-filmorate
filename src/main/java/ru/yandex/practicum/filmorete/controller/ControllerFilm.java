@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionValidationFilm;
 import ru.yandex.practicum.filmorete.model.Film;
-import ru.yandex.practicum.filmorete.service.FilmService;
+import ru.yandex.practicum.filmorete.service.ServiceFilm;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -12,11 +12,11 @@ import java.util.*;
 @Slf4j
 @RequestMapping("/films")
 @RestController
-public class FilmController {
+public class ControllerFilm {
 
-    private final FilmService service;
+    private final ServiceFilm service;
 
-    public FilmController(FilmService filmService) {
+    public ControllerFilm(ServiceFilm filmService) {
         this.service = filmService;
     }
 

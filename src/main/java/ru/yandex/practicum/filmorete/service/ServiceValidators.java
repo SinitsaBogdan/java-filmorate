@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorete.exeptions.*;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.User;
-import ru.yandex.practicum.filmorete.storage.FilmStorage;
-import ru.yandex.practicum.filmorete.storage.UserStorage;
+import ru.yandex.practicum.filmorete.storage.StorageFilm;
+import ru.yandex.practicum.filmorete.storage.StorageUser;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -15,50 +15,17 @@ import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALI
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.*;
 
 @Slf4j
-public class Validators {
+public class ServiceValidators {
 
-    public static void checkValidContainsStorage(UserStorage storage, Long id, MessageErrorValidUser message) {
-        if (!storage.getCollectionsIdUsers().contains(id)) {
-            throw new ExceptionNotFoundUserStorage(message);
-        }
-    }
-
-    public static void checkValidContainsStorage(FilmStorage storage, Long id, MessageErrorValidFilm message) {
-        if (!storage.getCollectionsIdFilms().contains(id)) {
-            throw new ExceptionValidationFilm(message);
-        }
-    }
-
-    public static void checkValidEmailContainsStorage(UserStorage storage, String email, MessageErrorValidUser message) {
+    public static void checkValidEmailContainsStorage(StorageUser storage, String email, MessageErrorValidUser message) {
         if (storage.getEmails().contains(email)) {
             throw new ExceptionValidationUser(message);
         }
     }
 
-    public static void checkValidFilmNameContainsStorage(FilmStorage storage, String name, MessageErrorValidFilm message) {
+    public static void checkValidFilmNameContainsStorage(StorageFilm storage, String name, MessageErrorValidFilm message) {
         if (storage.getNames().contains(name)) {
             throw new ExceptionValidationFilm(message);
-        }
-    }
-
-    public static void checkValidIdNotNul(Long id, MessageErrorValidUser message) {
-        if (id == null) {
-            throw new ExceptionValidationUser(message);
-        }
-    }
-
-    public static void checkValidIdNotNul(Long id, MessageErrorValidFilm message) {
-        if (id == null) {
-            throw new ExceptionValidationFilm(message);
-        }
-    }
-
-    public static void checkValidLogin(String login) {
-        if (login.isBlank()) {
-            throw new ExceptionValidationUser(VALID_ERROR_USER_NOT_LOGIN);
-        }
-        if (login.contains(" ")) {
-            throw new ExceptionValidationUser(VALID_ERROR_USER_LOGIN_IS_WHITESPACE);
         }
     }
 
@@ -71,6 +38,12 @@ public class Validators {
         }
         if (user.getLikesFilms() == null) {
             user.setLikesFilms(new HashSet<>());
+        }
+        if (user.getLogin().isBlank()) {
+            throw new ExceptionValidationUser(VALID_ERROR_USER_NOT_LOGIN);
+        }
+        if (user.getLogin().contains(" ")) {
+            throw new ExceptionValidationUser(VALID_ERROR_USER_LOGIN_IS_WHITESPACE);
         }
     }
 

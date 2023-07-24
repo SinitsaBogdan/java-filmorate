@@ -4,12 +4,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class ExceptionNotFoundFilmStorage extends RuntimeException {
+public class ExceptionServiceFilmorate extends RuntimeException {
 
     @NonNull
     private final String name;
@@ -20,7 +19,7 @@ public class ExceptionNotFoundFilmStorage extends RuntimeException {
     @NonNull
     private final Integer httpStatusCode;
 
-    public ExceptionNotFoundFilmStorage(@NotNull MessageErrorValidFilm error) {
+    public ExceptionServiceFilmorate(MessageErrorServiceFilmore error) {
         super(error.description);
         this.name = error.name;
         this.description = error.description;

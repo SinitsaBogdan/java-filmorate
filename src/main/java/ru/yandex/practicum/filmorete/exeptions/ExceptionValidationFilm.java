@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorete.exeptions;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
 public class ExceptionValidationFilm extends RuntimeException {
@@ -23,7 +25,6 @@ public class ExceptionValidationFilm extends RuntimeException {
         this.name = error.name;
         this.description = error.description;
         this.httpStatusCode = error.httpStatusCode;
-        log.debug(this.getMessage());
     }
 }
 

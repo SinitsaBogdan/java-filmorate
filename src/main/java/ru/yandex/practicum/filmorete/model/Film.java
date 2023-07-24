@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -30,6 +31,7 @@ public class Film implements Comparable<Film> {
     @Positive
     private final Integer duration;
 
+    @JsonIgnore
     private Set<Long> likeUsers;
 
     @Builder.Default

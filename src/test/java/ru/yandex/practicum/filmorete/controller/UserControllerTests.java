@@ -85,7 +85,7 @@ public class UserControllerTests {
 
             mockMvc.perform(get("/users/1"))
                     .andExpect(status().is(200))
-                    .andExpect(content().string("{\"id\":1,\"name\":\"User1\",\"birthday\":\"1997-04-11\",\"login\":\"User1\",\"email\":\"User1@mail.ru\",\"likesFilms\":[],\"friends\":[],\"sizeFriends\":0,\"sizeLikes\":0}"));
+                    .andExpect(content().string("{\"id\":1,\"name\":\"User1\",\"birthday\":\"1997-04-11\",\"login\":\"User1\",\"email\":\"User1@mail.ru\",\"sizeFriends\":0,\"sizeLikes\":0}"));
         }
 
         @Test
@@ -691,7 +691,7 @@ public class UserControllerTests {
                             .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200))
-                    .andExpect(content().string("[{\"id\":2,\"name\":\"User2\",\"birthday\":\"1997-04-11\",\"login\":\"User2\",\"email\":\"User2@mail.ru\",\"likesFilms\":[],\"friends\":[1],\"sizeFriends\":1,\"sizeLikes\":0}]"));
+                    .andExpect(content().string("[{\"id\":2,\"name\":\"User2\",\"birthday\":\"1997-04-11\",\"login\":\"User2\",\"email\":\"User2@mail.ru\",\"sizeFriends\":1,\"sizeLikes\":0}]"));
         }
     }
 
@@ -713,10 +713,20 @@ public class UserControllerTests {
                     .contentType(MediaType.APPLICATION_JSON)
             );
 
+            mockMvc.perform(put("/users/1/friends/2")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is(200));
+
             mockMvc.perform(delete("/users/1/friends/2")
                             .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().is(200));
+
+            mockMvc.perform(delete("/users/1/friends/2")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is(404));
 
             mockMvc.perform(delete("/users/1/friends/9999")
                             .contentType(MediaType.APPLICATION_JSON)

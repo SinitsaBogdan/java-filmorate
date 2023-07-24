@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionValidationUser;
 import ru.yandex.practicum.filmorete.model.User;
-import ru.yandex.practicum.filmorete.service.UserService;
+import ru.yandex.practicum.filmorete.service.ServiceUser;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -12,11 +12,11 @@ import java.util.*;
 @Slf4j
 @RequestMapping("/users")
 @RestController
-public class UserController {
+public class ControllerUser {
 
-    final UserService service;
+    final ServiceUser service;
 
-    public UserController(UserService userService) {
+    public ControllerUser(ServiceUser userService) {
         this.service = userService;
     }
 

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -33,8 +34,10 @@ public class User {
     @NotBlank
     private String email;
 
+    @JsonIgnore
     private Set<Long> likesFilms;
 
+    @JsonIgnore
     private Set<Long> friends;
 
     @Builder.Default

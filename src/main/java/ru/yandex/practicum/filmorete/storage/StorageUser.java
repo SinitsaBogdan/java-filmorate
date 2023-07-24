@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorete.model.User;
 import java.util.Collection;
 import java.util.Set;
 
-public interface UserStorage {
+public interface StorageUser {
 
     Long getLastIdentification();
 
@@ -19,7 +19,7 @@ public interface UserStorage {
 
     void updateUser(User user);
 
-    User removeUser(User user);
+    User removeUser(Long id);
 
     Set<String> getEmails();
 

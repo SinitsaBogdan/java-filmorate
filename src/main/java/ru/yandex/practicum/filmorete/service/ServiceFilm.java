@@ -5,35 +5,34 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.comparators.ComparatorUserToSeizeLike;
-import ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionServiceFilmorate;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.User;
-import ru.yandex.practicum.filmorete.storage.FilmStorage;
-import ru.yandex.practicum.filmorete.storage.UserStorage;
+import ru.yandex.practicum.filmorete.storage.StorageFilm;
+import ru.yandex.practicum.filmorete.storage.StorageUser;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceFilmore.SERVICE_ERROR_POPULAR_FILM_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.*;
-import static ru.yandex.practicum.filmorete.service.Validators.*;
+import static ru.yandex.practicum.filmorete.service.ServiceValidators.*;
 
 @Slf4j
 @Service
-public class FilmService {
+public class ServiceFilm {
 
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+    private final StorageFilm filmStorage;
+    private final StorageUser userStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public ServiceFilm(StorageFilm filmStorage, StorageUser userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }
 
     public Film createFilm(Film film) {
-
         checkValidFilmNameContainsStorage(filmStorage, film.getName(), VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS);
-
         checkValidFilm(film);
         filmStorage.addFilm(film);
         log.info(String.format("Добавление нового фильма: %s", film.getName()));
@@ -41,8 +40,6 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
-        checkValidIdNotNul(film.getId(), VALID_ERROR_FILM_NOT_ID);
-        checkValidContainsStorage(filmStorage, film.getId(), VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         checkValidFilm(film);
         filmStorage.updateFilm(film);
         log.info("Обновление фильма: {}", film.getName());
@@ -50,8 +47,7 @@ public class FilmService {
     }
 
     public void removeFilm(Long filmId) {
-        checkValidContainsStorage(filmStorage, filmId, VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        filmStorage.removeFilm(filmStorage.getFilm(filmId));
+        filmStorage.removeFilm(filmId);
     }
 
     public Collection<Film> getAllFilms() {
@@ -60,14 +56,13 @@ public class FilmService {
     }
 
     public Film getFilm(Long id) {
-        checkValidContainsStorage(filmStorage, id, VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         return filmStorage.getFilm(id);
     }
 
     public List<Film> getFilmsLikesToUser(@NotNull User user) {
         return user.getLikesFilms().stream()
-                .map(filmStorage::getFilm)
                 .filter(Objects::nonNull)
+                .map(filmStorage::getFilm)
                 .collect(Collectors.toList());
 
     }
@@ -88,14 +83,11 @@ public class FilmService {
             }
             return list.subList(0, count);
         } catch (Exception e) {
-            return new ArrayList<>();
+            throw new ExceptionServiceFilmorate(SERVICE_ERROR_POPULAR_FILM_NOT_IN_COLLECTIONS);
         }
     }
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
-
-        checkValidContainsStorage(filmStorage, filmId, VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        checkValidContainsStorage(userStorage, userId, MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
 
         Film film = filmStorage.getFilm(filmId);
         User user = userStorage.getUser(userId);
@@ -109,9 +101,6 @@ public class FilmService {
     }
 
     public void addLike(Long filmId, Long userId) {
-        checkValidContainsStorage(filmStorage, filmId, VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        checkValidContainsStorage(userStorage, userId, MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-
         Film film = filmStorage.getFilm(filmId);
         User user = userStorage.getUser(userId);
 

@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorete.exeptions;
 
-class ErrorResponse {
+import lombok.Getter;
+
+@Getter
+public class ErrorResponse {
 
     private final String error;
     private final String description;
@@ -8,13 +11,5 @@ class ErrorResponse {
     public ErrorResponse(String error, String description) {
         this.error = error;
         this.description = description;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

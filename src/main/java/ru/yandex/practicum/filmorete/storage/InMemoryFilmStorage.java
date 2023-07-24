@@ -1,12 +1,16 @@
 package ru.yandex.practicum.filmorete.storage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionValidationFilm;
 import ru.yandex.practicum.filmorete.model.Film;
 
 import java.util.*;
 
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_NOT_ID;
+
 @Component
-public class InMemoryFilmStorage implements FilmStorage {
+public class InMemoryFilmStorage implements StorageFilm {
 
     private final Map<Long, Film> films = new HashMap<>();
     private final Set<String> names = new HashSet<>();
@@ -29,7 +33,13 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getFilm(Long id) {
-        return films.get(id);
+        if (id == null) {
+            throw new ExceptionValidationFilm(VALID_ERROR_FILM_NOT_ID);
+        } else if (films.get(id) == null) {
+            throw new ExceptionValidationFilm(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        } else {
+            return films.get(id);
+        }
     }
 
     @Override
@@ -41,15 +51,15 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public void updateFilm(Film film) {
-        Film oldFilm = films.get(film.getId());
+        Film oldFilm = getFilm(film.getId());
         names.remove(oldFilm.getName());
         names.add(film.getName());
         films.put(oldFilm.getId(), film);
     }
 
     @Override
-    public Film removeFilm(Film film) {
-        return films.remove(film.getId());
+    public Film removeFilm(Long id) {
+        return films.remove(getFilm(id).getId());
     }
 
     @Override

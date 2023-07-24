@@ -94,7 +94,7 @@ public class FilmControllerTests {
 
             mockMvc.perform(get("/films/1"))
                     .andExpect(status().is(200))
-                    .andExpect(content().string("{\"id\":1,\"name\":\"film1\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"likeUsers\":[],\"sizeLikes\":0}"));
+                    .andExpect(content().string("{\"id\":1,\"name\":\"film1\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0}"));
         }
 
         @Test
@@ -135,11 +135,11 @@ public class FilmControllerTests {
 
             mockMvc.perform(get("/films/popular"))
                     .andExpect(status().is(200))
-                    .andExpect(content().string("[{\"id\":1,\"name\":\"film1\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"likeUsers\":[],\"sizeLikes\":0},{\"id\":2,\"name\":\"film2\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"likeUsers\":[],\"sizeLikes\":0},{\"id\":3,\"name\":\"film3\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"likeUsers\":[],\"sizeLikes\":0}]"));
+                    .andExpect(content().string("[{\"id\":1,\"name\":\"film1\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0},{\"id\":2,\"name\":\"film2\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0},{\"id\":3,\"name\":\"film3\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0}]"));
 
             mockMvc.perform(get("/films/popular?count=1"))
                     .andExpect(status().is(200))
-                    .andExpect(content().string("[{\"id\":1,\"name\":\"film1\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"likeUsers\":[],\"sizeLikes\":0}]"));
+                    .andExpect(content().string("[{\"id\":1,\"name\":\"film1\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0}]"));
         }
     }
 

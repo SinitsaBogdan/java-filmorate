@@ -1,12 +1,16 @@
 package ru.yandex.practicum.filmorete.storage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionValidationUser;
 import ru.yandex.practicum.filmorete.model.User;
 
 import java.util.*;
 
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_NOT_ID;
+
 @Component
-public class InMemoryUserStorage implements UserStorage {
+public class InMemoryUserStorage implements StorageUser {
 
     private final Map<Long, User> users = new HashMap<>();
     private final Set<String> emails = new HashSet<>();
@@ -29,7 +33,13 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Long id) {
-        return users.get(id);
+        if (id == null) {
+            throw new ExceptionValidationUser(VALID_ERROR_USER_NOT_ID);
+        } else if (users.get(id) == null) {
+            throw new ExceptionValidationUser(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        } else {
+            return users.get(id);
+        }
     }
 
     @Override
@@ -41,15 +51,15 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void updateUser(User user) {
-        User oldUser = users.get(user.getId());
+        User oldUser = getUser(user.getId());
         emails.remove(oldUser.getEmail());
         emails.add(user.getEmail());
         users.put(oldUser.getId(), user);
     }
 
     @Override
-    public User removeUser(User user) {
-        return users.remove(user.getId());
+    public User removeUser(Long id) {
+        return users.remove(getUser(id).getId());
     }
 
     @Override
