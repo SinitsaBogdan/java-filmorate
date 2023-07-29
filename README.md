@@ -4,16 +4,17 @@
 ## Список и описание таблиц БД
 
 ER - СХЕМА
-![msg-1956654434-12](https://github.com/SinitsaBogdan/java-filmorate/assets/124495463/b7c63426-deb7-4e34-b43d-c6bfefda40c6)
+![ER - Схема](https://github.com/SinitsaBogdan/java-filmorate/assets/124495463/0db15e62-90a6-49c0-a8f0-8fcdcfdf837c)
 
 1. USER
-2. FILM
-3. TOTAL_USER_FRIENDS
-4. TOTAL_FILM_LIKE
-5. TOTAL_GENRE_FILM
-6. ENUM_GENRE
-7. ENUM_RATING
-8. ENUM_STATUS_FRIENDS
+                         
+3. FILM
+4. TOTAL_USER_FRIENDS
+5. TOTAL_FILM_LIKE
+6. TOTAL_GENRE_FILM
+7. ENUM_GENRE
+8. ENUM_RATING
+9. ENUM_STATUS_FRIENDS
 
 ---
 ## Методы приложения, моделей и сервисов
