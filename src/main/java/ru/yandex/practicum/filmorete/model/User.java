@@ -11,7 +11,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Set;
+
+import static ru.yandex.practicum.filmorete.enums.EnumStatusFriend.STATUS_FRIENDS__NO_RESPONSE;
 
 @Data
 @Builder
@@ -38,7 +41,7 @@ public class User {
     private Set<Long> likesFilms;
 
     @JsonIgnore
-    private Set<Long> friends;
+    private Map<Long, String> friends;
 
     @Builder.Default
     private long sizeFriends = 0L;
@@ -47,7 +50,7 @@ public class User {
     private long sizeLikes = 0L;
 
     public void addFriend(User user) {
-        friends.add(user.getId());
+        friends.put(user.getId(), STATUS_FRIENDS__NO_RESPONSE.getStatus());
         sizeFriends++;
     }
 

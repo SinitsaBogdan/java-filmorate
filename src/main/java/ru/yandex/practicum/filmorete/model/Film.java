@@ -22,6 +22,12 @@ public class Film implements Comparable<Film> {
     private final String name;
 
     @NotBlank
+    private final String genre;
+
+    @NotBlank
+    private final String rating;
+
+    @NotBlank
     @Size(max = 200)
     private final String description;
 
