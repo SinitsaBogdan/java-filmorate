@@ -4,7 +4,7 @@
 ## Список и описание таблиц БД
 
 ER - СХЕМА
-![ER - Схема](https://github.com/SinitsaBogdan/java-filmorate/assets/124495463/1fd27c9c-416c-4f2c-8fb0-2481c01cb1bf)
+![ER - Схема](https://github.com/SinitsaBogdan/java-filmorate/assets/124495463/d0e38870-d79b-4815-aff2-b6f5a04c29f3)
 
 1. USER
 2. FILM
