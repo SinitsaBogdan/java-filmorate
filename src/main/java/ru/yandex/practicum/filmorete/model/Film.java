@@ -1,54 +1,39 @@
 package ru.yandex.practicum.filmorete.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
-public class Film implements Comparable<Film> {
+public class Film {
 
     @Positive
-    private Long id;
+    private final Long id;
 
     @NotBlank
     private final String name;
 
-    @NotBlank
+    @NotNull
     @Size(max = 200)
     private final String description;
 
-    @NonNull
+    private List<Genre> genres;
+
+    @NotNull
     private final LocalDate releaseDate;
 
-    @Positive
+    @NotNull
     private final Integer duration;
 
-    @JsonIgnore
-    private Set<Long> likeUsers;
+    private final Integer rate;
 
-    @Builder.Default
-    private long sizeLikes = 0L;
-
-    public void addLike(User user) {
-        likeUsers.add(user.getId());
-        sizeLikes++;
-    }
-
-    public void removeLike(User user) {
-        likeUsers.remove(user.getId());
-        sizeLikes--;
-    }
-
-    @Override
-    public int compareTo(Film film) {
-        return Math.toIntExact(film.getSizeLikes());
-    }
+    @NotNull
+    private Mpa mpa;
 }
