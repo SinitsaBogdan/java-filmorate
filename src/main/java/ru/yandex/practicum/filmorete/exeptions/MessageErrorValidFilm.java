@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.exeptions;
 
+
 public enum MessageErrorValidFilm {
 
     VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS(
@@ -12,39 +13,9 @@ public enum MessageErrorValidFilm {
         "Указанный ID фильма отсутствует в коллекции!",
         404
     ),
-    VALID_ERROR_FILM_NOT_ID(
-        "Ошибка формирования запроса",
-        "Не указан ID фильма!",
-        400
-    ),
-    VALID_ERROR_FILM_NOT_NAME(
-        "Ошибка формирования запроса",
-        "Не указанно имя фильма!",
-        400
-    ),
-    VALID_ERROR_FILM_NOT_DESCRIPTION(
-        "Ошибка формирования запроса",
-        "Не указанно описание фильма!",
-        400
-    ),
-    VALID_ERROR_FILM_NOT_RELEASED(
-        "Ошибка формирования запроса",
-        "Не указана дата релиза фильма!",
-        400
-    ),
     VALID_ERROR_FILM_NOT_DURATION(
         "Ошибка формирования запроса",
         "Не указана продолжительность фильма!",
-        400
-    ),
-    VALID_ERROR_FILM_DESCRIPTION_MAX_LENGTH(
-        "Ошибка валидации поля description",
-        "Описание фильма не должно превышать 200 символов!",
-        400
-    ),
-    VALID_ERROR_FILM_ID_MIN(
-        "Ошибка валидации поля id",
-        "ID фильма должен быть положительным числом!",
         400
     ),
     VALID_ERROR_FILM_DURATION_MIN(
