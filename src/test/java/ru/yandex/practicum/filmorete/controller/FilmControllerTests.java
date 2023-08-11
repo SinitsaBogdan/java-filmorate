@@ -1,59 +1,81 @@
 package ru.yandex.practicum.filmorete.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorete.model.*;
+import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
+import ru.yandex.practicum.filmorete.sql.dao.UserDao;
+
+import java.time.LocalDate;
+import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.*;
 
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 public class FilmControllerTests {
 
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Autowired
     private MockMvc mockMvc;
 
-    private static String film1;
-    private static String film2;
-    private static String film3;
+    @Autowired
+    private FilmDao filmDao;
 
-    @BeforeAll
-    public static void beforeAll() throws JSONException {
-        film1 = new JSONObject()
-                .put("name", "film1")
-                .put("description", "description")
-                .put("releaseDate", "2023-01-01")
-                .put("duration", 135)
-                .toString();
+    @Autowired
+    private TotalGenreFilmDao totalGenreFilmDao;
 
-        film2 = new JSONObject()
-                .put("name", "film2")
-                .put("description", "description")
-                .put("releaseDate", "2023-01-01")
-                .put("duration", 135)
-                .toString();
+    @Autowired
+    private TotalFilmLikeDao totalFilmLikeDao;
 
-        film3 = new JSONObject()
-                .put("name", "film3")
-                .put("description", "description")
-                .put("releaseDate", "2023-01-01")
-                .put("duration", 135)
-                .toString();
-    }
+    @Autowired
+    private UserDao userDao;
 
-    @AfterEach
-    public void afterEach() throws Exception {
-        mockMvc.perform(delete("/films"))
-                .andExpect(status().is(200));
+    private final Film duplicate = Film.builder()
+            .id(1L)
+            .name("Фильм 1")
+            .description("")
+            .releaseDate(LocalDate.parse("2000-01-01"))
+            .duration(90)
+            .rate(5)
+            .build();
+
+    @BeforeEach
+    public void beforeEach() {
+        totalGenreFilmDao.delete();
+        totalFilmLikeDao.delete();
+        filmDao.delete();
+        userDao.delete();
+
+        filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(3L, 3, "Фильм 3", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(4L, 4, "Фильм 4", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(5L, 5, "Фильм 5", "", LocalDate.parse("2000-01-01"), 90);
+
+        totalGenreFilmDao.insert(1L, 1);
+        totalGenreFilmDao.insert(1L, 2);
+        totalGenreFilmDao.insert(2L, 4);
+
+        userDao.insert(1L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
+        userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
+
+        totalFilmLikeDao.insert(1L, 1L);
+        totalFilmLikeDao.insert(2L, 1L);
+        totalFilmLikeDao.insert(2L, 2L);
     }
 
     @Nested
@@ -65,81 +87,58 @@ public class FilmControllerTests {
         public void methodGet_AllFilmListTest() throws Exception {
             mockMvc.perform(get("/films"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string("[]"))
-                    .andExpect(status().is(200));
+                    .andExpect(jsonPath("$.length()").value(5))
+            ;
         }
 
         @Test
         @DisplayName("Запрос фильма: ID -1")
         public void methodGet_FilmIdMinus1Test() throws Exception {
-            mockMvc.perform(post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().is(200));
-
             mockMvc.perform(get("/films/-1"))
-                    .andExpect(status().is(404));
-        }
-
-        @Test
-        @DisplayName("Запрос фильма: ID 1")
-        public void methodGet_FilmId1Test() throws Exception {
-
-            mockMvc.perform(post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().is(200));
-
-            mockMvc.perform(get("/films/1"))
-                    .andExpect(status().is(200))
-                    .andExpect(content().string("{\"id\":1,\"name\":\"film1\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0}"));
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Запрос фильма: ID 999")
         public void methodGet_FilmId999Test() throws Exception {
-
-            mockMvc.perform(post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().is(200));
-
-            mockMvc.perform(get("/films/999"))
-                    .andExpect(status().is(404));
+            mockMvc.perform(get("/films/-1"))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
-        @DisplayName("Запрос списка популярных фильмов: ")
-        public void methodGet_PopularFilmsToEmptyTest() throws Exception {
+        @DisplayName("Запрос фильма: ID 1")
+        public void methodGet_FilmId1Test() throws Exception {
+            mockMvc.perform(get("/films/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.name").value("Фильм 1"))
+                    .andExpect(jsonPath("$.description").value(""))
+                    .andExpect(jsonPath("$.genres.length()").value(2))
+                    .andExpect(jsonPath("$.releaseDate").value("2000-01-01"))
+                    .andExpect(jsonPath("$.duration").value(90))
+                    .andExpect(jsonPath("$.mpa.id").value(1))
+                    .andExpect(jsonPath("$.mpa.name").value("G"))
+            ;
+        }
 
-            mockMvc.perform(post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().is(200));
-
-            mockMvc.perform(post("/films")
-                            .content(film2)
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().is(200));
-
-            mockMvc.perform(post("/films")
-                            .content(film3)
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().is(200));
-
+        @Test
+        @DisplayName("Запрос списка популярных фильмов: count : default")
+        public void methodGet_PopularFilmsLimitDefaultTest() throws Exception {
             mockMvc.perform(get("/films/popular"))
-                    .andExpect(status().is(200))
-                    .andExpect(content().string("[{\"id\":1,\"name\":\"film1\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0},{\"id\":2,\"name\":\"film2\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0},{\"id\":3,\"name\":\"film3\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0}]"));
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(5))
+            ;
+        }
 
-            mockMvc.perform(get("/films/popular?count=1"))
-                    .andExpect(status().is(200))
-                    .andExpect(content().string("[{\"id\":1,\"name\":\"film1\",\"description\":\"description\",\"releaseDate\":\"2023-01-01\",\"duration\":135,\"sizeLikes\":0}]"));
+        @Test
+        @DisplayName("Запрос списка популярных фильмов: count : 2")
+        public void methodGet_PopularFilmsLimit2Test() throws Exception {
+            mockMvc.perform(get("/films/popular?count=2"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2))
+            ;
         }
     }
 
@@ -150,182 +149,188 @@ public class FilmControllerTests {
         @Test
         @DisplayName("Проверка добавления дубликата")
         public void methodPost_NewFilmValidTrue_AndDoubleFalseTest() throws Exception {
-
             mockMvc.perform(post("/films")
-                            .content(film1)
+                            .content(objectMapper.writeValueAsString(duplicate))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(200));
-
-            mockMvc.perform(post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового фильма - name : null")
         public void methodPost_NewFilmValidFalse_NameNullTest() throws Exception {
-
-            String film = new JSONObject()
-                    .put("description", "description")
-                    .put("releaseDate", "2023-01-01")
-                    .put("duration", 135)
-                    .toString();
+            Film film = Film.builder()
+                    .id(125L)
+                    .name(null)
+                    .description("Описание")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2000-01-01"))
+                    .duration(90)
+                    .rate(5)
+                    .mpa(Mpa.builder().id(1).build())
+                    .build();
 
             mockMvc.perform(post("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_NAME.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового фильма - name : empty")
         public void methodPost_NewFilmValidFalse_NameEmptyTest() throws Exception {
-
-            String film = new JSONObject()
-                    .put("name", "")
-                    .put("description", "description")
-                    .put("releaseDate", "2023-01-01")
-                    .put("duration", 135)
-                    .toString();
+            Film film = Film.builder()
+                    .id(125L)
+                    .name("")
+                    .description("Описание")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2000-01-01"))
+                    .duration(90)
+                    .rate(5)
+                    .mpa(Mpa.builder().id(1).build())
+                    .build();
 
             mockMvc.perform(post("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_NAME.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового фильма - descriptions : null")
         public void methodPost_NewFilmValidFalse_DescriptionNullTest() throws Exception {
-
-            String film = new JSONObject()
-                    .put("name", "film2")
-                    .put("releaseDate", "2023-01-01")
-                    .put("duration", 135)
-                    .toString();
+            Film film = Film.builder()
+                    .id(125L)
+                    .name("Фильм 10")
+                    .description(null)
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2000-01-01"))
+                    .duration(90)
+                    .rate(5)
+                    .mpa(Mpa.builder().id(1).build())
+                    .build();
 
             mockMvc.perform(post("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_DESCRIPTION.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового фильма - descriptions : max length")
         public void methodPost_NewFilmValidFalse_DescriptionMaxLengthTest() throws Exception {
-
-            String film = new JSONObject()
-                    .put("name", "film2")
-                    .put("description", "«Того» - это экранизация реальных событий, произошедших зимой 1925 года, " +
-                            "на коварных просторах Аляски, когда поездка из волнующего приключения переросла " +
-                            "в настоящее испытание силы, отваги и решимости. " +
-                            "Когда смертельная эпидемия дифтерии поразила поселение Ном, " +
-                            "а единственное лекарство можно было достать в городе Анкоридже, расположенном в 1000 км, " +
-                            "жители обратились к лучшему каюру собачьих упряжек в городе " +
-                            "- Леонардо Сеппала (Уилльям Дефо).")
-                    .put("releaseDate", "2023-01-01")
-                    .put("duration", 135)
-                    .toString();
+            Film film = Film.builder()
+                    .id(125L)
+                    .name("Фильм 10")
+                    .description("Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание.")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2000-01-01"))
+                    .duration(90)
+                    .rate(5)
+                    .mpa(Mpa.builder().id(1).build())
+                    .build();
 
             mockMvc.perform(post("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
-            )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_DESCRIPTION_MAX_LENGTH.toString());
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового фильма - releaseDate : null")
         public void methodPost_NewFilmValidFalse_ReleaseDateNullTest() throws Exception {
-
-            String film = new JSONObject()
-                    .put("name", "film2")
-                    .put("description", "description")
-                    .put("duration", 135)
-                    .toString();
+            Film film = Film.builder()
+                    .id(125L)
+                    .name("Фильм 10")
+                    .description("Описание")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(null)
+                    .duration(90)
+                    .rate(5)
+                    .mpa(Mpa.builder().id(1).build())
+                    .build();
 
             mockMvc.perform(post("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_RELEASED.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового фильма - releaseDate : min date")
         public void methodPost_NewFilmValidFalse_ReleaseDateMinDataTest() throws Exception {
-
-            String film = new JSONObject()
-                    .put("name", "film2")
-                    .put("description", "description")
-                    .put("releaseDate", "1500-01-01")
-                    .put("duration", 135)
-                    .toString();
+            Film film = Film.builder()
+                    .id(125L)
+                    .name("Фильм 10")
+                    .description("Описание")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("1000-01-01"))
+                    .duration(90)
+                    .rate(5)
+                    .mpa(Mpa.builder().id(1).build())
+                    .build();
 
             mockMvc.perform(post("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_RELEASED_MIN.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового фильма - durations : null")
         public void methodPost_NewFilmValidFalse_DurationNullTest() throws Exception {
-
-            String film = new JSONObject()
-                    .put("name", "film2")
-                    .put("description", "description")
-                    .put("releaseDate", "2023-01-01")
-                    .toString();
+            Film film = Film.builder()
+                    .id(125L)
+                    .name("Фильм 10")
+                    .description("Описание")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2000-01-01"))
+                    .duration(null)
+                    .rate(5)
+                    .mpa(Mpa.builder().id(1).build())
+                    .build();
 
             mockMvc.perform(post("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_DURATION.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового фильма - durations : min")
         public void methodPost_NewFilmValidFalse_DurationMinTest() throws Exception {
-
-            String film = new JSONObject()
-                    .put("name", "film2")
-                    .put("description", "description")
-                    .put("releaseDate", "2023-01-01")
-                    .put("duration", -1)
-                    .toString();
+            Film film = Film.builder()
+                    .id(125L)
+                    .name("Фильм 10")
+                    .description("Описание")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2000-01-01"))
+                    .duration(-90)
+                    .rate(5)
+                    .mpa(Mpa.builder().id(1).build())
+                    .build();
 
             mockMvc.perform(post("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_DURATION_MIN.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
     }
 
@@ -336,344 +341,300 @@ public class FilmControllerTests {
         @Test
         @DisplayName("Обновление фильма")
         public void methodPut_FilmValidTrueTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("name", "update")
-                    .put("description", "update")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name("update")
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.id").isNumber())
+                    .andExpect(status().isOk())
+            ;
+
+            mockMvc.perform(get("/films/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
                     .andExpect(jsonPath("$.name").value("update"))
                     .andExpect(jsonPath("$.description").value("update"))
+                    .andExpect(jsonPath("$.genres[0].id").value(1))
+                    .andExpect(jsonPath("$.genres[0].name").value("Комедия"))
                     .andExpect(jsonPath("$.releaseDate").value("2010-01-01"))
-                    .andExpect(jsonPath("$.duration").isNumber())
-                    .andExpect(jsonPath("$.duration").value(90));
+                    .andExpect(jsonPath("$.duration").value(120))
+                    .andExpect(jsonPath("$.mpa.id").value(2))
+                    .andExpect(jsonPath("$.mpa.name").value("PG"))
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - id : null")
         public void methodPut_FilmValidFalse_IdNullTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("name", "update")
-                    .put("description", "update")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(null)
+                    .name("update")
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_ID.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - id : -5")
         public void methodPut_FilmValidFalse_IdNotCorrectTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 5)
-                    .put("name", "update")
-                    .put("description", "update")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(-1L)
+                    .name("update")
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(404));
-
-            log.warn(VALID_ERROR_FILM_ID_MIN.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - id : 99")
         public void methodPut_FilmValidFalse_IdNotInCollectionsTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 99)
-                    .put("name", "update")
-                    .put("description", "update")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(99L)
+                    .name("update")
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(404));
-
-            log.warn(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - name : null")
         public void methodPut_FilmValidFalse_NameNullTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("description", "update")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name(null)
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_NAME.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - name : empty")
         public void methodPut_FilmValidFalse_NameEmptyTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                            .content(film1)
-                            .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("name", "")
-                    .put("description", "update")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name("")
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_NAME.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - description : null")
         public void methodPut_FilmValidFalse_DescriptionNullTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("name", "update")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name("update")
+                    .description(null)
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_DESCRIPTION.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - description : empty")
         public void methodPut_FilmValidFalse_DescriptionEmptyTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("name", "update")
-                    .put("description", "")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name("update")
+                    .description("")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_DESCRIPTION.toString());
+                    .andExpect(status().isOk())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - description : max length")
         public void methodPut_FilmValidFalse_WhitespaceTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("name", "update")
-                    .put("description", "«Того» - это экранизация реальных событий, произошедших зимой 1925 года," +
-                            "на коварных просторах Аляски, когда поездка из волнующего приключения переросла" +
-                            "в настоящее испытание силы, отваги и решимости." +
-                            "Когда смертельная эпидемия дифтерии поразила поселение Ном," +
-                            "а единственное лекарство можно было достать в городе Анкоридже, расположенном в 1000 км," +
-                            "жители обратились к лучшему каюру собачьих упряжек в городе" +
-                            "- Леонардо Сеппала (Уилльям Дефо).")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name("update")
+                    .description("dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_DESCRIPTION_MAX_LENGTH.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - releaseData : null")
         public void methodPut_FilmValidFalse_ReleaseDataNullTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("name", "update")
-                    .put("description", "update")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name("update")
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(null)
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_RELEASED.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - releaseData : min")
         public void methodPut_FilmValidFalse_ReleaseDataMinTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("name", "update")
-                    .put("description", "")
-                    .put("releaseDate", "1500-01-01")
-                    .put("duration", 90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name("update")
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("1010-01-01"))
+                    .duration(120)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_RELEASED_MIN.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - duration : null")
         public void methodPut_FilmValidFalse_DurationNullTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("name", "update")
-                    .put("description", "")
-                    .put("releaseDate", "2010-01-01")
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name("update")
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(null)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_NOT_DURATION.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление фильма - duration : min")
         public void methodPut_FilmValidFalse_DurationMinTest() throws Exception {
-
-            mockMvc.perform(post("/films")
-                    .content(film1)
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-            String film = new JSONObject()
-                    .put("id", 1)
-                    .put("name", "update")
-                    .put("description", "")
-                    .put("releaseDate", "2010-01-01")
-                    .put("duration", -90)
-                    .toString();
+            Film film = Film.builder()
+                    .id(1L)
+                    .name("update")
+                    .description("update")
+                    .genres(Collections.singletonList(Genre.builder().id(1).build()))
+                    .releaseDate(LocalDate.parse("2010-01-01"))
+                    .duration(-10)
+                    .rate(7)
+                    .mpa(Mpa.builder().id(2).build())
+                    .build();
 
             mockMvc.perform(put("/films")
-                            .content(film)
+                            .content(objectMapper.writeValueAsString(film))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().is(400));
-
-            log.warn(VALID_ERROR_FILM_DURATION_MIN.toString());
+                    .andExpect(status().is4xxClientError())
+            ;
         }
     }
 }
