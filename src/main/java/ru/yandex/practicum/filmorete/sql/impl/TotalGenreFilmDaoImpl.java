@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,11 +23,11 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private TotalGenreFilmDaoImpl(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate=jdbcTemplate;
+    private TotalGenreFilmDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public TotalGenreFilm buildModel(SqlRowSet row) {
+    public TotalGenreFilm buildModel(@NotNull SqlRowSet row) {
         return TotalGenreFilm.builder()
                 .filmId(row.getLong("FILM_ID"))
                 .genreId(row.getLong("GENRE_ID"))
@@ -39,7 +40,11 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
                 SELECT_TABLE_TOTAL_GENRE_FILM__ROW_BY_FILM_ID_AND_GENRE_ID.getTemplate(),
                 filmId, genreId
         );
-        return Optional.ofNullable(buildModel(row));
+        if (row.next()) {
+            return Optional.of(buildModel(row));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

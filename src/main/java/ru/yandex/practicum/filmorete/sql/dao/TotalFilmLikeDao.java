@@ -9,11 +9,15 @@ import java.util.Optional;
 public interface TotalFilmLikeDao {
 
     Optional<List<Film>> findPopularFilms(Integer limit);
+
     Optional<List<User>> findUserToLikeFilm(Long filmId);
+
     Optional<List<Film>> findFilmToLikeUser(Long userId);
 
     Optional<List<TotalFilmLike>> findRows();
+
     Optional<List<TotalFilmLike>> findRowsByFilmId(Long filmId);
+
     Optional<List<TotalFilmLike>> findRowsByUserId(Long userId);
 
     void insert(Long filmId, Long userId);
@@ -21,5 +25,6 @@ public interface TotalFilmLikeDao {
     void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId);
 
     void delete();
+
     void delete(Long filmId, Long userId);
 }

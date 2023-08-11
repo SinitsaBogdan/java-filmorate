@@ -24,6 +24,7 @@ import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableFilms.*;
 public class FilmDaoImpl implements FilmDao {
 
     private final JdbcTemplate jdbcTemplate;
+
     private final TotalGenreFilmDao totalGenreFilmDao;
 
     private FilmDaoImpl(JdbcTemplate jdbcTemplate, TotalGenreFilmDao totalGenreFilmDao) {
@@ -94,14 +95,13 @@ public class FilmDaoImpl implements FilmDao {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 SELECT_TABLE_FILMS__ROW_BY_ID.getTemplate(), rowId
         );
+
         if (rows.next()) {
             Optional<List<Genre>> optional = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
-            return optional.map(
-                    genres -> buildModel(rows, genres)
-            ).or(
-                    () -> Optional.of(buildModel(rows, new ArrayList<>()))
-            );
-        } else return Optional.empty();
+            return optional.map(genres -> buildModel(rows, genres)).or(() -> Optional.of(buildModel(rows, new ArrayList<>())));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

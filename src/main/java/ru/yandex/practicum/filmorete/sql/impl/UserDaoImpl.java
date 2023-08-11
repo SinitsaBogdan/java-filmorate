@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,11 +23,11 @@ public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private UserDaoImpl(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate=jdbcTemplate;
+    private UserDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User buildModel(SqlRowSet row) {
+    public User buildModel(@NotNull SqlRowSet row) {
         return User.builder()
                 .id(row.getLong("id"))
                 .name(row.getString("name"))

@@ -23,7 +23,7 @@ class EnumGenreDaoTest {
     private final EnumGenreDao dao;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         dao.delete();
         dao.insert(100, "Комедия");
         dao.insert(101, "Ужасы");

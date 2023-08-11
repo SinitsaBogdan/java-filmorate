@@ -10,7 +10,9 @@ public interface TotalGenreFilmDao {
     Optional<TotalGenreFilm> findRow(Long filmId, Integer genreId);
 
     Optional<List<Genre>> findAllRowsSearchFilmIdByGenreId(Long filmId);
+
     Optional<List<TotalGenreFilm>> findRows();
+
     Optional<List<TotalGenreFilm>> findRowsByFilmId(Long filmId);
 
     Optional<List<TotalGenreFilm>> findRowsByGenreId(Integer genreId);
@@ -18,7 +20,10 @@ public interface TotalGenreFilmDao {
     void insert(Long filmId, Integer genreId);
 
     void delete();
+
     void delete(Long filmId, Integer genreId);
+
     void deleteAllFilmId(Long filmId);
+
     void deleteAllGenreId(Integer genreId);
 }

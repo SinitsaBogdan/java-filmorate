@@ -22,7 +22,7 @@ class UserDaoImplTest {
     private final UserDaoImpl dao;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         dao.delete();
         dao.insert(
                 100L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"

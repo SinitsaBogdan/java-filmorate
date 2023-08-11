@@ -53,6 +53,7 @@ public enum RequestsTableFilms {
             "INSERT INTO FILMS (MPA_ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION) " +
                     "VALUES (?, ?, ?, ?, ?);"
     ),
+
     INSERT_TABLE_FILMS_All_COLUMN(
             "INSERT INTO FILMS (ID, MPA_ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION) " +
                     "VALUES (?, ?, ?, ?, ?, ?);"
@@ -68,6 +69,7 @@ public enum RequestsTableFilms {
                         "DURATION = ? " +
                     "WHERE  ID = ?;"
     ),
+
     UPDATE_TABLE_FILMS__ROW_BY_NAME(
             "UPDATE FILMS " +
                     "SET " +
@@ -78,21 +80,27 @@ public enum RequestsTableFilms {
                         "DURATION = ? " +
                     "WHERE  NAME = ?;"
     ),
+
     DELETE_TABLE_FILMS__ALL_ROWS(
             "DELETE FROM FILMS;"
     ),
+
     DELETE_TABLE_FILMS__ROW_BY_ID(
             "DELETE FROM FILMS WHERE ID = ?;"
     ),
+
     DELETE_TABLE_FILMS__ROW_BY_NAME(
             "DELETE FROM FILMS WHERE NAME = ?;"
     ),
+
     DELETE_TABLE_FILMS__ROW_BY_RELEASE_DATE(
             "DELETE FROM FILMS WHERE RELEASE_DATE = ?;"
     ),
+
     DELETE_TABLE_FILMS__ROW_BY_DURATION(
             "DELETE FROM FILMS WHERE DURATION = ?;"
     ),
+
     DELETE_TABLE_FILMS__ROW_BY_MPA_ID(
             "DELETE FROM FILMS WHERE MPA_ID = ?;"
     );
