@@ -23,6 +23,7 @@ public enum RequestsTableTotalFilmLike {
                     "ORDER BY SIZE_LIKE DESC " +
                     "LIMIT ?;"
     ),
+
     SELECT_ALL_USERS_TO_LIKE_FILM_ON_MODEL_USER(
             "SELECT * " +
                     "FROM USERS " +
@@ -31,6 +32,7 @@ public enum RequestsTableTotalFilmLike {
                         "WHERE FILM_ID = ?" +
                     ");"
     ),
+
     SELECT_ALL_FILMS_TO_LIKE_FILM_ON_MODEL_FILMS(
             "SELECT " +
                         "FILMS.ID AS ID, " +
@@ -52,20 +54,25 @@ public enum RequestsTableTotalFilmLike {
                         "WHERE USER_ID = ?" +
                     ");"
     ),
+
     SELECT_TABLE_TOTAL_FILM_LIKE__ALL_ROWS(
             "SELECT * FROM TOTAL_FILM_LIKE;"
     ),
+
     SELECT_TABLE_TOTAL_FILM_LIKE__ROW_BY_FILM_ID(
             "SELECT * FROM TOTAL_FILM_LIKE " +
                     "WHERE FILM_ID = ?;"
     ),
+
     SELECT_TABLE_TOTAL_FILM_LIKE__ROW_BY_USER_ID(
             "SELECT * FROM TOTAL_FILM_LIKE " +
                     "WHERE USER_ID = ?;"
     ),
+
     INSERT_TABLE_TOTAL_FILM_LIKE(
             "INSERT INTO TOTAL_FILM_LIKE (FILM_ID, USER_ID) VALUES(?, ?);"
     ),
+
     UPDATE_TABLE_TOTAL_FILM_LIKE__ROW_BY_FILM_ID_AND_USER_ID(
             "UPDATE TOTAL_FILM_LIKE " +
                     "SET " +
@@ -73,9 +80,11 @@ public enum RequestsTableTotalFilmLike {
                         "USER_ID = ? " +
                     "WHERE FILM_ID = ? AND USER_ID = ?;"
     ),
+
     DELETE_TABLE_TOTAL_FILM_LIKE__ALL_ROWS(
             "DELETE FROM TOTAL_FILM_LIKE;"
     ),
+
     DELETE_TABLE_TOTAL_FILM_LIKE__ROW_BY_FILM_ID_AND_USER_ID(
             "DELETE FROM TOTAL_FILM_LIKE " +
                     "WHERE FILM_ID = ? AND USER_ID = ?;"

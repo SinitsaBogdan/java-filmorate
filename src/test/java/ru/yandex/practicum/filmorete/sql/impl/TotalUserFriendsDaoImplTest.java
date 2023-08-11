@@ -27,7 +27,7 @@ class TotalUserFriendsDaoImplTest {
     private final UserDao userDao;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         totalUserFriendsDao.delete();
         userDao.delete();
         userDao.insert(

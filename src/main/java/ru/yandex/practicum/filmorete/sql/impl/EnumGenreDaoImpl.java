@@ -28,8 +28,8 @@ public class EnumGenreDaoImpl implements EnumGenreDao {
                 .build();
     }
 
-    private EnumGenreDaoImpl(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate=jdbcTemplate;
+    private EnumGenreDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

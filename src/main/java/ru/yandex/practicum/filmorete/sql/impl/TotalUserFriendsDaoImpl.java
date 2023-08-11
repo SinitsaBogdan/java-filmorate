@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,15 +20,17 @@ import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableTotalUserF
 @Primary
 @Qualifier("TotalUserFriendsDaoImpl")
 public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
+
     private final JdbcTemplate jdbcTemplate;
+
     private final UserDaoImpl userDao;
 
-    private TotalUserFriendsDaoImpl(JdbcTemplate jdbcTemplate, UserDaoImpl userDao){
+    private TotalUserFriendsDaoImpl(JdbcTemplate jdbcTemplate, UserDaoImpl userDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.userDao = userDao;
     }
 
-    public TotalUserFriends buildModel(SqlRowSet row) {
+    public TotalUserFriends buildModel(@NotNull SqlRowSet row) {
         return TotalUserFriends.builder()
                 .userId(row.getLong("USER_ID"))
                 .friendId(row.getLong("FRIEND_ID"))

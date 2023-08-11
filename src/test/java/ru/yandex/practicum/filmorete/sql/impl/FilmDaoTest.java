@@ -33,7 +33,7 @@ class FilmDaoTest {
     private final EnumGenreDao enumGenreDao;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
 
         enumMpaDao.delete();
         daoFilm.delete();

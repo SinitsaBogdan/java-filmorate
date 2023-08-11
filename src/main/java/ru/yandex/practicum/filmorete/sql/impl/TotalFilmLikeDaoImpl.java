@@ -21,8 +21,12 @@ import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableTotalFilmL
 public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     private final JdbcTemplate jdbcTemplate;
+
+
     private final TotalGenreFilmDao totalGenreFilmDao;
+
     private final FilmDaoImpl filmDao;
+
     private final UserDaoImpl userDao;
 
     private TotalFilmLikeDaoImpl(JdbcTemplate jdbcTemplate, TotalGenreFilmDao totalGenreFilmDao, FilmDaoImpl filmDao, UserDaoImpl userDao) {
@@ -32,7 +36,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         this.userDao = userDao;
     }
 
-    public static TotalFilmLike buildModel(SqlRowSet row) {
+    public TotalFilmLike buildModel(SqlRowSet row) {
         return TotalFilmLike.builder()
                 .filmId(row.getLong("FILM_ID"))
                 .userId(row.getLong("USER_ID"))
@@ -79,6 +83,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         }
         return Optional.of(result);
     }
+
     @Override
     public Optional<List<TotalFilmLike>> findRows() {
         List<TotalFilmLike> result = new ArrayList<>();

@@ -27,7 +27,7 @@ class TotalGenreFilmDaoTest {
     private final EnumMpaDaoImpl enumMpaDao;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         totalGenreFilmDao.delete();
         filmDao.delete();
         enumMpaDao.delete();

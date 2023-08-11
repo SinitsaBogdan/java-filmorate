@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,11 +22,11 @@ public class EnumStatusFriendsDaoImpl implements EnumStatusFriendsDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private EnumStatusFriendsDaoImpl(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate=jdbcTemplate;
+    private EnumStatusFriendsDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public static StatusFriends buildModel(SqlRowSet row) {
+    public StatusFriends buildModel(@NotNull SqlRowSet row) {
         return StatusFriends.builder()
                 .id(row.getLong("id"))
                 .status(row.getString("NAME"))

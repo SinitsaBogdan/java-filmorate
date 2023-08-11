@@ -11,15 +11,20 @@ public interface EnumStatusFriendsDao {
     Optional<List<String>> findAllName();
 
     Optional<List<StatusFriends>> findRows();
+
     Optional<StatusFriends> findRow(Long rowId);
+
     Optional<StatusFriends> findRow(String status);
 
     void insert(String status);
+
     void insert(Long rowId, String status);
 
     void update(Long searchRowId, String status);
 
     void delete();
+
     void delete(Long rowId);
+
     void delete(String status);
 }

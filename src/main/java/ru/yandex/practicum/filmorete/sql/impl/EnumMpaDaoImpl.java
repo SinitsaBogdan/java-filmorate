@@ -21,7 +21,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private EnumMpaDaoImpl(JdbcTemplate jdbcTemplate){
+    private EnumMpaDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

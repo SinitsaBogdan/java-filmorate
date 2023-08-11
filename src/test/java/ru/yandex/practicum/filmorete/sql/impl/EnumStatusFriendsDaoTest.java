@@ -23,7 +23,7 @@ class EnumStatusFriendsDaoTest {
     private final EnumStatusFriendsDao dao;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         dao.delete();
         dao.insert(1L, "Не подтвержденная");
         dao.insert(2L, "Подтвержденная");

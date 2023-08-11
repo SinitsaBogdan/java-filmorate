@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
+import ru.yandex.practicum.filmorete.model.TotalGenreFilm;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
@@ -61,18 +62,25 @@ public class ServiceFilm {
 
     public Film updateFilm(Film film) {
         checkValidFilm(film);
-        Optional<Film> optional = filmDao.findRow(film.getId());
-        if (optional.isEmpty()) {
+        Optional<Film> optionalFilm = filmDao.findRow(film.getId());
+        if (optionalFilm.isPresent()) {
+            filmDao.update(
+                    film.getId(), film.getMpa().getId(),
+                    film.getName(), film.getDescription(),
+                    film.getReleaseDate(), film.getDuration()
+            );
+        } else {
             throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         }
-        filmDao.update(film.getId(), film.getMpa().getId(), film.getName(),
-                film.getDescription(), film.getReleaseDate(), film.getDuration()
-        );
-        totalGenreFilmDao.deleteAllFilmId(film.getId());
-        if (film.getGenres() != null) {
-            for (Genre genre : film.getGenres()) {
-                if (totalGenreFilmDao.findRow(film.getId(), genre.getId()).isEmpty()) {
-                    totalGenreFilmDao.insert(film.getId(), genre.getId());
+        Optional<List<TotalGenreFilm>> optionalGenres = totalGenreFilmDao.findRowsByFilmId(film.getId());
+        if (optionalGenres.isPresent()) {
+            totalGenreFilmDao.deleteAllFilmId(film.getId());
+            if (film.getGenres() != null) {
+                for (Genre genreFilm : film.getGenres()) {
+                    Optional<TotalGenreFilm> totalGenreFilm = totalGenreFilmDao.findRow(film.getId(), genreFilm.getId());
+                    if (totalGenreFilm.isEmpty()) {
+                        totalGenreFilmDao.insert(film.getId(), genreFilm.getId());
+                    }
                 }
             }
         }
