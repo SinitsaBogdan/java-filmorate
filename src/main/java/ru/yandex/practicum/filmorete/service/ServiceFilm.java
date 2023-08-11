@@ -71,9 +71,9 @@ public class ServiceFilm {
         totalGenreFilmDao.deleteAllFilmId(film.getId());
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
-                try {
+                if (totalGenreFilmDao.findRow(film.getId(), genre.getId()).isEmpty()) {
                     totalGenreFilmDao.insert(film.getId(), genre.getId());
-                } catch (Exception ignored) {}
+                }
             }
         }
         return filmDao.findRow(film.getId()).get();
