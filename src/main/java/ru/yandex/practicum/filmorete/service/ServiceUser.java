@@ -3,15 +3,16 @@ package ru.yandex.practicum.filmorete.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorete.exeptions.ExceptionServiceFilmorate;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
+import ru.yandex.practicum.filmorete.model.TotalUserFriends;
+import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
 import ru.yandex.practicum.filmorete.model.User;
-import ru.yandex.practicum.filmorete.storage.StorageUser;
+import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceFilmore.SERVICE_ERROR_USER_NOT_IN_FRIENDS_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.*;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.*;
 
@@ -19,81 +20,101 @@ import static ru.yandex.practicum.filmorete.service.ServiceValidators.*;
 @Service
 public class ServiceUser {
 
-    private final StorageUser storage;
+    private final UserDao userDao;
+    private final TotalUserFriendsDao totalUserFriendsDao;
+    private final TotalFilmLikeDao totalFilmLikeDao;
 
     @Autowired
-    public ServiceUser(StorageUser storage) {
-        this.storage = storage;
+    public ServiceUser(UserDao userDao, TotalUserFriendsDao totalUserFriendsDao, TotalFilmLikeDao totalFilmLikeDao) {
+        this.userDao = userDao;
+        this.totalUserFriendsDao = totalUserFriendsDao;
+        this.totalFilmLikeDao = totalFilmLikeDao;
     }
 
     public User getUser(Long userId) {
-        return storage.getUser(userId);
+        Optional<User> optional = userDao.findRow(userId);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        }
     }
 
     public User createUser(User user) {
-        checkValidEmailContainsStorage(storage, user.getEmail(), VALID_ERROR_USER_DOUBLE_IN_COLLECTIONS);
         checkValidUser(user);
-        storage.addUser(user);
-        log.info("Добавлен новый пользователь!");
-        return user;
+        Optional<User> optional = userDao.findRow(user.getEmail());
+        if (optional.isEmpty()) {
+            userDao.insert(user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
+            return userDao.findRow(user.getEmail()).get();
+        } else {
+            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
+        }
     }
 
     public User updateUser(User user) {
         checkValidUser(user);
-        storage.updateUser(user);
-        log.info("Пользователь {} успешно обновлен!", user.getName());
-        return user;
+        Optional<User> optional = userDao.findRow(user.getId());
+        if (optional.isPresent()) {
+            userDao.update(user.getId(), user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
+            return user;
+        } else {
+            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        }
     }
 
-    public Collection<User> getAllUsers() {
-        return storage.getUser();
+    public void removeUser(Long id) {
+        userDao.delete(id);
+    }
+
+    public List<User> getAllUsers() {
+        Optional<List<User>> optional = userDao.findRows();
+        return optional.orElse(null);
+    }
+
+    public List<User> getUsersToLikeFilm(Long filmId) {
+        Optional<List<User>> optional = totalFilmLikeDao.findUserToLikeFilm(filmId);
+        return optional.orElse(null);
     }
 
     public void addFriend(Long friendId, Long userId) {
-        User user = storage.getUser(userId);
-        User friends = storage.getUser(friendId);
+        Optional<User> optionalUser = userDao.findRow(userId);
+        Optional<User> optionalFriend = userDao.findRow(friendId);
 
-        checkValidUser(user);
-        checkValidUser(friends);
-
-        if (!user.getFriends().contains(friends.getId())) {
-            user.addFriend(friends);
-        }
-        if (!friends.getFriends().contains(user.getId())) {
-            friends.addFriend(user);
+        if (optionalUser.isPresent() && optionalFriend.isPresent()) {
+            Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.findRow(userId, friendId);
+            if (optionalRowStatusUser.isPresent()) {
+                TotalUserFriends userStatus = optionalRowStatusUser.get();
+                if (userStatus.getStatusId() == 1) {
+                    totalUserFriendsDao.update(userId, friendId, 2);
+                }
+            } else {
+                totalUserFriendsDao.insert(userId, friendId, 2);
+            }
+            Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findRow(friendId, userId);
+            if (optionalRowStatusFriend.isEmpty()) {
+                totalUserFriendsDao.insert(friendId, userId, 1);
+            }
+        } else {
+            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         }
     }
 
     public List<User> getFriends(Long id) {
-        return storage.getUser(id).getFriends().stream()
-                .map(storage::getUser)
-                .collect(Collectors.toList());
+        Optional<List<User>> optional = totalUserFriendsDao.findFriendsByUser(id);
+        return optional.orElse(null);
     }
 
     public void removeFriend(Long userId, Long friendId) {
-        User user = storage.getUser(userId);
-        User friend = storage.getUser(friendId);
-
-        if (user.getFriends().contains(friendId) && friend.getFriends().contains(userId)) {
-            user.removeFriend(friend);
-            friend.removeFriend(user);
-        } else {
-            throw new ExceptionServiceFilmorate(SERVICE_ERROR_USER_NOT_IN_FRIENDS_COLLECTIONS);
-        }
-
+        totalUserFriendsDao.delete(userId, friendId);
+        totalUserFriendsDao.update(friendId, userId, 1);
     }
 
-    public List<User> getFriendsCommon(Long userId, Long otherId) {
-        User user = storage.getUser(userId);
-        User other = storage.getUser(otherId);
-        return  user.getFriends().stream()
-                .filter(other.getFriends()::contains)
-                .map(storage::getUser)
-                .collect(Collectors.toList());
+    public List<User> getFriendsCommon(Long userId, Long friendId) {
+        Optional<List<User>> optional = totalUserFriendsDao.findFriendsCommon(userId, friendId);
+        return optional.orElse(null);
     }
 
     public void clearStorage() {
-        storage.clear();
-        log.info("Очистка хранилища Пользователей!");
+        userDao.delete();
     }
 }
