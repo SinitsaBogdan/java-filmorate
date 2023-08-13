@@ -11,41 +11,41 @@ public enum RequestsTableFilms {
     SELECT_TABLE_FILMS__ALL_ROWS(
             "SELECT " +
                         "FILMS.ID AS ID, " +
-                        "ENUM_MPA.ID AS MPA_ID, " +
-                        "ENUM_MPA.NAME AS MPA_NAME, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
                         "FILMS.NAME AS NAME, " +
                         "FILMS.DESCRIPTION AS DESCRIPTION, " +
                         "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
                         "FILMS.DURATION AS DURATION " +
                     "FROM FILMS AS FILMS " +
-                    "INNER JOIN ENUM_MPA AS ENUM_MPA ON FILMS.MPA_ID = ENUM_MPA.ID;"
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID;"
     ),
 
     SELECT_TABLE_FILMS__ROW_BY_NAME(
             "SELECT " +
                         "FILMS.ID AS ID, " +
-                        "ENUM_MPA.ID AS MPA_ID, " +
-                        "ENUM_MPA.NAME AS MPA_NAME, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
                         "FILMS.NAME AS NAME, " +
                         "FILMS.DESCRIPTION AS DESCRIPTION, " +
                         "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
                         "FILMS.DURATION AS DURATION " +
                     "FROM FILMS AS FILMS " +
-                    "INNER JOIN ENUM_MPA AS ENUM_MPA ON FILMS.MPA_ID = ENUM_MPA.ID " +
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
                     "WHERE FILMS.NAME = ?;"
     ),
 
     SELECT_TABLE_FILMS__ROW_BY_ID(
             "SELECT " +
                         "FILMS.ID AS ID, " +
-                        "ENUM_MPA.ID AS MPA_ID, " +
-                        "ENUM_MPA.NAME AS MPA_NAME, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
                         "FILMS.NAME AS NAME, " +
                         "FILMS.DESCRIPTION AS DESCRIPTION, " +
                         "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
                         "FILMS.DURATION AS DURATION " +
                         "FROM FILMS AS FILMS " +
-                    "INNER JOIN ENUM_MPA AS ENUM_MPA ON FILMS.MPA_ID = ENUM_MPA.ID " +
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
                     "WHERE FILMS.ID = ?;"
     ),
 

@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorete.model.Mpa;
-import ru.yandex.practicum.filmorete.sql.impl.EnumMpaDaoImpl;
+import ru.yandex.practicum.filmorete.sql.impl.RosterMpaDaoImpl;
 
 import java.util.*;
 
@@ -29,7 +29,7 @@ public class MpaControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private EnumMpaDaoImpl enumMpaDao;
+    private RosterMpaDaoImpl enumMpaDao;
 
     List<Mpa> listMpa = Arrays.asList(
             Mpa.builder().id(1).name("T").description("").build(),

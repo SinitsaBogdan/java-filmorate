@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorete.model.StatusFriends;
-import ru.yandex.practicum.filmorete.sql.dao.EnumStatusFriendsDao;
+import ru.yandex.practicum.filmorete.sql.dao.RosterStatusFriendsDao;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class EnumStatusFriendsDaoTest {
+class RosterStatusFriendsDaoTest {
 
-    private final EnumStatusFriendsDao dao;
+    private final RosterStatusFriendsDao dao;
 
     @BeforeEach
     public void beforeEach() {

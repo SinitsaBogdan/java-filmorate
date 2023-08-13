@@ -1,6 +1,6 @@
--- TABLE ENUM_RATING
+-- TABLE ROSTER_RATING
 
-INSERT INTO ENUM_MPA (NAME, DESCRIPTION)
+INSERT INTO ROSTER_MPA (NAME, DESCRIPTION)
 VALUES
         ('G', 'У фильма нет возрастных ограничений'),
         ('PG', 'Детям рекомендуется смотреть фильм с родителями'),
@@ -9,9 +9,9 @@ VALUES
         ('NC-17', 'Лицам до 18 лет просмотр запрещён')
 ;
 
--- TABLE ENUM_GENRE
+-- TABLE ROSTER_GENRE
 
-INSERT INTO ENUM_GENRE (NAME)
+INSERT INTO ROSTER_GENRE (NAME)
 VALUES  ('Комедия'),
         ('Драма'),
         ('Мультфильм'),
@@ -20,9 +20,9 @@ VALUES  ('Комедия'),
         ('Боевик')
 ;
 
--- TABLE ENUM_STATUS_FRIENDS
+-- TABLE ROSTER_STATUS_FRIENDS
 
-INSERT INTO ENUM_STATUS_FRIENDS (NAME)
+INSERT INTO ROSTER_STATUS_FRIENDS (NAME)
 VALUES  ('Не подтвержденная'),
         ('Подвержденная')
 ;

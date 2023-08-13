@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundMpaStorage;
 import ru.yandex.practicum.filmorete.model.Mpa;
-import ru.yandex.practicum.filmorete.sql.dao.EnumMpaDao;
+import ru.yandex.practicum.filmorete.sql.dao.RosterMpaDao;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +17,10 @@ import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceMpa.SER
 @Service
 public class ServiceMpa {
 
-    private final EnumMpaDao mpaDao;
+    private final RosterMpaDao mpaDao;
 
     @Autowired
-    public ServiceMpa(EnumMpaDao ratingDao) {
+    public ServiceMpa(RosterMpaDao ratingDao) {
         this.mpaDao = ratingDao;
     }
 

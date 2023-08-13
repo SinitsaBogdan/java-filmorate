@@ -4,7 +4,7 @@ import ru.yandex.practicum.filmorete.model.StatusFriends;
 import java.util.List;
 import java.util.Optional;
 
-public interface EnumStatusFriendsDao {
+public interface RosterStatusFriendsDao {
 
     Optional<Long> findLastId();
 

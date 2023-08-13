@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorete.model.Genre;
-import ru.yandex.practicum.filmorete.sql.impl.EnumGenreDaoImpl;
+import ru.yandex.practicum.filmorete.sql.impl.RosterGenreDaoImpl;
 
 import java.util.*;
 
@@ -29,7 +29,7 @@ public class GenreControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private EnumGenreDaoImpl enumGenreDao;
+    private RosterGenreDaoImpl enumGenreDao;
 
     List<Genre> listGenre = Arrays.asList(
             Genre.builder().id(1).name("T").build(),

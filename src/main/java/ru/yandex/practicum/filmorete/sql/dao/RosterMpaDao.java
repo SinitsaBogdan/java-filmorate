@@ -4,7 +4,7 @@ import ru.yandex.practicum.filmorete.model.Mpa;
 import java.util.List;
 import java.util.Optional;
 
-public interface EnumMpaDao {
+public interface RosterMpaDao {
 
     Optional<Long> findLastId();
 

@@ -24,7 +24,7 @@ class TotalGenreFilmDaoTest {
 
     private final TotalGenreFilmDao totalGenreFilmDao;
     private final FilmDaoImpl filmDao;
-    private final EnumMpaDaoImpl enumMpaDao;
+    private final RosterMpaDaoImpl enumMpaDao;
 
     @BeforeEach
     public void beforeEach() {

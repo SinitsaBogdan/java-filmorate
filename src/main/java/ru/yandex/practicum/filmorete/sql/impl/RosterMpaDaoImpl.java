@@ -7,21 +7,21 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.Mpa;
-import ru.yandex.practicum.filmorete.sql.dao.EnumMpaDao;
+import ru.yandex.practicum.filmorete.sql.dao.RosterMpaDao;
 
 import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableEnumMpa.*;
+import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableRosterMpa.*;
 
 @Slf4j
 @Component
 @Primary
-@Qualifier("EnumRatingDaoImpl")
-public class EnumMpaDaoImpl implements EnumMpaDao {
+@Qualifier("RosterMpaDaoImpl")
+public class RosterMpaDaoImpl implements RosterMpaDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private EnumMpaDaoImpl(JdbcTemplate jdbcTemplate) {
+    private RosterMpaDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -36,7 +36,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     @Override
     public Optional<Long> findLastId() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_MPA__LAST_ID.getTemplate()
+                SELECT_TABLE_ROSTER_MPA__LAST_ID.getTemplate()
         );
         return Optional.of(row.getLong("LAST_ID"));
     }
@@ -45,7 +45,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     public Optional<List<String>> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_MPA__ALL_NAME.getTemplate()
+                SELECT_TABLE_ROSTER_MPA__ALL_NAME.getTemplate()
         );
         while (rows.next()) {
             result.add(rows.getString("NAME"));
@@ -57,7 +57,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     public Optional<List<String>> findAllDescription() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_MPA__ALL_DESCRIPTIONS.getTemplate()
+                SELECT_TABLE_ROSTER_MPA__ALL_DESCRIPTIONS.getTemplate()
         );
         while (rows.next()) {
             result.add(rows.getString("DESCRIPTION"));
@@ -69,7 +69,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     public Optional<List<Mpa>> findRows()  {
         List<Mpa> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_MPA__ALL_ROWS.getTemplate()
+                SELECT_TABLE_ROSTER_MPA__ALL_ROWS.getTemplate()
         );
         while (rows.next()) {
             result.add(buildModel(rows));
@@ -80,7 +80,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     @Override
     public Optional<Mpa> findRow(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_MPA__ROW_BY_ID.getTemplate(),
+                SELECT_TABLE_ROSTER_MPA__ROW_BY_ID.getTemplate(),
                 rowId
         );
         if (row.next()) {
@@ -91,7 +91,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     @Override
     public Optional<Mpa> findRow(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_MPA__ROW_BY_NAME.getTemplate(),
+                SELECT_TABLE_ROSTER_MPA__ROW_BY_NAME.getTemplate(),
                 name
         );
         if (row.next()) {
@@ -102,7 +102,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     @Override
     public void insert(String name, String description) {
         jdbcTemplate.update(
-                INSERT_TABLE_ENUM_MPA.getTemplate(),
+                INSERT_TABLE_ROSTER_MPA.getTemplate(),
                 name, description
         );
     }
@@ -110,7 +110,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     @Override
     public void insert(Integer rowId, String name, String description) {
         jdbcTemplate.update(
-                INSERT_TABLE_ENUM_MPA__ALL_COLUMN.getTemplate(),
+                INSERT_TABLE_ROSTER_MPA__ALL_COLUMN.getTemplate(),
                 rowId, name, description
         );
     }
@@ -118,7 +118,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     @Override
     public void update(Integer searchRowId, String name, String description) {
         jdbcTemplate.update(
-                UPDATE_TABLE_ENUM_MPA__ROW_BY_ID.getTemplate(),
+                UPDATE_TABLE_ROSTER_MPA__ROW_BY_ID.getTemplate(),
                 name, description, searchRowId
         );
     }
@@ -126,7 +126,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     @Override
     public void update(String searchName, String name, String description) {
         jdbcTemplate.update(
-                UPDATE_TABLE_ENUM_MPA__ROW_BY_NAME.getTemplate(),
+                UPDATE_TABLE_ROSTER_MPA__ROW_BY_NAME.getTemplate(),
                 name, description, searchName
         );
     }
@@ -134,14 +134,14 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     @Override
     public void delete() {
         jdbcTemplate.update(
-                DELETE_TABLE_ENUM_MPA__ALL_ROWS.getTemplate()
+                DELETE_TABLE_ROSTER_MPA__ALL_ROWS.getTemplate()
         );
     }
 
     @Override
     public void delete(Integer rowId) {
         jdbcTemplate.update(
-                DELETE_TABLE_ENUM_MPA__ROW_BY_ID.getTemplate(),
+                DELETE_TABLE_ROSTER_MPA__ROW_BY_ID.getTemplate(),
                 rowId
         );
     }
@@ -149,7 +149,7 @@ public class EnumMpaDaoImpl implements EnumMpaDao {
     @Override
     public void delete(String name) {
         jdbcTemplate.update(
-                DELETE_TABLE_ENUM_MPA__ROW_BY_NAME.getTemplate(),
+                DELETE_TABLE_ROSTER_MPA__ROW_BY_NAME.getTemplate(),
                 name
         );
     }

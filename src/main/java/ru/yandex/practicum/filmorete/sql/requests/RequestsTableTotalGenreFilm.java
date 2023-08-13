@@ -6,7 +6,7 @@ public enum RequestsTableTotalGenreFilm {
 
     SELECT_NAME_GENRE_FILM__ROWS_BY_FILM_ID(
             "SELECT * " +
-                    "FROM ENUM_GENRE " +
+                    "FROM ROSTER_GENRE " +
                     "WHERE ID IN (" +
                         "SELECT GENRE_ID " +
                         "FROM TOTAL_GENRE_FILM " +

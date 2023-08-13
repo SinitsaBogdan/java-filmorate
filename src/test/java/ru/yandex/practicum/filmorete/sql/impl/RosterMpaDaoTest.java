@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorete.model.Mpa;
-import ru.yandex.practicum.filmorete.sql.dao.EnumMpaDao;
+import ru.yandex.practicum.filmorete.sql.dao.RosterMpaDao;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class EnumMpaDaoTest {
+class RosterMpaDaoTest {
 
-    private final EnumMpaDao dao;
+    private final RosterMpaDao dao;
 
     @BeforeEach
     public void beforeEach() {

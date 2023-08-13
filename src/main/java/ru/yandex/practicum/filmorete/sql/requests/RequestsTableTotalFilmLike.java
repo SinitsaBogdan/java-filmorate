@@ -7,8 +7,8 @@ public enum RequestsTableTotalFilmLike {
     SELECT_TABLE_TOTAL_FILM_LIKE_POPULAR_FILMS_AND_ORDER_BY_AND_LIMIT_ON_MODEL_FILM(
             "SELECT " +
                         "FILMS.ID AS ID, " +
-                        "ENUM_MPA.ID AS MPA_ID, " +
-                        "ENUM_MPA.NAME AS MPA_NAME, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
                         "FILMS.NAME AS NAME, " +
                         "FILMS.DESCRIPTION AS DESCRIPTION, " +
                         "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
@@ -19,7 +19,7 @@ public enum RequestsTableTotalFilmLike {
                             "WHERE TOTAL_FILM_LIKE.FILM_ID = FILMS.ID" +
                         ") AS SIZE_LIKE " +
                     "FROM FILMS AS FILMS " +
-                    "INNER JOIN ENUM_MPA AS ENUM_MPA ON FILMS.MPA_ID = ENUM_MPA.ID " +
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
                     "ORDER BY SIZE_LIKE DESC " +
                     "LIMIT ?;"
     ),
@@ -36,8 +36,8 @@ public enum RequestsTableTotalFilmLike {
     SELECT_ALL_FILMS_TO_LIKE_FILM_ON_MODEL_FILMS(
             "SELECT " +
                         "FILMS.ID AS ID, " +
-                        "ENUM_MPA.ID AS MPA_ID, " +
-                        "ENUM_MPA.NAME AS MPA_NAME, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
                         "FILMS.NAME AS NAME, " +
                         "FILMS.DESCRIPTION AS DESCRIPTION, " +
                         "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
@@ -48,7 +48,7 @@ public enum RequestsTableTotalFilmLike {
                             "WHERE TOTAL_FILM_LIKE.FILM_ID = FILMS.ID" +
                         ") AS SIZE_LIKE " +
                     "FROM FILMS AS FILMS " +
-                    "INNER JOIN ENUM_MPA AS ENUM_MPA ON FILMS.MPA_ID = ENUM_MPA.ID " +
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
                     "WHERE FILMS.ID IN (" +
                         "SELECT FILM_ID FROM TOTAL_FILM_LIKE " +
                         "WHERE USER_ID = ?" +

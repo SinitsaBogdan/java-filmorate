@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundGenreStorage;
 import ru.yandex.practicum.filmorete.model.Genre;
-import ru.yandex.practicum.filmorete.sql.dao.EnumGenreDao;
+import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +16,9 @@ import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceGenre.S
 @Service
 public class ServiceGenre {
 
-    private final EnumGenreDao genreDao;
+    private final RosterGenreDao genreDao;
 
-    public ServiceGenre(EnumGenreDao genreDao) {
+    public ServiceGenre(RosterGenreDao genreDao) {
         this.genreDao = genreDao;
     }
 

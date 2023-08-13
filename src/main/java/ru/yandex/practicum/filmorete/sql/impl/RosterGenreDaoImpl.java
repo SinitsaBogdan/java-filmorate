@@ -1,51 +1,50 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorete.model.StatusFriends;
-import ru.yandex.practicum.filmorete.sql.dao.EnumStatusFriendsDao;
+import ru.yandex.practicum.filmorete.model.Genre;
+import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 
 import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableEnumStatusFriends.*;
+import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableRosterGenre.*;
 
 @Slf4j
 @Component
 @Primary
-@Qualifier("EnumStatusFriendsDaoImpl")
-public class EnumStatusFriendsDaoImpl implements EnumStatusFriendsDao {
+@Qualifier("RosterGenreDaoImpl")
+public class RosterGenreDaoImpl implements RosterGenreDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private EnumStatusFriendsDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public StatusFriends buildModel(@NotNull SqlRowSet row) {
-        return StatusFriends.builder()
-                .id(row.getLong("id"))
-                .status(row.getString("NAME"))
+    private Genre buildModel(SqlRowSet row) {
+        return Genre.builder()
+                .id(row.getInt("ID"))
+                .name(row.getString("NAME"))
                 .build();
     }
 
+    private RosterGenreDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @Override
-    public Optional<Long> findLastId() {
+    public Optional<Integer> findLastId() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_STATUS_FRIENDS__LAST_ID.getTemplate()
+                SELECT_TABLE_ROSTER_GENRE__LAST_ID.getTemplate()
         );
-        return Optional.of(row.getLong("LAST_ID"));
+        return Optional.of(row.getInt("LAST_ID"));
     }
 
     @Override
     public Optional<List<String>> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_STATUS_FRIENDS__ALL_NAME.getTemplate()
+                SELECT_TABLE_ROSTER_GENRE__ALL_NAME.getTemplate()
         );
         while (rows.next()) {
             result.add(rows.getString("NAME"));
@@ -54,10 +53,10 @@ public class EnumStatusFriendsDaoImpl implements EnumStatusFriendsDao {
     }
 
     @Override
-    public Optional<List<StatusFriends>> findRows() {
-        List<StatusFriends> result = new ArrayList<>();
+    public Optional<List<Genre>> findRows() {
+        List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_STATUS_FRIENDS__ALL_ROWS.getTemplate()
+                SELECT_TABLE_ROSTER_GENRE__ALL_ROWS.getTemplate()
         );
         while (rows.next()) {
             result.add(buildModel(rows));
@@ -66,9 +65,9 @@ public class EnumStatusFriendsDaoImpl implements EnumStatusFriendsDao {
     }
 
     @Override
-    public Optional<StatusFriends> findRow(Long rowId) {
+    public Optional<Genre> findRow(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_STATUS_FRIENDS__ROW_BY_ID.getTemplate(),
+                SELECT_TABLE_ROSTER_GENRE__ROW_BY_ID.getTemplate(),
                 rowId
         );
         if (row.next()) {
@@ -77,9 +76,9 @@ public class EnumStatusFriendsDaoImpl implements EnumStatusFriendsDao {
     }
 
     @Override
-    public Optional<StatusFriends> findRow(String name) {
+    public Optional<Genre> findRow(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ENUM_STATUS_FRIENDS__ROW_BY_NAME.getTemplate(),
+                SELECT_TABLE_ROSTER_GENRE__ROW_BY_NAME.getTemplate(),
                 name
         );
         if (row.next()) {
@@ -90,23 +89,23 @@ public class EnumStatusFriendsDaoImpl implements EnumStatusFriendsDao {
     @Override
     public void insert(String name) {
         jdbcTemplate.update(
-                INSERT_TABLE_ENUM_STATUS_FRIENDS.getTemplate(),
+                INSERT_TABLE_ROSTER_GENRE.getTemplate(),
                 name
         );
     }
 
     @Override
-    public void insert(Long rowId, String name) {
+    public void insert(Integer rowId, String name) {
         jdbcTemplate.update(
-                INSERT_TABLE_ENUM_STATUS_FRIENDS__ALL_COLUMN.getTemplate(),
+                INSERT_TABLE_ROSTER_GENRE__ALL_COLUMN.getTemplate(),
                 rowId, name
         );
     }
 
     @Override
-    public void update(Long searchRowId, String name) {
+    public void update(Integer searchRowId, String name) {
         jdbcTemplate.update(
-                UPDATE_TABLE_ENUM_STATUS_FRIENDS__ROW_BY_ID.getTemplate(),
+                UPDATE_TABLE_ROSTER_GENRE__ROW_BY_ID.getTemplate(),
                 name, searchRowId
         );
     }
@@ -114,14 +113,15 @@ public class EnumStatusFriendsDaoImpl implements EnumStatusFriendsDao {
     @Override
     public void delete() {
         jdbcTemplate.update(
-                DELETE_TABLE_ENUM_STATUS_FRIENDS__ALL_ROWS.getTemplate()
+                DELETE_TABLE_ROSTER_GENRE__ALL_ROWS.getTemplate()
         );
+
     }
 
     @Override
-    public void delete(Long rowId) {
+    public void delete(Integer rowId) {
         jdbcTemplate.update(
-                DELETE_TABLE_ENUM_STATUS_FRIENDS__ROW_BY_ID.getTemplate(),
+                DELETE_TABLE_ROSTER_GENRE__ROW_BY_ID.getTemplate(),
                 rowId
         );
     }
@@ -129,7 +129,7 @@ public class EnumStatusFriendsDaoImpl implements EnumStatusFriendsDao {
     @Override
     public void delete(String name) {
         jdbcTemplate.update(
-                DELETE_TABLE_ENUM_STATUS_FRIENDS__ROW_BY_NAME.getTemplate(),
+                DELETE_TABLE_ROSTER_GENRE__ROW_BY_NAME.getTemplate(),
                 name
         );
     }

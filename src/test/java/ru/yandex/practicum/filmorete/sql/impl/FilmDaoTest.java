@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Mpa;
-import ru.yandex.practicum.filmorete.sql.dao.EnumGenreDao;
+import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
@@ -28,9 +28,9 @@ class FilmDaoTest {
     private final FilmDao daoFilm;
     private final TotalGenreFilmDao daoTotalGenreFilm;
     private final TotalFilmLikeDao daoTotalFilmLike;
-    private final EnumMpaDaoImpl enumMpaDao;
+    private final RosterMpaDaoImpl enumMpaDao;
     private final UserDaoImpl userDao;
-    private final EnumGenreDao enumGenreDao;
+    private final RosterGenreDao enumGenreDao;
 
     @BeforeEach
     public void beforeEach() {

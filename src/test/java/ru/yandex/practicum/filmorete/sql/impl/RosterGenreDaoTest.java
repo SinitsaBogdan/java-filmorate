@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorete.model.Genre;
-import ru.yandex.practicum.filmorete.sql.dao.EnumGenreDao;
+import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class EnumGenreDaoTest {
+class RosterGenreDaoTest {
 
-    private final EnumGenreDao dao;
+    private final RosterGenreDao dao;
 
     @BeforeEach
     public void beforeEach() {
