@@ -10,7 +10,9 @@ public enum MessageErrorServiceMpa {
     );
 
     public final String name;
+
     public final String description;
+
     public final int httpStatusCode;
 
     MessageErrorServiceMpa(String name, String description, int httpStatusCode) {

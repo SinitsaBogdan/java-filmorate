@@ -7,11 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class ExceptionNotFoundMpaStorage extends AbstractCustomException {
 
     public ExceptionNotFoundMpaStorage(@NotNull MessageErrorServiceMpa error) {
-        super(
-                error.name,
-                error.description,
-                error.httpStatusCode
-        );
+        super(error.name, error.description, error.httpStatusCode);
         log.debug(this.getMessage());
     }
 }

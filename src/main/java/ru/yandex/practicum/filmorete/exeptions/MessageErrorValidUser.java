@@ -24,7 +24,9 @@ public enum MessageErrorValidUser {
     );
 
     public final String name;
+
     public final String description;
+
     public final int httpStatusCode;
 
     MessageErrorValidUser(String name, String description, int httpStatusCode) {

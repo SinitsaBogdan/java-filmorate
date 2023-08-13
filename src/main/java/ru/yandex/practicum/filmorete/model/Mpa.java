@@ -8,6 +8,8 @@ import lombok.Data;
 public class Mpa {
 
     private Integer id;
+
     private String name;
+
     private String description;
 }

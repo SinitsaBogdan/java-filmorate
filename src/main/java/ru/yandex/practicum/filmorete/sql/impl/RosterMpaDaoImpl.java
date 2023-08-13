@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,14 +24,6 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
 
     private RosterMpaDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    private Mpa buildModel(SqlRowSet row) {
-        return Mpa.builder()
-                .id(row.getInt("id"))
-                .name(row.getString("NAME"))
-                .description(row.getString("DESCRIPTION"))
-                .build();
     }
 
     @Override
@@ -152,5 +145,13 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
                 DELETE_TABLE_ROSTER_MPA__ROW_BY_NAME.getTemplate(),
                 name
         );
+    }
+
+    protected Mpa buildModel(@NotNull SqlRowSet row) {
+        return Mpa.builder()
+                .id(row.getInt("id"))
+                .name(row.getString("NAME"))
+                .description(row.getString("DESCRIPTION"))
+                .build();
     }
 }

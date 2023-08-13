@@ -27,9 +27,17 @@ public class FilmController {
     /**
      * Запрос всех фильмов
      * */
-    @GetMapping()
+    @GetMapping
     public List<Film> findAll() {
         return serviceFilms.getAllFilms();
+    }
+
+    /**
+     * Запрос всех популярных фильмов
+     * */
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
+        return serviceFilms.getPopularFilms(count);
     }
 
     /**
@@ -49,17 +57,9 @@ public class FilmController {
     }
 
     /**
-     * Запрос всех популярных фильмов
-     * */
-    @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
-        return serviceFilms.getPopularFilms(count);
-    }
-
-    /**
      * Добавление нового фильма
      * */
-    @PostMapping()
+    @PostMapping
     public Film create(@Valid @RequestBody Film film) throws ExceptionValidationFilm {
         return serviceFilms.createFilm(film);
     }
@@ -67,7 +67,7 @@ public class FilmController {
     /**
      * Обновление существующего фильма
      * */
-    @PutMapping()
+    @PutMapping
     public Film update(@Valid @RequestBody Film film) throws ExceptionValidationFilm {
         return serviceFilms.updateFilm(film);
     }
@@ -81,18 +81,18 @@ public class FilmController {
     }
 
     /**
+     * Удаление всех фильмов
+     * */
+    @DeleteMapping
+    public void clear() {
+        serviceFilms.clearStorage();
+    }
+
+    /**
      * Пользователь удаляет лайк фильму по id
      * */
     @DeleteMapping("/{filmId}/like/{userId}")
     public void removeLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
         serviceFilms.removeLike(filmId, userId);
-    }
-
-    /**
-     * Удаление всех фильмов
-     * */
-    @DeleteMapping()
-    public void clear() {
-        serviceFilms.clearStorage();
     }
 }

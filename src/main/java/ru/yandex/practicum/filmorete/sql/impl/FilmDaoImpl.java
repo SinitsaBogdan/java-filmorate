@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,24 +31,6 @@ public class FilmDaoImpl implements FilmDao {
     private FilmDaoImpl(JdbcTemplate jdbcTemplate, TotalGenreFilmDao totalGenreFilmDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.totalGenreFilmDao = totalGenreFilmDao;
-    }
-
-    public Film buildModel(SqlRowSet row, List<Genre> genres) {
-
-        Mpa mpa = Mpa.builder()
-                .id(row.getInt("MPA_ID"))
-                .name(row.getString("MPA_NAME"))
-                .build();
-
-        return Film.builder()
-                .id(row.getLong("ID"))
-                .mpa(mpa)
-                .genres(genres)
-                .name(row.getString("NAME"))
-                .description(Objects.requireNonNull(row.getString("DESCRIPTION")))
-                .releaseDate(Objects.requireNonNull(row.getDate("RELEASE_DATE")).toLocalDate())
-                .duration(row.getInt("DURATION"))
-                .build();
     }
 
     @Override
@@ -181,5 +164,23 @@ public class FilmDaoImpl implements FilmDao {
                 DELETE_TABLE_FILMS__ROW_BY_MPA_ID.getTemplate(),
                 mpaId
         );
+    }
+
+    protected Film buildModel(@NotNull SqlRowSet row, List<Genre> genres) {
+
+        Mpa mpa = Mpa.builder()
+                .id(row.getInt("MPA_ID"))
+                .name(row.getString("MPA_NAME"))
+                .build();
+
+        return Film.builder()
+                .id(row.getLong("ID"))
+                .mpa(mpa)
+                .genres(genres)
+                .name(row.getString("NAME"))
+                .description(Objects.requireNonNull(row.getString("DESCRIPTION")))
+                .releaseDate(Objects.requireNonNull(row.getDate("RELEASE_DATE")).toLocalDate())
+                .duration(row.getInt("DURATION"))
+                .build();
     }
 }

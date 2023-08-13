@@ -8,5 +8,6 @@ import lombok.Data;
 public class TotalGenreFilm {
 
     private Long filmId;
+
     private Long genreId;
 }

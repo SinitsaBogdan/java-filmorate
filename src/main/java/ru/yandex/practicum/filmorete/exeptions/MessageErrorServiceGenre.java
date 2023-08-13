@@ -9,7 +9,9 @@ public enum MessageErrorServiceGenre {
     );
 
     public final String name;
+
     public final String description;
+
     public final int httpStatusCode;
 
     MessageErrorServiceGenre(String name, String description, int httpStatusCode) {

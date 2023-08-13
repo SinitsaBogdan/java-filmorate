@@ -8,5 +8,6 @@ import lombok.Data;
 public class TotalFilmLike {
 
     private Long filmId;
+
     private Long userId;
 }

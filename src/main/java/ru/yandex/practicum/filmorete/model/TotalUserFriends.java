@@ -8,6 +8,8 @@ import lombok.Data;
 public class TotalUserFriends {
 
     private Long userId;
+
     private Long friendId;
+
     private Long statusId;
 }

@@ -27,13 +27,6 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public TotalGenreFilm buildModel(@NotNull SqlRowSet row) {
-        return TotalGenreFilm.builder()
-                .filmId(row.getLong("FILM_ID"))
-                .genreId(row.getLong("GENRE_ID"))
-                .build();
-    }
-
     @Override
     public Optional<TotalGenreFilm> findRow(Long filmId, Integer genreId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
@@ -140,5 +133,12 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
                 DELETE_TABLE_TOTAL_GENRE_FILM__ROW_BY_GENRE_ID.getTemplate(),
                 genreId
         );
+    }
+
+    protected TotalGenreFilm buildModel(@NotNull SqlRowSet row) {
+        return TotalGenreFilm.builder()
+                .filmId(row.getLong("FILM_ID"))
+                .genreId(row.getLong("GENRE_ID"))
+                .build();
     }
 }

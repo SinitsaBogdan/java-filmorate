@@ -39,6 +39,15 @@ public class ServiceFilm {
         this.totalGenreFilmDao = totalGenreFilmDao;
     }
 
+    public Film getFilm(Long id) {
+        Optional<Film> optional = filmDao.findRow(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        }
+    }
+
     public Film createFilm(Film film) {
         checkValidFilm(film);
         Optional<Film> optionalFilm;
@@ -95,15 +104,6 @@ public class ServiceFilm {
     public List<Film> getAllFilms() {
         Optional<List<Film>> optional = filmDao.findRows();
         return optional.orElse(null);
-    }
-
-    public Film getFilm(Long id) {
-        Optional<Film> optional = filmDao.findRow(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        }
     }
 
     public List<Film> getFilmsToLikeUser(Long userId) {

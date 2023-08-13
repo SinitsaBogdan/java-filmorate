@@ -18,13 +18,8 @@ public class ServiceGenre {
 
     private final RosterGenreDao genreDao;
 
-    public ServiceGenre(RosterGenreDao genreDao) {
+    private ServiceGenre(RosterGenreDao genreDao) {
         this.genreDao = genreDao;
-    }
-
-    public List<Genre> getAllGenres() {
-        Optional<List<Genre>> optional = genreDao.findRows();
-        return optional.orElse(null);
     }
 
     public Genre getGenresSearchId(Integer genreId) {
@@ -35,6 +30,11 @@ public class ServiceGenre {
         } else {
             throw new ExceptionNotFoundGenreStorage(SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS);
         }
+    }
+
+    public List<Genre> getAllGenres() {
+        Optional<List<Genre>> optional = genreDao.findRows();
+        return optional.orElse(null);
     }
 
     public void add(@NotNull Genre genre) {

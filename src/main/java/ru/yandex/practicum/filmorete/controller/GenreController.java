@@ -22,7 +22,7 @@ public class GenreController {
     /**
      * Запрос всех записей
      */
-    @GetMapping()
+    @GetMapping
     public List<Genre> getAllGenres() {
         return serviceGenre.getAllGenres();
     }
@@ -38,7 +38,7 @@ public class GenreController {
     /**
      * Добавление новой записи
      */
-    @PostMapping()
+    @PostMapping
     public void post(@Valid @RequestBody Genre genre) {
         serviceGenre.add(genre);
     }
@@ -46,7 +46,7 @@ public class GenreController {
     /**
      * Обновление существующей записи
      */
-    @PutMapping()
+    @PutMapping
     public void put(@Valid @RequestBody Genre genre) {
         serviceGenre.update(genre);
     }
@@ -54,7 +54,7 @@ public class GenreController {
     /**
      * Очистка хранилища
      */
-    @DeleteMapping()
+    @DeleteMapping
     public void deleteAll() {
         serviceGenre.deleteAll();
     }

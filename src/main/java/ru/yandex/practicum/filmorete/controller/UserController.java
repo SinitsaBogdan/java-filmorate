@@ -17,6 +17,7 @@ import java.util.*;
 public class UserController {
 
     final ServiceUser serviceUser;
+
     final ServiceFilm serviceFilm;
 
     public UserController(ServiceUser serviceUser, ServiceFilm serviceFilm) {
@@ -27,7 +28,7 @@ public class UserController {
     /**
      * Запрос всех пользователей
      * */
-    @GetMapping()
+    @GetMapping
     public List<User> findAll() {
         return serviceUser.getAllUsers();
     }
@@ -67,7 +68,7 @@ public class UserController {
     /**
      * Добавление нового пользователя
      * */
-    @PostMapping()
+    @PostMapping
     public User create(@Valid @RequestBody User user) throws ExceptionValidationUser {
         return serviceUser.createUser(user);
     }
@@ -75,7 +76,7 @@ public class UserController {
     /**
      * Обновление пользователя по id
      * */
-    @PutMapping()
+    @PutMapping
     public User update(@Valid @RequestBody User user) throws ExceptionValidationUser {
         return serviceUser.updateUser(user);
     }
@@ -89,11 +90,11 @@ public class UserController {
     }
 
     /**
-     * Удаление пользователя из друзей по id
+     * Удаление всех пользователей
      * */
-    @DeleteMapping("/{userId}/friends/{friendId}")
-    public void deleteFriends(@PathVariable Long userId, @PathVariable Long friendId) {
-        serviceUser.removeFriend(userId, friendId);
+    @DeleteMapping
+    public void clear() {
+        serviceUser.clearStorage();
     }
 
     /**
@@ -105,10 +106,10 @@ public class UserController {
     }
 
     /**
-     * Удаление всех пользователей
+     * Удаление пользователя из друзей по id
      * */
-    @DeleteMapping()
-    public void clear() {
-        serviceUser.clearStorage();
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public void deleteFriends(@PathVariable Long userId, @PathVariable Long friendId) {
+        serviceUser.removeFriend(userId, friendId);
     }
 }

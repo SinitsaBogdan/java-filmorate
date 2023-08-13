@@ -7,11 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class ExceptionNotFoundGenreStorage extends AbstractCustomException {
 
     public ExceptionNotFoundGenreStorage(@NotNull MessageErrorServiceGenre error) {
-        super(
-                error.name,
-                error.description,
-                error.httpStatusCode
-        );
+        super(error.name, error.description, error.httpStatusCode);
         log.debug(this.getMessage());
     }
 }

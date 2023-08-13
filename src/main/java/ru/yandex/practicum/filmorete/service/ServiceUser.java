@@ -25,7 +25,7 @@ public class ServiceUser {
     private final TotalFilmLikeDao totalFilmLikeDao;
 
     @Autowired
-    public ServiceUser(UserDao userDao, TotalUserFriendsDao totalUserFriendsDao, TotalFilmLikeDao totalFilmLikeDao) {
+    private ServiceUser(UserDao userDao, TotalUserFriendsDao totalUserFriendsDao, TotalFilmLikeDao totalFilmLikeDao) {
         this.userDao = userDao;
         this.totalUserFriendsDao = totalUserFriendsDao;
         this.totalFilmLikeDao = totalFilmLikeDao;
@@ -62,18 +62,28 @@ public class ServiceUser {
         }
     }
 
-    public void removeUser(Long id) {
-        userDao.delete(id);
-    }
-
     public List<User> getAllUsers() {
         Optional<List<User>> optional = userDao.findRows();
+        return optional.orElse(null);
+    }
+
+    public List<User> getFriends(Long id) {
+        Optional<List<User>> optional = totalUserFriendsDao.findFriendsByUser(id);
         return optional.orElse(null);
     }
 
     public List<User> getUsersToLikeFilm(Long filmId) {
         Optional<List<User>> optional = totalFilmLikeDao.findUserToLikeFilm(filmId);
         return optional.orElse(null);
+    }
+
+    public List<User> getFriendsCommon(Long userId, Long friendId) {
+        Optional<List<User>> optional = totalUserFriendsDao.findFriendsCommon(userId, friendId);
+        return optional.orElse(null);
+    }
+
+    public void removeUser(Long id) {
+        userDao.delete(id);
     }
 
     public void addFriend(Long friendId, Long userId) {
@@ -99,19 +109,9 @@ public class ServiceUser {
         }
     }
 
-    public List<User> getFriends(Long id) {
-        Optional<List<User>> optional = totalUserFriendsDao.findFriendsByUser(id);
-        return optional.orElse(null);
-    }
-
     public void removeFriend(Long userId, Long friendId) {
         totalUserFriendsDao.delete(userId, friendId);
         totalUserFriendsDao.update(friendId, userId, 1);
-    }
-
-    public List<User> getFriendsCommon(Long userId, Long friendId) {
-        Optional<List<User>> optional = totalUserFriendsDao.findFriendsCommon(userId, friendId);
-        return optional.orElse(null);
     }
 
     public void clearStorage() {

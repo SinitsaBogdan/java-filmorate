@@ -8,5 +8,6 @@ import lombok.Data;
 public class StatusFriends {
 
     private Long id;
+
     private String status;
 }

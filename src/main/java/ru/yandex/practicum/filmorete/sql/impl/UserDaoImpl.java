@@ -27,16 +27,6 @@ public class UserDaoImpl implements UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User buildModel(@NotNull SqlRowSet row) {
-        return User.builder()
-                .id(row.getLong("id"))
-                .name(row.getString("name"))
-                .birthday(Objects.requireNonNull(row.getDate("birthday")).toLocalDate())
-                .login(row.getString("login"))
-                .email(row.getString("email"))
-                .build();
-    }
-
     public Optional<Long> findLastId() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_TABLE_USERS__LAST_ID.getTemplate()
@@ -125,5 +115,15 @@ public class UserDaoImpl implements UserDao {
                 DELETE_TABLE_USERS__ROW_BY_LOGIN.getTemplate(),
                 login
         );
+    }
+
+    protected User buildModel(@NotNull SqlRowSet row) {
+        return User.builder()
+                .id(row.getLong("id"))
+                .name(row.getString("name"))
+                .birthday(Objects.requireNonNull(row.getDate("birthday")).toLocalDate())
+                .login(row.getString("login"))
+                .email(row.getString("email"))
+                .build();
     }
 }

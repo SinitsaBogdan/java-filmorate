@@ -26,13 +26,6 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public StatusFriends buildModel(@NotNull SqlRowSet row) {
-        return StatusFriends.builder()
-                .id(row.getLong("id"))
-                .status(row.getString("NAME"))
-                .build();
-    }
-
     @Override
     public Optional<Long> findLastId() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
@@ -132,5 +125,12 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
                 DELETE_TABLE_ROSTER_STATUS_FRIENDS__ROW_BY_NAME.getTemplate(),
                 name
         );
+    }
+
+    protected StatusFriends buildModel(@NotNull SqlRowSet row) {
+        return StatusFriends.builder()
+                .id(row.getLong("id"))
+                .status(row.getString("NAME"))
+                .build();
     }
 }

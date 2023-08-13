@@ -20,13 +20,8 @@ public class ServiceMpa {
     private final RosterMpaDao mpaDao;
 
     @Autowired
-    public ServiceMpa(RosterMpaDao ratingDao) {
+    private ServiceMpa(RosterMpaDao ratingDao) {
         this.mpaDao = ratingDao;
-    }
-
-    public List<Mpa> getAll() {
-        Optional<List<Mpa>> optional = mpaDao.findRows();
-        return optional.orElse(null);
     }
 
     public Mpa getSearchId(Integer mpaId) {
@@ -36,6 +31,11 @@ public class ServiceMpa {
         } else {
             throw new ExceptionNotFoundMpaStorage(SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
         }
+    }
+
+    public List<Mpa> getAll() {
+        Optional<List<Mpa>> optional = mpaDao.findRows();
+        return optional.orElse(null);
     }
 
     public void add(@NotNull Mpa mpa) {

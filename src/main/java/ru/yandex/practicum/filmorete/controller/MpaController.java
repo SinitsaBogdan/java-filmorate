@@ -22,7 +22,7 @@ public class MpaController {
     /**
      * Запрос всего списка записей
      */
-    @GetMapping()
+    @GetMapping
     public List<Mpa> getAll() {
         return serviceMpa.getAll();
     }
@@ -38,7 +38,7 @@ public class MpaController {
     /**
      * Добавление новой записи
      */
-    @PostMapping()
+    @PostMapping
     public void post(@Valid @RequestBody Mpa mpa) {
         serviceMpa.add(mpa);
     }
@@ -46,7 +46,7 @@ public class MpaController {
     /**
      * Обновление существующей записи
      */
-    @PutMapping()
+    @PutMapping
     public void put(@Valid @RequestBody Mpa mpa) {
         serviceMpa.update(mpa);
     }
@@ -54,7 +54,7 @@ public class MpaController {
     /**
      * Удаление всех записей
      */
-    @DeleteMapping()
+    @DeleteMapping
     public void deleteAll() {
         serviceMpa.deleteAll();
     }

@@ -30,14 +30,6 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
         this.userDao = userDao;
     }
 
-    public TotalUserFriends buildModel(@NotNull SqlRowSet row) {
-        return TotalUserFriends.builder()
-                .userId(row.getLong("USER_ID"))
-                .friendId(row.getLong("FRIEND_ID"))
-                .statusId(row.getLong("STATUS_ID"))
-                .build();
-    }
-
     @Override
     public Optional<List<User>> findFriendsByUser(Long userId) {
         List<User> users = new ArrayList<>();
@@ -179,5 +171,13 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                 DELETE_TABLE_TOTAL_USER_FRIENDS__ROW_BY_STATUS_ID.getTemplate(),
                 statusId
         );
+    }
+
+    protected TotalUserFriends buildModel(@NotNull SqlRowSet row) {
+        return TotalUserFriends.builder()
+                .userId(row.getLong("USER_ID"))
+                .friendId(row.getLong("FRIEND_ID"))
+                .statusId(row.getLong("STATUS_ID"))
+                .build();
     }
 }

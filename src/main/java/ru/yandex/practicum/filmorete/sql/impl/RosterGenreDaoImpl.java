@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,13 +21,6 @@ import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableRosterGenr
 public class RosterGenreDaoImpl implements RosterGenreDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    private Genre buildModel(SqlRowSet row) {
-        return Genre.builder()
-                .id(row.getInt("ID"))
-                .name(row.getString("NAME"))
-                .build();
-    }
 
     private RosterGenreDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -132,5 +126,12 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                 DELETE_TABLE_ROSTER_GENRE__ROW_BY_NAME.getTemplate(),
                 name
         );
+    }
+
+    protected Genre buildModel(@NotNull SqlRowSet row) {
+        return Genre.builder()
+                .id(row.getInt("ID"))
+                .name(row.getString("NAME"))
+                .build();
     }
 }

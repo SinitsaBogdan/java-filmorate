@@ -7,11 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class ExceptionValidationUser extends AbstractCustomException {
 
     public ExceptionValidationUser(@NotNull MessageErrorValidUser error) {
-        super(
-                error.name,
-                error.description,
-                error.httpStatusCode
-        );
+        super(error.name, error.description, error.httpStatusCode);
         log.debug(this.getMessage());
     }
 }

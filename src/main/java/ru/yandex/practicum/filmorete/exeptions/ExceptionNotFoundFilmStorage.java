@@ -7,11 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class ExceptionNotFoundFilmStorage extends AbstractCustomException {
 
     public ExceptionNotFoundFilmStorage(@NotNull MessageErrorValidFilm error) {
-        super(
-                error.name,
-                error.description,
-                error.httpStatusCode
-        );
+        super(error.name, error.description, error.httpStatusCode);
         log.debug(this.getMessage());
     }
 }
