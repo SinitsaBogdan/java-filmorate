@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    Optional<Long> findLastId();
+    List<User> findRows();
 
-    Optional<List<User>> findRows();
+    Optional<Long> findLastId();
 
     Optional<User> findRow(Long rowId);
 

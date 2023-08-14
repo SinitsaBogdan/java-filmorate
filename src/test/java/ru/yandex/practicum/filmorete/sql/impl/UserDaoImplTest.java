@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -38,34 +39,24 @@ class UserDaoImplTest {
     @Test
     @DisplayName("find()")
     void testFindAllRows() {
-        Optional<List<User>> optional = dao.findRows();
-        assertThat(optional)
-                .isPresent()
-                .hasValueSatisfying(result ->
-                        assertThat(result).hasFieldOrPropertyWithValue("size", 3)
-        );
+        List<User> result = dao.findRows();
+        assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("find(rowId)")
     void testFindRowById() {
         Optional<User> optional = dao.findRow(100L);
-        assertThat(optional)
-                .isPresent()
-                .hasValueSatisfying(result ->
-                        assertThat(result).hasFieldOrPropertyWithValue("id", 100L)
-        );
+        assertTrue(optional.isPresent());
+        assertEquals(optional.get().getId(), 100L);
     }
 
     @Test
     @DisplayName("find(email)")
     void testFindRowByEmail() {
         Optional<User> optional = dao.findRow("maxim@mail.ru");
-        assertThat(optional)
-                .isPresent()
-                .hasValueSatisfying(result ->
-                        assertThat(result).hasFieldOrPropertyWithValue("email", "maxim@mail.ru")
-        );
+        assertTrue(optional.isPresent());
+        assertEquals(optional.get().getEmail(), "maxim@mail.ru");
     }
 
     @Test
@@ -116,31 +107,23 @@ class UserDaoImplTest {
     @DisplayName("delete()")
     void testDeleteAllRows() {
         dao.delete();
-        Optional<List<User>> optional = dao.findRows();
-        assertThat(optional)
-                .isPresent()
-                .hasValueSatisfying(result ->
-                        assertThat(result).hasFieldOrPropertyWithValue("size", 0)
-        );
+        List<User> result = dao.findRows();
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(rowId)")
     void testDeleteRowById() {
         dao.delete(100L);
-        Optional<List<User>> optional = dao.findRows();
-        assertEquals(optional.get().size(), 2);
+        List<User> result = dao.findRows();
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("delete(login)")
     void testDeleteRowByLogin() {
         dao.delete("Maxim");
-        Optional<List<User>> optional = dao.findRows();
-        assertThat(optional)
-                .isPresent()
-                .hasValueSatisfying(result ->
-                        assertThat(result).hasFieldOrPropertyWithValue("size", 2)
-        );
+        List<User> result = dao.findRows();
+        assertEquals(result.size(), 2);
     }
 }

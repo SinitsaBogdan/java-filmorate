@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,49 +56,43 @@ class TotalFilmLikeDaoTest {
     @Test
     @DisplayName("findPopularFilms(limit)")
     public void testFindLimitPopularFilms() {
-        Optional<List<Film>> optional = totalFilmLikeDao.findPopularFilms(2);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Film> result = totalFilmLikeDao.findPopularFilms(2);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findUserToLikeFilm(filmId)")
     public void testFindAllUserToLikeFilmSearchFilmId() {
-        Optional<List<User>> optional = totalFilmLikeDao.findUserToLikeFilm(1L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<User> result = totalFilmLikeDao.findUserToLikeFilm(1L);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findFilmToLikeUser(userId)")
     public void testFindAllFilmToLikeUser() {
-        Optional<List<Film>> optional = totalFilmLikeDao.findFilmToLikeUser(2L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Film> result = totalFilmLikeDao.findFilmToLikeUser(2L);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        Optional<List<TotalFilmLike>> optional = totalFilmLikeDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 3);
+        List<TotalFilmLike> result = totalFilmLikeDao.findRows();
+        assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("findRowsByFilmId(filmId)")
     public void testFindAllRowsByFilmId() {
-        Optional<List<TotalFilmLike>> optional = totalFilmLikeDao.findRowsByFilmId(1L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<TotalFilmLike> result = totalFilmLikeDao.findRowsByFilmId(1L);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRowsByUserId(userId)")
     public void testFindAllRowsSearchUserId() {
-        Optional<List<TotalFilmLike>> optional = totalFilmLikeDao.findRowsByUserId(2L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<TotalFilmLike> result = totalFilmLikeDao.findRowsByUserId(2L);
+        assertEquals(result.size(), 2);
     }
 
     @Test
@@ -107,26 +100,23 @@ class TotalFilmLikeDaoTest {
     public void testInsertRowByFilmIdUserId() {
         totalFilmLikeDao.delete(1L, 1L);
         totalFilmLikeDao.insert(1L, 1L);
-        Optional<List<TotalFilmLike>> optional = totalFilmLikeDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 3);
+        List<TotalFilmLike> result = totalFilmLikeDao.findRows();
+        assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         totalFilmLikeDao.delete();
-        Optional<List<TotalFilmLike>> optional = totalFilmLikeDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 0);
+        List<TotalFilmLike> result = totalFilmLikeDao.findRows();
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(filmId, userId)")
     public void testDeleteRowSearchFilmIdUserId() {
         totalFilmLikeDao.delete(1L, 2L);
-        Optional<List<TotalFilmLike>> optional = totalFilmLikeDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<TotalFilmLike> result = totalFilmLikeDao.findRows();
+        assertEquals(result.size(), 2);
     }
 }

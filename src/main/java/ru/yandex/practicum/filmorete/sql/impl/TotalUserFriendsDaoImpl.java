@@ -30,7 +30,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public Optional<List<User>> findFriendsByUser(Long userId) {
+    public List<User> findFriendsByUser(Long userId) {
         List<User> users = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS " +
@@ -41,14 +41,12 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                     "ORDER BY ID ASC;",
                 userId
         );
-        while (rows.next()) {
-            users.add(userDao.buildModel(rows));
-        }
-        return Optional.of(users);
+        while (rows.next()) users.add(userDao.buildModel(rows));
+        return users;
     }
 
     @Override
-    public Optional<List<User>> findFriendsCommon(Long userId, Long friendId) {
+    public List<User> findFriendsCommon(Long userId, Long friendId) {
         List<User> users = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS " +
@@ -63,61 +61,51 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                     ");",
                 userId, friendId
         );
-        while (rows.next()) {
-            users.add(userDao.buildModel(rows));
-        }
-        return Optional.of(users);
+        while (rows.next()) users.add(userDao.buildModel(rows));
+        return users;
     }
 
     @Override
-    public Optional<List<TotalUserFriends>> findRows() {
+    public List<TotalUserFriends> findRows() {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS;"
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
-    public Optional<List<TotalUserFriends>> findRowsByUserId(Long userId) {
+    public List<TotalUserFriends> findRowsByUserId(Long userId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS WHERE USER_ID = ?;",
                 userId
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
-    public Optional<List<TotalUserFriends>> findRowsByFriendId(Long friendId) {
+    public List<TotalUserFriends> findRowsByFriendId(Long friendId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS WHERE FRIEND_ID = ?;",
                 friendId
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
-    public Optional<List<TotalUserFriends>> findRowsByStatusId(Integer statusId) {
+    public List<TotalUserFriends> findRowsByStatusId(Integer statusId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS WHERE STATUS_ID = ?;",
                 statusId
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
@@ -126,9 +114,8 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                 "SELECT * FROM TOTAL_USER_FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?;",
                 userId, friendId
         );
-        if (rows.next()) {
-            return Optional.of(buildModel(rows));
-        } else return Optional.empty();
+        if (rows.next()) return Optional.of(buildModel(rows));
+        else return Optional.empty();
     }
 
     @Override

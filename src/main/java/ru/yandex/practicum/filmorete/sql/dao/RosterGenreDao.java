@@ -6,11 +6,11 @@ import java.util.Optional;
 
 public interface RosterGenreDao {
 
+    List<String> findAllName();
+
+    List<Genre> findRows();
+
     Optional<Integer> findLastId();
-
-    Optional<List<String>> findAllName();
-
-    Optional<List<Genre>> findRows();
 
     Optional<Genre> findRow(Integer rowId);
 

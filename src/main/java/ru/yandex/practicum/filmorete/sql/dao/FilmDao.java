@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface FilmDao {
 
-    Optional<Long> findLastId();
+    List<Film> findRows();
 
-    Optional<List<Film>> findRows();
+    Optional<Long> findLastId();
 
     Optional<Film> findRow(Long rowId);
 

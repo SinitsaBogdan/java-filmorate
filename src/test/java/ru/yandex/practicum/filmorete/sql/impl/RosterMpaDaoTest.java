@@ -32,25 +32,22 @@ class RosterMpaDaoTest {
     @Test
     @DisplayName("findAllName()")
     public void testFindAllRowsByName() {
-        Optional<List<String>> optional = dao.findAllName();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<String> result = dao.findAllName();
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findAllDescription()")
     public void testFindAllRowsByDescription() {
-        Optional<List<String>> optional = dao.findAllDescription();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<String> result = dao.findAllDescription();
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        Optional<List<Mpa>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Mpa> result = dao.findRows();
+        assertEquals(result.size(), 2);
     }
 
     @Test
@@ -115,26 +112,23 @@ class RosterMpaDaoTest {
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         dao.delete();
-        Optional<List<Mpa>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 0);
+        List<Mpa> result = dao.findRows();
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
         dao.delete(2);
-        Optional<List<Mpa>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 1);
+        List<Mpa> result = dao.findRows();
+        assertEquals(result.size(), 1);
     }
 
     @Test
     @DisplayName("delete(name)")
     public void testDeleteRowSearchName() {
         dao.delete("P");
-        Optional<List<Mpa>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 1);
+        List<Mpa> result = dao.findRows();
+        assertEquals(result.size(), 1);
     }
 }

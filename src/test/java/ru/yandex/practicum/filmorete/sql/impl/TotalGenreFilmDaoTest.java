@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,77 +48,68 @@ class TotalGenreFilmDaoTest {
     @Test
     @DisplayName("findAllRowsSearchFilmIdByGenreName(filmId)")
     public void testFindAllRowsSearchFilmIdByGenreName() {
-        Optional<List<Genre>> optional = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(100L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Genre> result = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(100L);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        Optional<List<TotalGenreFilm>> optional = totalGenreFilmDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 4);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        assertEquals(result.size(), 4);
     }
 
     @Test
     @DisplayName("findRowsByFilmId(filmId)")
     public void testFindAllRowsSearchFilmId() {
-        Optional<List<TotalGenreFilm>> optional = totalGenreFilmDao.findRowsByFilmId(100L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findRowsByFilmId(100L);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRowsByGenreId(genreId)")
     public void testFindAllRowsSearchGenreId() {
-        Optional<List<TotalGenreFilm>> optional = totalGenreFilmDao.findRowsByGenreId(2);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 1);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findRowsByGenreId(2);
+        assertEquals(result.size(), 1);
     }
 
     @Test
     @DisplayName("insert(filmId, genreId)")
     public void testInsertFilmIdAndGenreId() {
         totalGenreFilmDao.insert(100L, 3);
-        Optional<List<TotalGenreFilm>> optional = totalGenreFilmDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 5);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        assertEquals(result.size(), 5);
     }
 
     @Test
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         totalGenreFilmDao.delete();
-        Optional<List<TotalGenreFilm>> optional = totalGenreFilmDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 0);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(filmId, genreId)")
     public void testDeleteRowSearchFilmIdAndGenreId() {
         totalGenreFilmDao.delete(100L, 1);
-        Optional<List<TotalGenreFilm>> optional = totalGenreFilmDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 3);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("deleteAllFilmId(filmId)")
     public void testDeleteAllRowsSearchFilmId() {
         totalGenreFilmDao.deleteAllFilmId(100L);
-        Optional<List<TotalGenreFilm>> optional = totalGenreFilmDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("deleteAllGenreId(genreId)")
     public void testDeleteAllRowsSearchGenreId() {
         totalGenreFilmDao.deleteAllGenreId(1);
-        Optional<List<TotalGenreFilm>> optional = totalGenreFilmDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        assertEquals(result.size(), 2);
     }
 }

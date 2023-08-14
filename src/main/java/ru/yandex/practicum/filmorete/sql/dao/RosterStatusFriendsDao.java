@@ -6,11 +6,11 @@ import java.util.Optional;
 
 public interface RosterStatusFriendsDao {
 
+    List<String> findAllName();
+
+    List<StatusFriends> findRows();
+
     Optional<Long> findLastId();
-
-    Optional<List<String>> findAllName();
-
-    Optional<List<StatusFriends>> findRows();
 
     Optional<StatusFriends> findRow(Long rowId);
 

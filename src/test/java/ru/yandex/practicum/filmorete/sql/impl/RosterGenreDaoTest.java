@@ -33,17 +33,15 @@ class RosterGenreDaoTest {
     @Test
     @DisplayName("findAllName()")
     public void testFindAllRowsByName() {
-        Optional<List<String>> optional = dao.findAllName();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 3);
+        List<String> result = dao.findAllName();
+        assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        Optional<List<Genre>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 3);
+        List<Genre> result = dao.findRows();
+        assertEquals(result.size(), 3);
     }
 
     @Test
@@ -66,9 +64,8 @@ class RosterGenreDaoTest {
     @DisplayName("insert(name)")
     public void testInsertName() {
         dao.insert("Документальный");
-        Optional<List<Genre>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 4);
+        List<Genre> result = dao.findRows();
+        assertEquals(result.size(), 4);
     }
 
     @Test
@@ -84,9 +81,8 @@ class RosterGenreDaoTest {
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         dao.delete();
-        Optional<List<Genre>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 0);
+        List<Genre> result = dao.findRows();
+        assertEquals(result.size(), 0);
 
     }
 
@@ -94,17 +90,15 @@ class RosterGenreDaoTest {
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
         dao.delete(101);
-        Optional<List<Genre>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Genre> result = dao.findRows();
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("delete(name)")
     public void testDeleteRowSearchName() {
         dao.delete("Комедия");
-        Optional<List<Genre>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Genre> result = dao.findRows();
+        assertEquals(result.size(), 2);
     }
 }

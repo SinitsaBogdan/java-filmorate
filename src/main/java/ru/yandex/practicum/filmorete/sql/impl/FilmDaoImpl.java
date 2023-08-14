@@ -41,7 +41,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Optional<List<Film>> findRows() {
+    public List<Film> findRows() {
         List<Film> result = new ArrayList<>();
         SqlRowSet filmsRows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -57,18 +57,15 @@ public class FilmDaoImpl implements FilmDao {
         );
 
         while (filmsRows.next()) {
-            Optional<List<Genre>> optional = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(filmsRows.getLong("ID"));
-            if (optional.isPresent()) {
-                result.add(buildModel(filmsRows, optional.get()));
-            } else {
-                result.add(buildModel(filmsRows, new ArrayList<>()));
-            }
+            List<Genre> genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(filmsRows.getLong("ID"));
+            result.add(buildModel(filmsRows, genres.isEmpty() ? new ArrayList<>() : genres));
         }
-        return Optional.of(result);
+        return result;
     }
 
     @Override
     public Optional<Film> findRow(String filmName) {
+        List<Genre> genres;
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
                         "FILMS.ID AS ID, " +
@@ -83,19 +80,15 @@ public class FilmDaoImpl implements FilmDao {
                     "WHERE FILMS.NAME = ?;",
                 filmName
         );
-
         if (rows.next()) {
-            Optional<List<Genre>> optional = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
-            return optional.map(
-                    genres -> buildModel(rows, genres)
-            ).or(
-                    () -> Optional.of(buildModel(rows, new ArrayList<>()))
-            );
-        } else return Optional.empty();
+            genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
+            return Optional.of(buildModel(rows, genres));
+        } else return Optional.of(buildModel(rows, new ArrayList<>()));
     }
 
     @Override
     public Optional<Film> findRow(Long rowId) {
+        List<Genre> genres;
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
                         "FILMS.ID AS ID, " +
@@ -110,13 +103,10 @@ public class FilmDaoImpl implements FilmDao {
                     "WHERE FILMS.ID = ?;",
                 rowId
         );
-
         if (rows.next()) {
-            Optional<List<Genre>> optional = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
-            return optional.map(genres -> buildModel(rows, genres)).or(() -> Optional.of(buildModel(rows, new ArrayList<>())));
-        } else {
-            return Optional.empty();
-        }
+            genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
+            return Optional.of(buildModel(rows, genres));
+        } else return Optional.of(buildModel(rows, new ArrayList<>()));
     }
 
     @Override

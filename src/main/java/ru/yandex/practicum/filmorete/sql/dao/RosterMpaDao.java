@@ -6,13 +6,13 @@ import java.util.Optional;
 
 public interface RosterMpaDao {
 
+    List<String> findAllName();
+
+    List<String> findAllDescription();
+
+    List<Mpa> findRows();
+
     Optional<Long> findLastId();
-
-    Optional<List<String>> findAllName();
-
-    Optional<List<String>> findAllDescription();
-
-    Optional<List<Mpa>> findRows();
 
     Optional<Mpa> findRow(Integer rowId);
 

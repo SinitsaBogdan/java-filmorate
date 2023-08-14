@@ -30,21 +30,18 @@ public class UserDaoImpl implements UserDao {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT MAX(ID) AS LAST_ID FROM USERS;"
         );
-        if (row.next()) {
-            return Optional.of(row.getLong("LAST_ID"));
-        } else return Optional.empty();
+        if (row.next()) return Optional.of(row.getLong("LAST_ID"));
+        else return Optional.empty();
     }
 
     @Override
-    public Optional<List<User>> findRows() {
+    public List<User> findRows() {
         List<User> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS;"
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
@@ -53,9 +50,8 @@ public class UserDaoImpl implements UserDao {
                 "SELECT * FROM USERS WHERE ID = ?;",
                 userId
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else return Optional.empty();
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override
@@ -64,9 +60,8 @@ public class UserDaoImpl implements UserDao {
                 "SELECT * FROM USERS WHERE EMAIL = ?;",
                 email
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else return Optional.empty();
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override

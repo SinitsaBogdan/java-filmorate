@@ -34,27 +34,23 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     }
 
     @Override
-    public Optional<List<String>> findAllName() {
+    public List<String> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT NAME FROM ROSTER_GENRE;"
         );
-        while (rows.next()) {
-            result.add(rows.getString("NAME"));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(rows.getString("NAME"));
+        return result;
     }
 
     @Override
-    public Optional<List<Genre>> findRows() {
+    public List<Genre> findRows() {
         List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_GENRE ORDER BY ID ASC;"
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
@@ -63,9 +59,8 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                 "SELECT * FROM ROSTER_GENRE WHERE ID = ?;",
                 rowId
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else return Optional.empty();
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override
@@ -74,9 +69,8 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                 "SELECT * FROM ROSTER_GENRE WHERE NAME = ?;",
                 name
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else return Optional.empty();
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override

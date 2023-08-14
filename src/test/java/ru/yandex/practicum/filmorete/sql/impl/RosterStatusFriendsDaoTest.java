@@ -33,86 +33,79 @@ class RosterStatusFriendsDaoTest {
     @Test
     @DisplayName("findAllName()")
     public void testFindAllByName() {
-        Optional<List<String>> optional = dao.findAllName();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<String> result = dao.findAllName();
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        Optional<List<StatusFriends>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<StatusFriends> result = dao.findRows();
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRow(rowId)")
     public void testFindRowSearchId() {
-        Optional<StatusFriends> optional = dao.findRow(1L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().getStatus(), "Не подтвержденная");
+        Optional<StatusFriends> result = dao.findRow(1L);
+        assertTrue(result.isPresent());
+        assertEquals(result.get().getStatus(), "Не подтвержденная");
     }
 
     @Test
     @DisplayName("findRow(name)")
     public void testFindAllRowsSearchStatus() {
-        Optional<StatusFriends> optional = dao.findRow("Не подтвержденная");
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().getStatus(), "Не подтвержденная");
+        Optional<StatusFriends> result = dao.findRow("Не подтвержденная");
+        assertTrue(result.isPresent());
+        assertEquals(result.get().getStatus(), "Не подтвержденная");
     }
 
     @Test
     @DisplayName("insert(status)")
     public void testInsertRowByStatus() {
         dao.insert("Новый");
-        Optional<List<StatusFriends>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 3);
+        List<StatusFriends> result = dao.findRows();
+        assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("insert(rowId, status)")
     public void testInsertRowAllColumn() {
         dao.insert(3L, "Новый");
-        Optional<List<StatusFriends>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 3);
+        List<StatusFriends> result = dao.findRows();
+        assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("update(searchRowId, status)")
     public void testUpdateRowSearchIdByStatus() {
         dao.update(1L, "Обновленный");
-        Optional<StatusFriends> optional = dao.findRow(1L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().getStatus(), "Обновленный");
+        Optional<StatusFriends> result = dao.findRow(1L);
+        assertTrue(result.isPresent());
+        assertEquals(result.get().getStatus(), "Обновленный");
     }
 
     @Test
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         dao.delete();
-        Optional<List<StatusFriends>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 0);
+        List<StatusFriends> result = dao.findRows();
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
         dao.delete(1L);
-        Optional<List<StatusFriends>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 1);
+        List<StatusFriends> result = dao.findRows();
+        assertEquals(result.size(), 1);
     }
 
     @Test
     @DisplayName("delete(status)")
     public void testDeleteAllRowsSearchStatus() {
         dao.delete("Не подтвержденная");
-        Optional<List<StatusFriends>> optional = dao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 1);
+        List<StatusFriends> result = dao.findRows();
+        assertEquals(result.size(), 1);
     }
 }

@@ -63,23 +63,19 @@ public class ServiceUser {
     }
 
     public List<User> getAllUsers() {
-        Optional<List<User>> optional = userDao.findRows();
-        return optional.orElse(null);
+        return userDao.findRows();
     }
 
     public List<User> getFriends(Long id) {
-        Optional<List<User>> optional = totalUserFriendsDao.findFriendsByUser(id);
-        return optional.orElse(null);
+        return totalUserFriendsDao.findFriendsByUser(id);
     }
 
     public List<User> getUsersToLikeFilm(Long filmId) {
-        Optional<List<User>> optional = totalFilmLikeDao.findUserToLikeFilm(filmId);
-        return optional.orElse(null);
+        return totalFilmLikeDao.findUserToLikeFilm(filmId);
     }
 
     public List<User> getFriendsCommon(Long userId, Long friendId) {
-        Optional<List<User>> optional = totalUserFriendsDao.findFriendsCommon(userId, friendId);
-        return optional.orElse(null);
+        return totalUserFriendsDao.findFriendsCommon(userId, friendId);
     }
 
     public void removeUser(Long id) {

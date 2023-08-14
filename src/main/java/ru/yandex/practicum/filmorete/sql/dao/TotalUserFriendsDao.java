@@ -7,17 +7,17 @@ import java.util.Optional;
 
 public interface TotalUserFriendsDao {
 
-    Optional<List<User>> findFriendsByUser(Long userId);
+    List<User> findFriendsByUser(Long userId);
 
-    Optional<List<User>> findFriendsCommon(Long userId, Long friendId);
+    List<User> findFriendsCommon(Long userId, Long friendId);
 
-    Optional<List<TotalUserFriends>> findRows();
+    List<TotalUserFriends> findRows();
 
-    Optional<List<TotalUserFriends>> findRowsByUserId(Long userId);
+    List<TotalUserFriends> findRowsByUserId(Long userId);
 
-    Optional<List<TotalUserFriends>> findRowsByFriendId(Long friendId);
+    List<TotalUserFriends> findRowsByFriendId(Long friendId);
 
-    Optional<List<TotalUserFriends>> findRowsByStatusId(Integer statusId);
+    List<TotalUserFriends> findRowsByStatusId(Integer statusId);
 
     Optional<TotalUserFriends> findRow(Long userId, Long friendId);
 

@@ -36,7 +36,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
-    public Optional<List<Film>> findPopularFilms(Integer limit) {
+    public List<Film> findPopularFilms(Integer limit) {
         List<Film> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -59,14 +59,14 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                 limit
         );
         while (rows.next()) {
-            Optional<List<Genre>> optional = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
-            result.add(filmDao.buildModel(rows, optional.orElseGet(ArrayList::new)));
+            List<Genre> genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
+            result.add(filmDao.buildModel(rows, genres.isEmpty() ? new ArrayList<>() : genres));
         }
-        return Optional.of(result);
+        return result;
     }
 
     @Override
-    public Optional<List<User>> findUserToLikeFilm(Long filmId) {
+    public List<User> findUserToLikeFilm(Long filmId) {
         List<User> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * " +
@@ -77,14 +77,12 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                     ");",
                 filmId
         );
-        while (rows.next()) {
-            result.add(userDao.buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(userDao.buildModel(rows));
+        return result;
     }
 
     @Override
-    public Optional<List<Film>> findFilmToLikeUser(Long userId) {
+    public List<Film> findFilmToLikeUser(Long userId) {
         List<Film> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -109,48 +107,42 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                 userId
         );
         while (rows.next()) {
-            Optional<List<Genre>> optional = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
-            result.add(filmDao.buildModel(rows, optional.orElseGet(ArrayList::new)));
+            List<Genre> genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
+            result.add(filmDao.buildModel(rows, genres.isEmpty() ? new ArrayList<>() : genres));
         }
-        return Optional.of(result);
+        return result;
     }
 
     @Override
-    public Optional<List<TotalFilmLike>> findRows() {
+    public List<TotalFilmLike> findRows() {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE;"
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
-    public Optional<List<TotalFilmLike>> findRowsByFilmId(Long filmId) {
+    public List<TotalFilmLike> findRowsByFilmId(Long filmId) {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE WHERE FILM_ID = ?;",
                 filmId
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
-    public Optional<List<TotalFilmLike>> findRowsByUserId(Long userId) {
+    public List<TotalFilmLike> findRowsByUserId(Long userId) {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE WHERE USER_ID = ?;",
                 userId
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override

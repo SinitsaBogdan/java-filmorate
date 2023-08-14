@@ -32,15 +32,12 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
                 "SELECT * FROM TOTAL_GENRE_FILM WHERE FILM_ID = ? AND GENRE_ID = ?;",
                 filmId, genreId
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else {
-            return Optional.empty();
-        }
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override
-    public Optional<List<Genre>> findAllRowsSearchFilmIdByGenreId(Long id) {
+    public List<Genre> findAllRowsSearchFilmIdByGenreId(Long id) {
         List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * " +
@@ -52,53 +49,45 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
                     ");",
                 id
         );
-        while (rows.next()) {
-            result.add(
-                    Genre.builder()
-                            .id(rows.getInt("ID"))
-                            .name(rows.getString("NAME"))
-                            .build()
-            );
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(
+                Genre.builder()
+                        .id(rows.getInt("ID"))
+                        .name(rows.getString("NAME"))
+                        .build()
+        );
+        return result;
     }
 
     @Override
-    public Optional<List<TotalGenreFilm>> findRows() {
+    public List<TotalGenreFilm> findRows() {
         List<TotalGenreFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_GENRE_FILM;"
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
-    public Optional<List<TotalGenreFilm>> findRowsByFilmId(Long filmId) {
+    public List<TotalGenreFilm> findRowsByFilmId(Long filmId) {
         List<TotalGenreFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_GENRE_FILM WHERE FILM_ID = ?;",
                 filmId
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
-    public Optional<List<TotalGenreFilm>> findRowsByGenreId(Integer genreId) {
+    public List<TotalGenreFilm> findRowsByGenreId(Integer genreId) {
         List<TotalGenreFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_GENRE_FILM WHERE GENRE_ID = ?;",
                 genreId
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override

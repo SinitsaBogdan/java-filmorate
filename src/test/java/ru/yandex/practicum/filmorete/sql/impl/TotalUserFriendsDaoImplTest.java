@@ -50,49 +50,43 @@ class TotalUserFriendsDaoImplTest {
     @Test
     @DisplayName("findFriendsByUser(userId)")
     void testFindAllUserSearchUserId() {
-        Optional<List<User>> optional = totalUserFriendsDao.findFriendsByUser(100L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<User> result = totalUserFriendsDao.findFriendsByUser(100L);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findFriendsCommon(userId, friendId)")
     void testFindAllRowsFriendsCommon() {
-        Optional<List<User>> optional = totalUserFriendsDao.findFriendsCommon(102L, 101L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 1);
+        List<User> result = totalUserFriendsDao.findFriendsCommon(102L, 101L);
+        assertEquals(result.size(), 1);
     }
 
     @Test
     @DisplayName("findRows()")
     void testFindAllRows() {
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 6);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRows();
+        assertEquals(result.size(), 6);
     }
 
     @Test
     @DisplayName("findRowsByUserId(userId)")
     void testFindAllRowsSearchUserId() {
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRowsByUserId(100L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRowsByUserId(100L);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRowsByFriendId(friendId)")
     void testFindAllRowsSearchFriendId() {
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRowsByFriendId(100L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRowsByFriendId(100L);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRowsByStatusId(statusId)")
     void testFindAllRowsSearchStatusId() {
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRowsByStatusId(2);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 6);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRowsByStatusId(2);
+        assertEquals(result.size(), 6);
     }
 
     @Test
@@ -112,9 +106,8 @@ class TotalUserFriendsDaoImplTest {
                 103L, "Евгения", LocalDate.of(1995, 6, 17), "Евгения", "евгения@email.ru"
         );
         totalUserFriendsDao.insert(100L, 103L, 1);
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 7);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRows();
+        assertEquals(result.size(), 7);
     }
 
     @Test
@@ -130,44 +123,39 @@ class TotalUserFriendsDaoImplTest {
     @DisplayName("delete()")
     void testDeleteAllRows() {
         totalUserFriendsDao.delete();
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 0);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRows();
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(userId, friendId)")
     void testDeleteRowSearchUserIdFriendId() {
         totalUserFriendsDao.delete(100L, 101L);
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 5);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRows();
+        assertEquals(result.size(), 5);
     }
 
     @Test
     @DisplayName("deleteAllUserId(userId)")
     void testDeleteAllRowsSearchUserId() {
         totalUserFriendsDao.deleteAllUserId(100L);
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRowsByUserId(100L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 0);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRowsByUserId(100L);
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("deleteAllFriendId(friendId)")
     void testDeleteAllRowsSearchFriendId() {
         totalUserFriendsDao.deleteAllFriendId(100L);
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRowsByFriendId(100L);
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 0);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRowsByFriendId(100L);
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("deleteAllStatusId(statusId)")
     void testDeleteAllRowsSearchStatusId() {
         totalUserFriendsDao.deleteAllStatusId(1);
-        Optional<List<TotalUserFriends>> optional = totalUserFriendsDao.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 6);
+        List<TotalUserFriends> result = totalUserFriendsDao.findRows();
+        assertEquals(result.size(), 6);
     }
 }

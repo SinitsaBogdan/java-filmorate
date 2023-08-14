@@ -33,8 +33,7 @@ public class ServiceGenre {
     }
 
     public List<Genre> getAllGenres() {
-        Optional<List<Genre>> optional = genreDao.findRows();
-        return optional.orElse(null);
+        return genreDao.findRows();
     }
 
     public void add(@NotNull Genre genre) {

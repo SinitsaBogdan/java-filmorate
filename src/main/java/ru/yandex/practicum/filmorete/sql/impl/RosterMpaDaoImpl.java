@@ -34,39 +34,33 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public Optional<List<String>> findAllName() {
+    public List<String> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT NAME FROM ROSTER_MPA;"
         );
-        while (rows.next()) {
-            result.add(rows.getString("NAME"));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(rows.getString("NAME"));
+        return result;
     }
 
     @Override
-    public Optional<List<String>> findAllDescription() {
+    public List<String> findAllDescription() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT DESCRIPTION FROM ROSTER_MPA;"
         );
-        while (rows.next()) {
-            result.add(rows.getString("DESCRIPTION"));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(rows.getString("DESCRIPTION"));
+        return result;
     }
 
     @Override
-    public Optional<List<Mpa>> findRows()  {
+    public List<Mpa> findRows()  {
         List<Mpa> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_MPA;"
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
@@ -75,9 +69,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
                 "SELECT * FROM ROSTER_MPA WHERE ID = ?;",
                 rowId
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else return Optional.empty();
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override
@@ -86,9 +79,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
                 "SELECT * FROM ROSTER_MPA WHERE NAME = ?;",
                 name
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else return Optional.empty();
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override

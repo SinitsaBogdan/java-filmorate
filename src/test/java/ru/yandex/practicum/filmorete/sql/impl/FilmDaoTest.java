@@ -76,9 +76,8 @@ class FilmDaoTest {
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        Optional<List<Film>> optional = daoFilm.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 3);
+        List<Film> result = daoFilm.findRows();
+        assertEquals(result.size(), 3);
     }
 
     @Test
@@ -113,9 +112,8 @@ class FilmDaoTest {
         daoFilm.insert(
                 100L, 1, "Новый", "Новое", LocalDate.of(1990, 1, 1), 50
         );
-        Optional<List<Film>> optional = daoFilm.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 4);
+        List<Film> result = daoFilm.findRows();
+        assertEquals(result.size(), 4);
     }
 
     @Test
@@ -170,18 +168,16 @@ class FilmDaoTest {
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         daoFilm.delete();
-        Optional<List<Film>> optional = daoFilm.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 0);
+        List<Film> result = daoFilm.findRows();
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(rowId)")
     public void testDeleteAllRowsSearchId() {
         daoFilm.delete(1L);
-        Optional<List<Film>> optional = daoFilm.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Film> result = daoFilm.findRows();
+        assertEquals(result.size(), 2);
         assertTrue(daoFilm.findRow(1L).isEmpty());
     }
 
@@ -189,9 +185,8 @@ class FilmDaoTest {
     @DisplayName("delete(name)")
     public void testDeleteAllRowsSearchName() {
         daoFilm.delete("Фильм 1");
-        Optional<List<Film>> optional = daoFilm.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Film> result = daoFilm.findRows();
+        assertEquals(result.size(), 2);
         assertTrue(daoFilm.findRow(1L).isEmpty());
     }
 
@@ -199,26 +194,23 @@ class FilmDaoTest {
     @DisplayName("delete(releaseDate)")
     public void testDeleteAllRowsSearchReleaseDate() {
         daoFilm.delete(LocalDate.of(2003, 1, 1));
-        Optional<List<Film>> optional = daoFilm.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Film> result = daoFilm.findRows();
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("delete(durationMinute)")
     public void testDeleteAllRowsSearchDurationMinute() {
         daoFilm.delete(110);
-        Optional<List<Film>> optional = daoFilm.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Film> result = daoFilm.findRows();
+        assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("deleteByRating(ratingId)")
     public void testDeleteAllRowsSearchRating() {
         daoFilm.deleteByRating(1);
-        Optional<List<Film>> optional = daoFilm.findRows();
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().size(), 2);
+        List<Film> result = daoFilm.findRows();
+        assertEquals(result.size(), 2);
     }
 }

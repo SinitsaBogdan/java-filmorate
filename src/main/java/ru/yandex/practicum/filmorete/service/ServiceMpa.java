@@ -34,8 +34,7 @@ public class ServiceMpa {
     }
 
     public List<Mpa> getAll() {
-        Optional<List<Mpa>> optional = mpaDao.findRows();
-        return optional.orElse(null);
+        return mpaDao.findRows();
     }
 
     public void add(@NotNull Mpa mpa) {

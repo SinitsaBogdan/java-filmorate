@@ -4,21 +4,20 @@ import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.TotalFilmLike;
 import ru.yandex.practicum.filmorete.model.User;
 import java.util.List;
-import java.util.Optional;
 
 public interface TotalFilmLikeDao {
 
-    Optional<List<Film>> findPopularFilms(Integer limit);
+    List<Film> findPopularFilms(Integer limit);
 
-    Optional<List<User>> findUserToLikeFilm(Long filmId);
+    List<User> findUserToLikeFilm(Long filmId);
 
-    Optional<List<Film>> findFilmToLikeUser(Long userId);
+    List<Film> findFilmToLikeUser(Long userId);
 
-    Optional<List<TotalFilmLike>> findRows();
+    List<TotalFilmLike> findRows();
 
-    Optional<List<TotalFilmLike>> findRowsByFilmId(Long filmId);
+    List<TotalFilmLike> findRowsByFilmId(Long filmId);
 
-    Optional<List<TotalFilmLike>> findRowsByUserId(Long userId);
+    List<TotalFilmLike> findRowsByUserId(Long userId);
 
     void insert(Long filmId, Long userId);
 

@@ -34,27 +34,23 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     }
 
     @Override
-    public Optional<List<String>> findAllName() {
+    public List<String> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT NAME FROM ROSTER_STATUS_FRIENDS;"
         );
-        while (rows.next()) {
-            result.add(rows.getString("NAME"));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(rows.getString("NAME"));
+        return result;
     }
 
     @Override
-    public Optional<List<StatusFriends>> findRows() {
+    public List<StatusFriends> findRows() {
         List<StatusFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_STATUS_FRIENDS;"
         );
-        while (rows.next()) {
-            result.add(buildModel(rows));
-        }
-        return Optional.of(result);
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
@@ -63,9 +59,8 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
                 "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE ID = ?;",
                 rowId
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else return Optional.empty();
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override
@@ -74,9 +69,8 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
                 "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE NAME = ?;",
                 name
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else return Optional.empty();
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override

@@ -81,8 +81,8 @@ public class ServiceFilm {
         } else {
             throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         }
-        Optional<List<TotalGenreFilm>> optionalGenres = totalGenreFilmDao.findRowsByFilmId(film.getId());
-        if (optionalGenres.isPresent()) {
+        List<TotalGenreFilm> totalGenreFilms = totalGenreFilmDao.findRowsByFilmId(film.getId());
+        if (!totalGenreFilms.isEmpty()) {
             totalGenreFilmDao.deleteAllFilmId(film.getId());
             if (film.getGenres() != null) {
                 for (Genre genreFilm : film.getGenres()) {
@@ -97,18 +97,15 @@ public class ServiceFilm {
     }
 
     public List<Film> getPopularFilms(Integer count) {
-        Optional<List<Film>> optional = totalFilmLikeDao.findPopularFilms(count);
-        return optional.orElse(null);
+        return totalFilmLikeDao.findPopularFilms(count);
     }
 
     public List<Film> getAllFilms() {
-        Optional<List<Film>> optional = filmDao.findRows();
-        return optional.orElse(null);
+        return filmDao.findRows();
     }
 
     public List<Film> getFilmsToLikeUser(Long userId) {
-        Optional<List<Film>> optional = totalFilmLikeDao.findFilmToLikeUser(userId);
-        return optional.orElse(null);
+        return totalFilmLikeDao.findFilmToLikeUser(userId);
     }
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
@@ -131,9 +128,5 @@ public class ServiceFilm {
 
     public void clearStorage() {
         filmDao.delete();
-    }
-
-    public void removeFilm(Long filmId) {
-        filmDao.delete(filmId);
     }
 }
