@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorete.sql.dao.RosterMpaDao;
 
 import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableRosterMpa.*;
 
 @Slf4j
 @Component
@@ -29,7 +28,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public Optional<Long> findLastId() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_MPA__LAST_ID.getTemplate()
+                "SELECT MAX(ID) AS LAST_ID FROM ROSTER_MPA;"
         );
         return Optional.of(row.getLong("LAST_ID"));
     }
@@ -38,7 +37,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     public Optional<List<String>> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_MPA__ALL_NAME.getTemplate()
+                "SELECT NAME FROM ROSTER_MPA;"
         );
         while (rows.next()) {
             result.add(rows.getString("NAME"));
@@ -50,7 +49,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     public Optional<List<String>> findAllDescription() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_MPA__ALL_DESCRIPTIONS.getTemplate()
+                "SELECT DESCRIPTION FROM ROSTER_MPA;"
         );
         while (rows.next()) {
             result.add(rows.getString("DESCRIPTION"));
@@ -62,7 +61,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     public Optional<List<Mpa>> findRows()  {
         List<Mpa> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_MPA__ALL_ROWS.getTemplate()
+                "SELECT * FROM ROSTER_MPA;"
         );
         while (rows.next()) {
             result.add(buildModel(rows));
@@ -73,7 +72,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public Optional<Mpa> findRow(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_MPA__ROW_BY_ID.getTemplate(),
+                "SELECT * FROM ROSTER_MPA WHERE ID = ?;",
                 rowId
         );
         if (row.next()) {
@@ -84,7 +83,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public Optional<Mpa> findRow(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_MPA__ROW_BY_NAME.getTemplate(),
+                "SELECT * FROM ROSTER_MPA WHERE NAME = ?;",
                 name
         );
         if (row.next()) {
@@ -95,7 +94,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void insert(String name, String description) {
         jdbcTemplate.update(
-                INSERT_TABLE_ROSTER_MPA.getTemplate(),
+                "INSERT INTO ROSTER_MPA (NAME, DESCRIPTION) VALUES(?, ?);",
                 name, description
         );
     }
@@ -103,7 +102,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void insert(Integer rowId, String name, String description) {
         jdbcTemplate.update(
-                INSERT_TABLE_ROSTER_MPA__ALL_COLUMN.getTemplate(),
+                "INSERT INTO ROSTER_MPA (ID, NAME, DESCRIPTION) VALUES(?, ?, ?);",
                 rowId, name, description
         );
     }
@@ -111,7 +110,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void update(Integer searchRowId, String name, String description) {
         jdbcTemplate.update(
-                UPDATE_TABLE_ROSTER_MPA__ROW_BY_ID.getTemplate(),
+                "UPDATE ROSTER_MPA SET NAME = ?, DESCRIPTION = ? WHERE ID = ?;",
                 name, description, searchRowId
         );
     }
@@ -119,7 +118,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void update(String searchName, String name, String description) {
         jdbcTemplate.update(
-                UPDATE_TABLE_ROSTER_MPA__ROW_BY_NAME.getTemplate(),
+                "UPDATE ROSTER_MPA SET NAME = ?, DESCRIPTION = ? WHERE NAME = ?;",
                 name, description, searchName
         );
     }
@@ -127,14 +126,14 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void delete() {
         jdbcTemplate.update(
-                DELETE_TABLE_ROSTER_MPA__ALL_ROWS.getTemplate()
+                "DELETE FROM ROSTER_MPA;"
         );
     }
 
     @Override
     public void delete(Integer rowId) {
         jdbcTemplate.update(
-                DELETE_TABLE_ROSTER_MPA__ROW_BY_ID.getTemplate(),
+                "DELETE FROM ROSTER_MPA WHERE ID = ?;",
                 rowId
         );
     }
@@ -142,7 +141,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void delete(String name) {
         jdbcTemplate.update(
-                DELETE_TABLE_ROSTER_MPA__ROW_BY_NAME.getTemplate(),
+                "DELETE FROM ROSTER_MPA WHERE NAME = ?;",
                 name
         );
     }

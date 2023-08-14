@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 import java.time.LocalDate;
 import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableFilms.*;
 
 @Slf4j
 @Component
@@ -36,7 +35,7 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public Optional<Long> findLastId() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_FILMS__LAST_ID.getTemplate()
+                "SELECT MAX(ID) AS LAST_ID FROM FILMS;"
         );
         return Optional.of(row.getLong("LAST_ID"));
     }
@@ -45,8 +44,18 @@ public class FilmDaoImpl implements FilmDao {
     public Optional<List<Film>> findRows() {
         List<Film> result = new ArrayList<>();
         SqlRowSet filmsRows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_FILMS__ALL_ROWS.getTemplate()
+                "SELECT " +
+                        "FILMS.ID AS ID, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
+                        "FILMS.NAME AS NAME, " +
+                        "FILMS.DESCRIPTION AS DESCRIPTION, " +
+                        "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
+                        "FILMS.DURATION AS DURATION " +
+                    "FROM FILMS AS FILMS " +
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID;"
         );
+
         while (filmsRows.next()) {
             Optional<List<Genre>> optional = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(filmsRows.getLong("ID"));
             if (optional.isPresent()) {
@@ -61,8 +70,20 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public Optional<Film> findRow(String filmName) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_FILMS__ROW_BY_NAME.getTemplate(), filmName
+                "SELECT " +
+                        "FILMS.ID AS ID, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
+                        "FILMS.NAME AS NAME, " +
+                        "FILMS.DESCRIPTION AS DESCRIPTION, " +
+                        "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
+                        "FILMS.DURATION AS DURATION " +
+                    "FROM FILMS AS FILMS " +
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
+                    "WHERE FILMS.NAME = ?;",
+                filmName
         );
+
         if (rows.next()) {
             Optional<List<Genre>> optional = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
             return optional.map(
@@ -76,7 +97,18 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public Optional<Film> findRow(Long rowId) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_FILMS__ROW_BY_ID.getTemplate(), rowId
+                "SELECT " +
+                        "FILMS.ID AS ID, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
+                        "FILMS.NAME AS NAME, " +
+                        "FILMS.DESCRIPTION AS DESCRIPTION, " +
+                        "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
+                        "FILMS.DURATION AS DURATION " +
+                        "FROM FILMS AS FILMS " +
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
+                    "WHERE FILMS.ID = ?;",
+                rowId
         );
 
         if (rows.next()) {
@@ -90,7 +122,8 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute) {
         jdbcTemplate.update(
-                INSERT_TABLE_FILMS_All_COLUMN.getTemplate(),
+                "INSERT INTO FILMS (ID, MPA_ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION) " +
+                    "VALUES (?, ?, ?, ?, ?, ?);",
                 rowId, mpaId, name, descriptions, releaseDate, durationMinute
         );
     }
@@ -98,7 +131,8 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute) {
         jdbcTemplate.update(
-                INSERT_TABLE_FILMS.getTemplate(),
+                "INSERT INTO FILMS (MPA_ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION) " +
+                    "VALUES (?, ?, ?, ?, ?);",
                 mpaId, name, descriptions, releaseDate, durationMinute
         );
     }
@@ -106,7 +140,14 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void update(Long searchRowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration) {
         jdbcTemplate.update(
-                UPDATE_TABLE_FILMS__ROW_BY_ID.getTemplate(),
+                "UPDATE FILMS " +
+                    "SET " +
+                        "MPA_ID = ?, " +
+                        "NAME = ?, " +
+                        "DESCRIPTION = ?, " +
+                        "RELEASE_DATE = ?, " +
+                        "DURATION = ? " +
+                    "WHERE  ID = ?;",
                 mpaId, name, descriptions, releaseDate, duration, searchRowId
         );
     }
@@ -114,22 +155,27 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void update(String searchName, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration) {
         jdbcTemplate.update(
-                UPDATE_TABLE_FILMS__ROW_BY_NAME.getTemplate(),
+                "UPDATE FILMS " +
+                    "SET " +
+                        "MPA_ID = ?, " +
+                        "NAME = ?, " +
+                        "DESCRIPTION = ?, " +
+                        "RELEASE_DATE = ?, " +
+                        "DURATION = ? " +
+                    "WHERE  NAME = ?;",
                 mpaId, name, descriptions, releaseDate, duration, searchName
         );
     }
 
     @Override
     public void delete() {
-        jdbcTemplate.update(
-                DELETE_TABLE_FILMS__ALL_ROWS.getTemplate()
-        );
+        jdbcTemplate.update("DELETE FROM FILMS;");
     }
 
     @Override
     public void delete(Long rowId) {
         jdbcTemplate.update(
-                DELETE_TABLE_FILMS__ROW_BY_ID.getTemplate(),
+                "DELETE FROM FILMS WHERE ID = ?;",
                 rowId
         );
     }
@@ -137,7 +183,7 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void delete(String name) {
         jdbcTemplate.update(
-                DELETE_TABLE_FILMS__ROW_BY_NAME.getTemplate(),
+                "DELETE FROM FILMS WHERE NAME = ?;",
                 name
         );
     }
@@ -145,7 +191,7 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void delete(LocalDate releaseDate) {
         jdbcTemplate.update(
-                DELETE_TABLE_FILMS__ROW_BY_RELEASE_DATE.getTemplate(),
+                "DELETE FROM FILMS WHERE RELEASE_DATE = ?;",
                 releaseDate
         );
     }
@@ -153,7 +199,7 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void delete(Integer durationMinute) {
         jdbcTemplate.update(
-                DELETE_TABLE_FILMS__ROW_BY_DURATION.getTemplate(),
+                "DELETE FROM FILMS WHERE DURATION = ?;",
                 durationMinute
         );
     }
@@ -161,13 +207,12 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void deleteByRating(Integer mpaId) {
         jdbcTemplate.update(
-                DELETE_TABLE_FILMS__ROW_BY_MPA_ID.getTemplate(),
+                "DELETE FROM FILMS WHERE MPA_ID = ?;",
                 mpaId
         );
     }
 
     protected Film buildModel(@NotNull SqlRowSet row, List<Genre> genres) {
-
         Mpa mpa = Mpa.builder()
                 .id(row.getInt("MPA_ID"))
                 .name(row.getString("MPA_NAME"))

@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 
 import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableTotalFilmLike.*;
 
 @Slf4j
 @Component
@@ -40,7 +39,23 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public Optional<List<Film>> findPopularFilms(Integer limit) {
         List<Film> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_TOTAL_FILM_LIKE_POPULAR_FILMS_AND_ORDER_BY_AND_LIMIT_ON_MODEL_FILM.getTemplate(),
+                "SELECT " +
+                        "FILMS.ID AS ID, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
+                        "FILMS.NAME AS NAME, " +
+                        "FILMS.DESCRIPTION AS DESCRIPTION, " +
+                        "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
+                        "FILMS.DURATION AS DURATION, " +
+                        "(" +
+                            "SELECT COUNT(*) " +
+                            "FROM TOTAL_FILM_LIKE " +
+                            "WHERE TOTAL_FILM_LIKE.FILM_ID = FILMS.ID" +
+                        ") AS SIZE_LIKE " +
+                    "FROM FILMS AS FILMS " +
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
+                    "ORDER BY SIZE_LIKE DESC " +
+                    "LIMIT ?;",
                 limit
         );
         while (rows.next()) {
@@ -54,7 +69,12 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public Optional<List<User>> findUserToLikeFilm(Long filmId) {
         List<User> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_ALL_USERS_TO_LIKE_FILM_ON_MODEL_USER.getTemplate(),
+                "SELECT * " +
+                    "FROM USERS " +
+                    "WHERE ID IN (" +
+                        "SELECT USER_ID FROM TOTAL_FILM_LIKE " +
+                        "WHERE FILM_ID = ?" +
+                    ");",
                 filmId
         );
         while (rows.next()) {
@@ -67,7 +87,25 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public Optional<List<Film>> findFilmToLikeUser(Long userId) {
         List<Film> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_ALL_FILMS_TO_LIKE_FILM_ON_MODEL_FILMS.getTemplate(),
+                "SELECT " +
+                        "FILMS.ID AS ID, " +
+                        "ROSTER_MPA.ID AS MPA_ID, " +
+                        "ROSTER_MPA.NAME AS MPA_NAME, " +
+                        "FILMS.NAME AS NAME, " +
+                        "FILMS.DESCRIPTION AS DESCRIPTION, " +
+                        "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
+                        "FILMS.DURATION AS DURATION, " +
+                        "(" +
+                            "SELECT COUNT(*) " +
+                            "FROM TOTAL_FILM_LIKE " +
+                            "WHERE TOTAL_FILM_LIKE.FILM_ID = FILMS.ID" +
+                        ") AS SIZE_LIKE " +
+                    "FROM FILMS AS FILMS " +
+                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
+                    "WHERE FILMS.ID IN (" +
+                        "SELECT FILM_ID FROM TOTAL_FILM_LIKE " +
+                        "WHERE USER_ID = ?" +
+                    ");",
                 userId
         );
         while (rows.next()) {
@@ -81,7 +119,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public Optional<List<TotalFilmLike>> findRows() {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_TOTAL_FILM_LIKE__ALL_ROWS.getTemplate()
+                "SELECT * FROM TOTAL_FILM_LIKE;"
         );
         while (rows.next()) {
             result.add(buildModel(rows));
@@ -93,7 +131,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public Optional<List<TotalFilmLike>> findRowsByFilmId(Long filmId) {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_TOTAL_FILM_LIKE__ROW_BY_FILM_ID.getTemplate(),
+                "SELECT * FROM TOTAL_FILM_LIKE WHERE FILM_ID = ?;",
                 filmId
         );
         while (rows.next()) {
@@ -106,7 +144,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public Optional<List<TotalFilmLike>> findRowsByUserId(Long userId) {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_TOTAL_FILM_LIKE__ROW_BY_USER_ID.getTemplate(),
+                "SELECT * FROM TOTAL_FILM_LIKE WHERE USER_ID = ?;",
                 userId
         );
         while (rows.next()) {
@@ -118,7 +156,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public void insert(Long filmId, Long userId) {
         jdbcTemplate.update(
-                INSERT_TABLE_TOTAL_FILM_LIKE.getTemplate(),
+                "INSERT INTO TOTAL_FILM_LIKE (FILM_ID, USER_ID) VALUES(?, ?);",
                 filmId, userId
         );
     }
@@ -126,7 +164,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId) {
         jdbcTemplate.update(
-                UPDATE_TABLE_TOTAL_FILM_LIKE__ROW_BY_FILM_ID_AND_USER_ID.getTemplate(),
+                "UPDATE TOTAL_FILM_LIKE SET FILM_ID = ?, USER_ID = ? WHERE FILM_ID = ? AND USER_ID = ?;",
                 filmId, userId, searchFilmId, searchUserId
         );
     }
@@ -134,14 +172,14 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public void delete() {
         jdbcTemplate.update(
-                DELETE_TABLE_TOTAL_FILM_LIKE__ALL_ROWS.getTemplate()
+                "DELETE FROM TOTAL_FILM_LIKE;"
         );
     }
 
     @Override
     public void delete(Long filmId, Long userId) {
         jdbcTemplate.update(
-                DELETE_TABLE_TOTAL_FILM_LIKE__ROW_BY_FILM_ID_AND_USER_ID.getTemplate(),
+                "DELETE FROM TOTAL_FILM_LIKE WHERE FILM_ID = ? AND USER_ID = ?;",
                 filmId, userId
         );
     }

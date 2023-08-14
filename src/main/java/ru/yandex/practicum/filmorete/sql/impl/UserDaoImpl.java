@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorete.model.User;
 import java.time.LocalDate;
 import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableUsers.*;
 
 @Slf4j
 @Component
@@ -29,7 +28,7 @@ public class UserDaoImpl implements UserDao {
 
     public Optional<Long> findLastId() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_USERS__LAST_ID.getTemplate()
+                "SELECT MAX(ID) AS LAST_ID FROM USERS;"
         );
         if (row.next()) {
             return Optional.of(row.getLong("LAST_ID"));
@@ -40,7 +39,7 @@ public class UserDaoImpl implements UserDao {
     public Optional<List<User>> findRows() {
         List<User> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_USERS__ALL_ROWS.getTemplate()
+                "SELECT * FROM USERS;"
         );
         while (rows.next()) {
             result.add(buildModel(rows));
@@ -51,7 +50,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findRow(Long userId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_USERS__ROW_BY_ID.getTemplate(),
+                "SELECT * FROM USERS WHERE ID = ?;",
                 userId
         );
         if (row.next()) {
@@ -62,7 +61,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findRow(String email) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_USERS__ROW_BY_EMAIL.getTemplate(),
+                "SELECT * FROM USERS WHERE EMAIL = ?;",
                 email
         );
         if (row.next()) {
@@ -73,7 +72,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(Long id, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                INSERT_TABLE_USERS_All_COLUMN.getTemplate(),
+                "INSERT INTO USERS (ID, NAME, BIRTHDAY, LOGIN, EMAIL) VALUES (?, ?, ?, ?, ?);",
                 id, name, birthday, login, email
         );
     }
@@ -81,7 +80,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                INSERT_TABLE_USERS.getTemplate(),
+                "INSERT INTO USERS (NAME, BIRTHDAY, LOGIN, EMAIL) VALUES (?, ?, ?, ?);",
                 name, birthday, login, email
         );
     }
@@ -89,7 +88,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(Long rowId, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                UPDATE_TABLE_USERS__ROW_BY_ID.getTemplate(),
+                "UPDATE USERS SET NAME = ?, BIRTHDAY = ?, LOGIN = ?, EMAIL = ? WHERE  ID = ?;",
                 name, birthday, login, email, rowId
         );
     }
@@ -97,14 +96,14 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void delete() {
         jdbcTemplate.update(
-                DELETE_TABLE_USERS__ALL_ROWS.getTemplate()
+                "DELETE FROM USERS;"
         );
     }
 
     @Override
     public void delete(Long rowId) {
         jdbcTemplate.update(
-                DELETE_TABLE_USERS__ROW_BY_ID.getTemplate(),
+                "DELETE FROM USERS WHERE ID = ?;",
                 rowId
         );
     }
@@ -112,7 +111,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void delete(String login) {
         jdbcTemplate.update(
-                DELETE_TABLE_USERS__ROW_BY_LOGIN.getTemplate(),
+                "DELETE FROM USERS WHERE LOGIN = ?;",
                 login
         );
     }

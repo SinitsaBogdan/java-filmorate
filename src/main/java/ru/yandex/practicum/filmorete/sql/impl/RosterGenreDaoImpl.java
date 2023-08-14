@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 
 import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableRosterGenre.*;
 
 @Slf4j
 @Component
@@ -29,7 +28,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public Optional<Integer> findLastId() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_GENRE__LAST_ID.getTemplate()
+                "SELECT MAX(ID) AS LAST_ID FROM ROSTER_GENRE;"
         );
         return Optional.of(row.getInt("LAST_ID"));
     }
@@ -38,7 +37,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public Optional<List<String>> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_GENRE__ALL_NAME.getTemplate()
+                "SELECT NAME FROM ROSTER_GENRE;"
         );
         while (rows.next()) {
             result.add(rows.getString("NAME"));
@@ -50,7 +49,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public Optional<List<Genre>> findRows() {
         List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_GENRE__ALL_ROWS.getTemplate()
+                "SELECT * FROM ROSTER_GENRE ORDER BY ID ASC;"
         );
         while (rows.next()) {
             result.add(buildModel(rows));
@@ -61,7 +60,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public Optional<Genre> findRow(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_GENRE__ROW_BY_ID.getTemplate(),
+                "SELECT * FROM ROSTER_GENRE WHERE ID = ?;",
                 rowId
         );
         if (row.next()) {
@@ -72,7 +71,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public Optional<Genre> findRow(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_GENRE__ROW_BY_NAME.getTemplate(),
+                "SELECT * FROM ROSTER_GENRE WHERE NAME = ?;",
                 name
         );
         if (row.next()) {
@@ -83,7 +82,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void insert(String name) {
         jdbcTemplate.update(
-                INSERT_TABLE_ROSTER_GENRE.getTemplate(),
+                "INSERT INTO ROSTER_GENRE (NAME) VALUES(?);",
                 name
         );
     }
@@ -91,7 +90,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void insert(Integer rowId, String name) {
         jdbcTemplate.update(
-                INSERT_TABLE_ROSTER_GENRE__ALL_COLUMN.getTemplate(),
+                "INSERT INTO ROSTER_GENRE (ID, NAME) VALUES(?, ?);",
                 rowId, name
         );
     }
@@ -99,7 +98,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void update(Integer searchRowId, String name) {
         jdbcTemplate.update(
-                UPDATE_TABLE_ROSTER_GENRE__ROW_BY_ID.getTemplate(),
+                "UPDATE ROSTER_GENRE SET NAME = ? WHERE ID = ?;",
                 name, searchRowId
         );
     }
@@ -107,7 +106,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void delete() {
         jdbcTemplate.update(
-                DELETE_TABLE_ROSTER_GENRE__ALL_ROWS.getTemplate()
+                "DELETE FROM ROSTER_GENRE;"
         );
 
     }
@@ -115,7 +114,8 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void delete(Integer rowId) {
         jdbcTemplate.update(
-                DELETE_TABLE_ROSTER_GENRE__ROW_BY_ID.getTemplate(),
+                "DELETE FROM ROSTER_GENRE " +
+                    "WHERE ID = ?;",
                 rowId
         );
     }
@@ -123,7 +123,8 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void delete(String name) {
         jdbcTemplate.update(
-                DELETE_TABLE_ROSTER_GENRE__ROW_BY_NAME.getTemplate(),
+                "DELETE FROM ROSTER_GENRE " +
+                    "WHERE NAME = ?;",
                 name
         );
     }

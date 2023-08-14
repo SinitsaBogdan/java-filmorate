@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorete.sql.dao.RosterStatusFriendsDao;
 
 import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.RequestsTableRosterStatusFriends.*;
 
 @Slf4j
 @Component
@@ -29,7 +28,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public Optional<Long> findLastId() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_STATUS_FRIENDS__LAST_ID.getTemplate()
+                "SELECT MAX(ID) AS LAST_ID FROM ROSTER_STATUS_FRIENDS;"
         );
         return Optional.of(row.getLong("LAST_ID"));
     }
@@ -38,7 +37,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     public Optional<List<String>> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_STATUS_FRIENDS__ALL_NAME.getTemplate()
+                "SELECT NAME FROM ROSTER_STATUS_FRIENDS;"
         );
         while (rows.next()) {
             result.add(rows.getString("NAME"));
@@ -50,7 +49,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     public Optional<List<StatusFriends>> findRows() {
         List<StatusFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_STATUS_FRIENDS__ALL_ROWS.getTemplate()
+                "SELECT * FROM ROSTER_STATUS_FRIENDS;"
         );
         while (rows.next()) {
             result.add(buildModel(rows));
@@ -61,7 +60,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public Optional<StatusFriends> findRow(Long rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_STATUS_FRIENDS__ROW_BY_ID.getTemplate(),
+                "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE ID = ?;",
                 rowId
         );
         if (row.next()) {
@@ -72,7 +71,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public Optional<StatusFriends> findRow(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_TABLE_ROSTER_STATUS_FRIENDS__ROW_BY_NAME.getTemplate(),
+                "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE NAME = ?;",
                 name
         );
         if (row.next()) {
@@ -83,7 +82,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void insert(String name) {
         jdbcTemplate.update(
-                INSERT_TABLE_ROSTER_STATUS_FRIENDS.getTemplate(),
+                "INSERT INTO ROSTER_STATUS_FRIENDS (NAME) VALUES(?);",
                 name
         );
     }
@@ -91,7 +90,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void insert(Long rowId, String name) {
         jdbcTemplate.update(
-                INSERT_TABLE_ROSTER_STATUS_FRIENDS__ALL_COLUMN.getTemplate(),
+                "INSERT INTO ROSTER_STATUS_FRIENDS (ID, NAME) VALUES(?, ?);",
                 rowId, name
         );
     }
@@ -99,7 +98,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void update(Long searchRowId, String name) {
         jdbcTemplate.update(
-                UPDATE_TABLE_ROSTER_STATUS_FRIENDS__ROW_BY_ID.getTemplate(),
+                "UPDATE ROSTER_STATUS_FRIENDS SET NAME = ? WHERE ID = ?;",
                 name, searchRowId
         );
     }
@@ -107,14 +106,14 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void delete() {
         jdbcTemplate.update(
-                DELETE_TABLE_ROSTER_STATUS_FRIENDS__ALL_ROWS.getTemplate()
+                "DELETE FROM ROSTER_STATUS_FRIENDS;"
         );
     }
 
     @Override
     public void delete(Long rowId) {
         jdbcTemplate.update(
-                DELETE_TABLE_ROSTER_STATUS_FRIENDS__ROW_BY_ID.getTemplate(),
+                "DELETE FROM ROSTER_STATUS_FRIENDS WHERE ID = ?;",
                 rowId
         );
     }
@@ -122,7 +121,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void delete(String name) {
         jdbcTemplate.update(
-                DELETE_TABLE_ROSTER_STATUS_FRIENDS__ROW_BY_NAME.getTemplate(),
+                "DELETE FROM ROSTER_STATUS_FRIENDS WHERE NAME = ?;",
                 name
         );
     }
