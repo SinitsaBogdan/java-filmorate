@@ -40,7 +40,7 @@ public class ServiceFilm {
     }
 
     public Film getFilm(Long id) {
-        Optional<Film> optional = filmDao.findRow(id);
+        Optional<Film> optional = filmDao.findFilm(id);
         if (optional.isPresent()) {
             return optional.get();
         } else {
@@ -51,7 +51,7 @@ public class ServiceFilm {
     public Film createFilm(Film film) {
         checkValidFilm(film);
         Optional<Film> optionalFilm;
-        optionalFilm = filmDao.findRow(film.getName());
+        optionalFilm = filmDao.findFilm(film.getName());
         if (optionalFilm.isEmpty()) {
             filmDao.insert(
                     film.getMpa().getId(), film.getName(), film.getDescription(),
@@ -60,18 +60,18 @@ public class ServiceFilm {
         } else {
             throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS);
         }
-        optionalFilm = filmDao.findRow(film.getName());
+        optionalFilm = filmDao.findFilm(film.getName());
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
                 totalGenreFilmDao.insert(optionalFilm.get().getId(), genre.getId());
             }
         }
-        return filmDao.findRow(film.getName()).get();
+        return filmDao.findFilm(film.getName()).get();
     }
 
     public Film updateFilm(Film film) {
         checkValidFilm(film);
-        Optional<Film> optionalFilm = filmDao.findRow(film.getId());
+        Optional<Film> optionalFilm = filmDao.findFilm(film.getId());
         if (optionalFilm.isPresent()) {
             filmDao.update(
                     film.getId(), film.getMpa().getId(),
@@ -81,19 +81,19 @@ public class ServiceFilm {
         } else {
             throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         }
-        List<TotalGenreFilm> totalGenreFilms = totalGenreFilmDao.findRowsByFilmId(film.getId());
+        List<TotalGenreFilm> totalGenreFilms = totalGenreFilmDao.findAllTotalGenreFilm(film.getId());
         if (!totalGenreFilms.isEmpty()) {
             totalGenreFilmDao.deleteAllFilmId(film.getId());
             if (film.getGenres() != null) {
                 for (Genre genreFilm : film.getGenres()) {
-                    Optional<TotalGenreFilm> totalGenreFilm = totalGenreFilmDao.findRow(film.getId(), genreFilm.getId());
+                    Optional<TotalGenreFilm> totalGenreFilm = totalGenreFilmDao.findTotalGenreFilm(film.getId(), genreFilm.getId());
                     if (totalGenreFilm.isEmpty()) {
                         totalGenreFilmDao.insert(film.getId(), genreFilm.getId());
                     }
                 }
             }
         }
-        return filmDao.findRow(film.getId()).get();
+        return filmDao.findFilm(film.getId()).get();
     }
 
     public List<Film> getPopularFilms(Integer count) {
@@ -101,7 +101,7 @@ public class ServiceFilm {
     }
 
     public List<Film> getAllFilms() {
-        return filmDao.findRows();
+        return filmDao.findAllFilms();
     }
 
     public List<Film> getFilmsToLikeUser(Long userId) {
@@ -109,8 +109,8 @@ public class ServiceFilm {
     }
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
-        Optional<Film> optionalFilm = filmDao.findRow(filmId);
-        Optional<User> optionalUser = userDao.findRow(userId);
+        Optional<Film> optionalFilm = filmDao.findFilm(filmId);
+        Optional<User> optionalUser = userDao.findUser(userId);
 
         if (optionalFilm.isEmpty()) {
             throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);

@@ -7,13 +7,11 @@ import java.util.Optional;
 
 public interface FilmDao {
 
-    List<Film> findRows();
+    List<Film> findAllFilms();
 
-    Optional<Long> findLastId();
+    Optional<Film> findFilm(Long rowId);
 
-    Optional<Film> findRow(Long rowId);
-
-    Optional<Film> findRow(String filmName);
+    Optional<Film> findFilm(String filmName);
 
     void insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
 

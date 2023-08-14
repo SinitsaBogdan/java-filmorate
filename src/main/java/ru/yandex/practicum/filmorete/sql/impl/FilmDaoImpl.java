@@ -33,15 +33,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Optional<Long> findLastId() {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT MAX(ID) AS LAST_ID FROM FILMS;"
-        );
-        return Optional.of(row.getLong("LAST_ID"));
-    }
-
-    @Override
-    public List<Film> findRows() {
+    public List<Film> findAllFilms() {
         List<Film> result = new ArrayList<>();
         SqlRowSet filmsRows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -57,14 +49,14 @@ public class FilmDaoImpl implements FilmDao {
         );
 
         while (filmsRows.next()) {
-            List<Genre> genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(filmsRows.getLong("ID"));
+            List<Genre> genres = totalGenreFilmDao.findAllGenreByFilmId(filmsRows.getLong("ID"));
             result.add(buildModel(filmsRows, genres.isEmpty() ? new ArrayList<>() : genres));
         }
         return result;
     }
 
     @Override
-    public Optional<Film> findRow(String filmName) {
+    public Optional<Film> findFilm(String filmName) {
         List<Genre> genres;
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -81,13 +73,13 @@ public class FilmDaoImpl implements FilmDao {
                 filmName
         );
         if (rows.next()) {
-            genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
+            genres = totalGenreFilmDao.findAllGenreByFilmId(rows.getLong("ID"));
             return Optional.of(buildModel(rows, genres));
         } else return Optional.of(buildModel(rows, new ArrayList<>()));
     }
 
     @Override
-    public Optional<Film> findRow(Long rowId) {
+    public Optional<Film> findFilm(Long rowId) {
         List<Genre> genres;
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -104,9 +96,9 @@ public class FilmDaoImpl implements FilmDao {
                 rowId
         );
         if (rows.next()) {
-            genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
+            genres = totalGenreFilmDao.findAllGenreByFilmId(rows.getLong("ID"));
             return Optional.of(buildModel(rows, genres));
-        } else return Optional.of(buildModel(rows, new ArrayList<>()));
+        } else return Optional.empty();
     }
 
     @Override

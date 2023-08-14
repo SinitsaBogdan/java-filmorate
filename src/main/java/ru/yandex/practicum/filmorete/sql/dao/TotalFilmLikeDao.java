@@ -13,11 +13,11 @@ public interface TotalFilmLikeDao {
 
     List<Film> findFilmToLikeUser(Long userId);
 
-    List<TotalFilmLike> findRows();
+    List<TotalFilmLike> findAllTotalFilmLike();
 
-    List<TotalFilmLike> findRowsByFilmId(Long filmId);
+    List<TotalFilmLike> findAllTotalFilmLikeByFilmId(Long filmId);
 
-    List<TotalFilmLike> findRowsByUserId(Long userId);
+    List<TotalFilmLike> findAllTotalFilmLikeByUserId(Long userId);
 
     void insert(Long filmId, Long userId);
 

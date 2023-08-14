@@ -27,7 +27,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     }
 
     @Override
-    public Optional<TotalGenreFilm> findRow(Long filmId, Integer genreId) {
+    public Optional<TotalGenreFilm> findTotalGenreFilm(Long filmId, Integer genreId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_GENRE_FILM WHERE FILM_ID = ? AND GENRE_ID = ?;",
                 filmId, genreId
@@ -37,7 +37,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     }
 
     @Override
-    public List<Genre> findAllRowsSearchFilmIdByGenreId(Long id) {
+    public List<Genre> findAllGenreByFilmId(Long id) {
         List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * " +
@@ -59,7 +59,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     }
 
     @Override
-    public List<TotalGenreFilm> findRows() {
+    public List<TotalGenreFilm> findTotalGenreFilm() {
         List<TotalGenreFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_GENRE_FILM;"
@@ -69,7 +69,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     }
 
     @Override
-    public List<TotalGenreFilm> findRowsByFilmId(Long filmId) {
+    public List<TotalGenreFilm> findAllTotalGenreFilm(Long filmId) {
         List<TotalGenreFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_GENRE_FILM WHERE FILM_ID = ?;",
@@ -80,7 +80,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     }
 
     @Override
-    public List<TotalGenreFilm> findRowsByGenreId(Integer genreId) {
+    public List<TotalGenreFilm> findAllTotalGenreFilm(Integer genreId) {
         List<TotalGenreFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_GENRE_FILM WHERE GENRE_ID = ?;",

@@ -59,7 +59,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                 limit
         );
         while (rows.next()) {
-            List<Genre> genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
+            List<Genre> genres = totalGenreFilmDao.findAllGenreByFilmId(rows.getLong("ID"));
             result.add(filmDao.buildModel(rows, genres.isEmpty() ? new ArrayList<>() : genres));
         }
         return result;
@@ -107,14 +107,14 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                 userId
         );
         while (rows.next()) {
-            List<Genre> genres = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(rows.getLong("ID"));
+            List<Genre> genres = totalGenreFilmDao.findAllGenreByFilmId(rows.getLong("ID"));
             result.add(filmDao.buildModel(rows, genres.isEmpty() ? new ArrayList<>() : genres));
         }
         return result;
     }
 
     @Override
-    public List<TotalFilmLike> findRows() {
+    public List<TotalFilmLike> findAllTotalFilmLike() {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE;"
@@ -124,7 +124,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
-    public List<TotalFilmLike> findRowsByFilmId(Long filmId) {
+    public List<TotalFilmLike> findAllTotalFilmLikeByFilmId(Long filmId) {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE WHERE FILM_ID = ?;",
@@ -135,7 +135,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
-    public List<TotalFilmLike> findRowsByUserId(Long userId) {
+    public List<TotalFilmLike> findAllTotalFilmLikeByUserId(Long userId) {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE WHERE USER_ID = ?;",

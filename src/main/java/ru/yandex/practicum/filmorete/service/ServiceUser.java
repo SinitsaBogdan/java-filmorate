@@ -32,7 +32,7 @@ public class ServiceUser {
     }
 
     public User getUser(Long userId) {
-        Optional<User> optional = userDao.findRow(userId);
+        Optional<User> optional = userDao.findUser(userId);
         if (optional.isPresent()) {
             return optional.get();
         } else {
@@ -42,10 +42,10 @@ public class ServiceUser {
 
     public User createUser(User user) {
         checkValidUser(user);
-        Optional<User> optional = userDao.findRow(user.getEmail());
+        Optional<User> optional = userDao.findUser(user.getEmail());
         if (optional.isEmpty()) {
             userDao.insert(user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
-            return userDao.findRow(user.getEmail()).get();
+            return userDao.findUser(user.getEmail()).get();
         } else {
             throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
         }
@@ -53,7 +53,7 @@ public class ServiceUser {
 
     public User updateUser(User user) {
         checkValidUser(user);
-        Optional<User> optional = userDao.findRow(user.getId());
+        Optional<User> optional = userDao.findUser(user.getId());
         if (optional.isPresent()) {
             userDao.update(user.getId(), user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
             return user;
@@ -63,7 +63,7 @@ public class ServiceUser {
     }
 
     public List<User> getAllUsers() {
-        return userDao.findRows();
+        return userDao.findAllUsers();
     }
 
     public List<User> getFriends(Long id) {
@@ -83,11 +83,11 @@ public class ServiceUser {
     }
 
     public void addFriend(Long friendId, Long userId) {
-        Optional<User> optionalUser = userDao.findRow(userId);
-        Optional<User> optionalFriend = userDao.findRow(friendId);
+        Optional<User> optionalUser = userDao.findUser(userId);
+        Optional<User> optionalFriend = userDao.findUser(friendId);
 
         if (optionalUser.isPresent() && optionalFriend.isPresent()) {
-            Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.findRow(userId, friendId);
+            Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.findTotalUserFriend(userId, friendId);
             if (optionalRowStatusUser.isPresent()) {
                 TotalUserFriends userStatus = optionalRowStatusUser.get();
                 if (userStatus.getStatusId() == 1) {
@@ -96,7 +96,7 @@ public class ServiceUser {
             } else {
                 totalUserFriendsDao.insert(userId, friendId, 2);
             }
-            Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findRow(friendId, userId);
+            Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findTotalUserFriend(friendId, userId);
             if (optionalRowStatusFriend.isEmpty()) {
                 totalUserFriendsDao.insert(friendId, userId, 1);
             }

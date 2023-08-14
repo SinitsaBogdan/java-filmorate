@@ -8,13 +8,11 @@ public interface RosterGenreDao {
 
     List<String> findAllName();
 
-    List<Genre> findRows();
+    List<Genre> findAllGenre();
 
-    Optional<Integer> findLastId();
+    Optional<Genre> findGenre(Integer rowId);
 
-    Optional<Genre> findRow(Integer rowId);
-
-    Optional<Genre> findRow(String name);
+    Optional<Genre> findGenre(String name);
 
     void insert(String name);
 

@@ -8,13 +8,11 @@ public interface RosterStatusFriendsDao {
 
     List<String> findAllName();
 
-    List<StatusFriends> findRows();
+    List<StatusFriends> findAllStatusFriends();
 
-    Optional<Long> findLastId();
+    Optional<StatusFriends> findStatusFriends(Long rowId);
 
-    Optional<StatusFriends> findRow(Long rowId);
-
-    Optional<StatusFriends> findRow(String status);
+    Optional<StatusFriends> findStatusFriends(String status);
 
     void insert(String status);
 

@@ -26,14 +26,6 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     }
 
     @Override
-    public Optional<Long> findLastId() {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT MAX(ID) AS LAST_ID FROM ROSTER_STATUS_FRIENDS;"
-        );
-        return Optional.of(row.getLong("LAST_ID"));
-    }
-
-    @Override
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
@@ -44,7 +36,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     }
 
     @Override
-    public List<StatusFriends> findRows() {
+    public List<StatusFriends> findAllStatusFriends() {
         List<StatusFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_STATUS_FRIENDS;"
@@ -54,7 +46,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     }
 
     @Override
-    public Optional<StatusFriends> findRow(Long rowId) {
+    public Optional<StatusFriends> findStatusFriends(Long rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE ID = ?;",
                 rowId
@@ -64,7 +56,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     }
 
     @Override
-    public Optional<StatusFriends> findRow(String name) {
+    public Optional<StatusFriends> findStatusFriends(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE NAME = ?;",
                 name

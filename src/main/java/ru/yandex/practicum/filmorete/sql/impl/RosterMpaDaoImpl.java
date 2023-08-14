@@ -26,14 +26,6 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public Optional<Long> findLastId() {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT MAX(ID) AS LAST_ID FROM ROSTER_MPA;"
-        );
-        return Optional.of(row.getLong("LAST_ID"));
-    }
-
-    @Override
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
@@ -54,7 +46,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public List<Mpa> findRows()  {
+    public List<Mpa> findAllMpa()  {
         List<Mpa> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_MPA;"
@@ -64,7 +56,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public Optional<Mpa> findRow(Integer rowId) {
+    public Optional<Mpa> findMpa(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_MPA WHERE ID = ?;",
                 rowId
@@ -74,7 +66,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public Optional<Mpa> findRow(String name) {
+    public Optional<Mpa> findMpa(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_MPA WHERE NAME = ?;",
                 name

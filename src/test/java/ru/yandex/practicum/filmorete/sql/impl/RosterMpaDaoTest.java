@@ -46,14 +46,14 @@ class RosterMpaDaoTest {
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        List<Mpa> result = dao.findRows();
+        List<Mpa> result = dao.findAllMpa();
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRow(rowId)")
     public void testFindRowSearchId() {
-        Optional<Mpa> optional = dao.findRow(1);
+        Optional<Mpa> optional = dao.findMpa(1);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "P");
         assertEquals(optional.get().getDescription(), "Описание");
@@ -62,7 +62,7 @@ class RosterMpaDaoTest {
     @Test
     @DisplayName("findRow(name)")
     public void testFindRowSearchName() {
-        Optional<Mpa> optional = dao.findRow("P");
+        Optional<Mpa> optional = dao.findMpa("P");
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "P");
         assertEquals(optional.get().getDescription(), "Описание");
@@ -72,7 +72,7 @@ class RosterMpaDaoTest {
     @DisplayName("insert(name, description)")
     public void testInsertRowNameDescription() {
         dao.insert("H", "Описание");
-        Optional<Mpa> optional = dao.findRow("H");
+        Optional<Mpa> optional = dao.findMpa("H");
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "H");
         assertEquals(optional.get().getDescription(), "Описание");
@@ -82,7 +82,7 @@ class RosterMpaDaoTest {
     @DisplayName("insert(rowId, name, descriptions)")
     public void testInsertRowAllColumn() {
         dao.insert(10, "W", "Описание W");
-        Optional<Mpa> optional = dao.findRow(10);
+        Optional<Mpa> optional = dao.findMpa(10);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "W");
         assertEquals(optional.get().getDescription(), "Описание W");
@@ -92,7 +92,7 @@ class RosterMpaDaoTest {
     @DisplayName("update(searchRowId, name, description)")
     public void testUpdateRowSearchIdByNameDescription() {
         dao.update(2, "F", "Описание F");
-        Optional<Mpa> optional = dao.findRow(2);
+        Optional<Mpa> optional = dao.findMpa(2);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "F");
         assertEquals(optional.get().getDescription(), "Описание F");
@@ -102,7 +102,7 @@ class RosterMpaDaoTest {
     @DisplayName("update(searchName, name, description)")
     public void testUpdateRowSearchNameByNameDescription() {
         dao.update("P", "H", "Описание");
-        Optional<Mpa> optional = dao.findRow(1);
+        Optional<Mpa> optional = dao.findMpa(1);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "H");
         assertEquals(optional.get().getDescription(), "Описание");
@@ -112,7 +112,7 @@ class RosterMpaDaoTest {
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         dao.delete();
-        List<Mpa> result = dao.findRows();
+        List<Mpa> result = dao.findAllMpa();
         assertEquals(result.size(), 0);
     }
 
@@ -120,7 +120,7 @@ class RosterMpaDaoTest {
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
         dao.delete(2);
-        List<Mpa> result = dao.findRows();
+        List<Mpa> result = dao.findAllMpa();
         assertEquals(result.size(), 1);
     }
 
@@ -128,7 +128,7 @@ class RosterMpaDaoTest {
     @DisplayName("delete(name)")
     public void testDeleteRowSearchName() {
         dao.delete("P");
-        List<Mpa> result = dao.findRows();
+        List<Mpa> result = dao.findAllMpa();
         assertEquals(result.size(), 1);
     }
 }

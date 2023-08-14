@@ -26,14 +26,6 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     }
 
     @Override
-    public Optional<Integer> findLastId() {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT MAX(ID) AS LAST_ID FROM ROSTER_GENRE;"
-        );
-        return Optional.of(row.getInt("LAST_ID"));
-    }
-
-    @Override
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
@@ -44,7 +36,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     }
 
     @Override
-    public List<Genre> findRows() {
+    public List<Genre> findAllGenre() {
         List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_GENRE ORDER BY ID ASC;"
@@ -54,7 +46,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     }
 
     @Override
-    public Optional<Genre> findRow(Integer rowId) {
+    public Optional<Genre> findGenre(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_GENRE WHERE ID = ?;",
                 rowId
@@ -64,7 +56,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     }
 
     @Override
-    public Optional<Genre> findRow(String name) {
+    public Optional<Genre> findGenre(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_GENRE WHERE NAME = ?;",
                 name

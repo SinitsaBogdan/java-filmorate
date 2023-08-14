@@ -11,15 +11,15 @@ public interface TotalUserFriendsDao {
 
     List<User> findFriendsCommon(Long userId, Long friendId);
 
-    List<TotalUserFriends> findRows();
+    List<TotalUserFriends> findAllTotalUserFriend();
 
-    List<TotalUserFriends> findRowsByUserId(Long userId);
+    List<TotalUserFriends> findAllTotalFriendByUserId(Long userId);
 
-    List<TotalUserFriends> findRowsByFriendId(Long friendId);
+    List<TotalUserFriends> findAllTotalUserByFriendId(Long friendId);
 
-    List<TotalUserFriends> findRowsByStatusId(Integer statusId);
+    List<TotalUserFriends> findAllTotalByStatusId(Integer statusId);
 
-    Optional<TotalUserFriends> findRow(Long userId, Long friendId);
+    Optional<TotalUserFriends> findTotalUserFriend(Long userId, Long friendId);
 
     void insert(Long userId, Long friendId, Integer statusId);
 

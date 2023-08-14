@@ -7,13 +7,11 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    List<User> findRows();
+    List<User> findAllUsers();
 
-    Optional<Long> findLastId();
+    Optional<User> findUser(Long rowId);
 
-    Optional<User> findRow(Long rowId);
-
-    Optional<User> findRow(String email);
+    Optional<User> findUser(String email);
 
     void insert(String name, LocalDate birthday, String login, String email);
 

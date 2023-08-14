@@ -66,7 +66,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public List<TotalUserFriends> findRows() {
+    public List<TotalUserFriends> findAllTotalUserFriend() {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS;"
@@ -76,7 +76,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public List<TotalUserFriends> findRowsByUserId(Long userId) {
+    public List<TotalUserFriends> findAllTotalFriendByUserId(Long userId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS WHERE USER_ID = ?;",
@@ -87,7 +87,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public List<TotalUserFriends> findRowsByFriendId(Long friendId) {
+    public List<TotalUserFriends> findAllTotalUserByFriendId(Long friendId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS WHERE FRIEND_ID = ?;",
@@ -98,7 +98,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public List<TotalUserFriends> findRowsByStatusId(Integer statusId) {
+    public List<TotalUserFriends> findAllTotalByStatusId(Integer statusId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS WHERE STATUS_ID = ?;",
@@ -109,7 +109,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public Optional<TotalUserFriends> findRow(Long userId, Long friendId) {
+    public Optional<TotalUserFriends> findTotalUserFriend(Long userId, Long friendId) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?;",
                 userId, friendId

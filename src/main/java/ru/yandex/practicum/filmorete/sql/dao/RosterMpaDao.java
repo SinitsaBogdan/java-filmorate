@@ -10,13 +10,11 @@ public interface RosterMpaDao {
 
     List<String> findAllDescription();
 
-    List<Mpa> findRows();
+    List<Mpa> findAllMpa();
 
-    Optional<Long> findLastId();
+    Optional<Mpa> findMpa(Integer rowId);
 
-    Optional<Mpa> findRow(Integer rowId);
-
-    Optional<Mpa> findRow(String name);
+    Optional<Mpa> findMpa(String name);
 
     void insert(String name, String description);
 

@@ -40,14 +40,14 @@ class RosterStatusFriendsDaoTest {
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        List<StatusFriends> result = dao.findRows();
+        List<StatusFriends> result = dao.findAllStatusFriends();
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRow(rowId)")
     public void testFindRowSearchId() {
-        Optional<StatusFriends> result = dao.findRow(1L);
+        Optional<StatusFriends> result = dao.findStatusFriends(1L);
         assertTrue(result.isPresent());
         assertEquals(result.get().getStatus(), "Не подтвержденная");
     }
@@ -55,7 +55,7 @@ class RosterStatusFriendsDaoTest {
     @Test
     @DisplayName("findRow(name)")
     public void testFindAllRowsSearchStatus() {
-        Optional<StatusFriends> result = dao.findRow("Не подтвержденная");
+        Optional<StatusFriends> result = dao.findStatusFriends("Не подтвержденная");
         assertTrue(result.isPresent());
         assertEquals(result.get().getStatus(), "Не подтвержденная");
     }
@@ -64,7 +64,7 @@ class RosterStatusFriendsDaoTest {
     @DisplayName("insert(status)")
     public void testInsertRowByStatus() {
         dao.insert("Новый");
-        List<StatusFriends> result = dao.findRows();
+        List<StatusFriends> result = dao.findAllStatusFriends();
         assertEquals(result.size(), 3);
     }
 
@@ -72,7 +72,7 @@ class RosterStatusFriendsDaoTest {
     @DisplayName("insert(rowId, status)")
     public void testInsertRowAllColumn() {
         dao.insert(3L, "Новый");
-        List<StatusFriends> result = dao.findRows();
+        List<StatusFriends> result = dao.findAllStatusFriends();
         assertEquals(result.size(), 3);
     }
 
@@ -80,7 +80,7 @@ class RosterStatusFriendsDaoTest {
     @DisplayName("update(searchRowId, status)")
     public void testUpdateRowSearchIdByStatus() {
         dao.update(1L, "Обновленный");
-        Optional<StatusFriends> result = dao.findRow(1L);
+        Optional<StatusFriends> result = dao.findStatusFriends(1L);
         assertTrue(result.isPresent());
         assertEquals(result.get().getStatus(), "Обновленный");
     }
@@ -89,7 +89,7 @@ class RosterStatusFriendsDaoTest {
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         dao.delete();
-        List<StatusFriends> result = dao.findRows();
+        List<StatusFriends> result = dao.findAllStatusFriends();
         assertEquals(result.size(), 0);
     }
 
@@ -97,7 +97,7 @@ class RosterStatusFriendsDaoTest {
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
         dao.delete(1L);
-        List<StatusFriends> result = dao.findRows();
+        List<StatusFriends> result = dao.findAllStatusFriends();
         assertEquals(result.size(), 1);
     }
 
@@ -105,7 +105,7 @@ class RosterStatusFriendsDaoTest {
     @DisplayName("delete(status)")
     public void testDeleteAllRowsSearchStatus() {
         dao.delete("Не подтвержденная");
-        List<StatusFriends> result = dao.findRows();
+        List<StatusFriends> result = dao.findAllStatusFriends();
         assertEquals(result.size(), 1);
     }
 }

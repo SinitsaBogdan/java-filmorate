@@ -22,14 +22,23 @@ import static org.junit.jupiter.api.Assertions.*;
 class TotalGenreFilmDaoTest {
 
     private final TotalGenreFilmDao totalGenreFilmDao;
+
     private final FilmDaoImpl filmDao;
+
     private final RosterMpaDaoImpl enumMpaDao;
+
+    private final RosterGenreDaoImpl rosterGenreDao;
 
     @BeforeEach
     public void beforeEach() {
         totalGenreFilmDao.delete();
-        filmDao.delete();
         enumMpaDao.delete();
+        filmDao.delete();
+        rosterGenreDao.delete();
+
+        rosterGenreDao.insert(1, "Комедия");
+        rosterGenreDao.insert(2, "Мультики");
+        rosterGenreDao.insert(3, "Боевик");
 
         enumMpaDao.insert(1, "P", "Описание");
         enumMpaDao.insert(2, "G", "Описание 2");
@@ -48,28 +57,28 @@ class TotalGenreFilmDaoTest {
     @Test
     @DisplayName("findAllRowsSearchFilmIdByGenreName(filmId)")
     public void testFindAllRowsSearchFilmIdByGenreName() {
-        List<Genre> result = totalGenreFilmDao.findAllRowsSearchFilmIdByGenreId(100L);
+        List<Genre> result = totalGenreFilmDao.findAllGenreByFilmId(100L);
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
         assertEquals(result.size(), 4);
     }
 
     @Test
     @DisplayName("findRowsByFilmId(filmId)")
     public void testFindAllRowsSearchFilmId() {
-        List<TotalGenreFilm> result = totalGenreFilmDao.findRowsByFilmId(100L);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm(100L);
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRowsByGenreId(genreId)")
     public void testFindAllRowsSearchGenreId() {
-        List<TotalGenreFilm> result = totalGenreFilmDao.findRowsByGenreId(2);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm(2);
         assertEquals(result.size(), 1);
     }
 
@@ -77,7 +86,7 @@ class TotalGenreFilmDaoTest {
     @DisplayName("insert(filmId, genreId)")
     public void testInsertFilmIdAndGenreId() {
         totalGenreFilmDao.insert(100L, 3);
-        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
         assertEquals(result.size(), 5);
     }
 
@@ -85,7 +94,7 @@ class TotalGenreFilmDaoTest {
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         totalGenreFilmDao.delete();
-        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
         assertEquals(result.size(), 0);
     }
 
@@ -93,7 +102,7 @@ class TotalGenreFilmDaoTest {
     @DisplayName("delete(filmId, genreId)")
     public void testDeleteRowSearchFilmIdAndGenreId() {
         totalGenreFilmDao.delete(100L, 1);
-        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
         assertEquals(result.size(), 3);
     }
 
@@ -101,7 +110,7 @@ class TotalGenreFilmDaoTest {
     @DisplayName("deleteAllFilmId(filmId)")
     public void testDeleteAllRowsSearchFilmId() {
         totalGenreFilmDao.deleteAllFilmId(100L);
-        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
         assertEquals(result.size(), 2);
     }
 
@@ -109,7 +118,7 @@ class TotalGenreFilmDaoTest {
     @DisplayName("deleteAllGenreId(genreId)")
     public void testDeleteAllRowsSearchGenreId() {
         totalGenreFilmDao.deleteAllGenreId(1);
-        List<TotalGenreFilm> result = totalGenreFilmDao.findRows();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
         assertEquals(result.size(), 2);
     }
 }

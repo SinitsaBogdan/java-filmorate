@@ -26,7 +26,7 @@ public class UserDaoImpl implements UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Optional<Long> findLastId() {
+    public Optional<Long> findLastIdUser() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT MAX(ID) AS LAST_ID FROM USERS;"
         );
@@ -35,7 +35,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findRows() {
+    public List<User> findAllUsers() {
         List<User> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS;"
@@ -45,7 +45,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> findRow(Long userId) {
+    public Optional<User> findUser(Long userId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS WHERE ID = ?;",
                 userId
@@ -55,7 +55,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> findRow(String email) {
+    public Optional<User> findUser(String email) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS WHERE EMAIL = ?;",
                 email

@@ -24,7 +24,7 @@ public class ServiceGenre {
 
     public Genre getGenresSearchId(Integer genreId) {
 
-        Optional<Genre> optional = genreDao.findRow(genreId);
+        Optional<Genre> optional = genreDao.findGenre(genreId);
         if (optional.isPresent()) {
             return optional.get();
         } else {
@@ -33,7 +33,7 @@ public class ServiceGenre {
     }
 
     public List<Genre> getAllGenres() {
-        return genreDao.findRows();
+        return genreDao.findAllGenre();
     }
 
     public void add(@NotNull Genre genre) {

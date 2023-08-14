@@ -25,7 +25,7 @@ public class ServiceMpa {
     }
 
     public Mpa getSearchId(Integer mpaId) {
-        Optional<Mpa> optional = mpaDao.findRow(mpaId);
+        Optional<Mpa> optional = mpaDao.findMpa(mpaId);
         if (optional.isPresent()) {
             return optional.get();
         } else {
@@ -34,7 +34,7 @@ public class ServiceMpa {
     }
 
     public List<Mpa> getAll() {
-        return mpaDao.findRows();
+        return mpaDao.findAllMpa();
     }
 
     public void add(@NotNull Mpa mpa) {

@@ -7,15 +7,15 @@ import java.util.Optional;
 
 public interface TotalGenreFilmDao {
 
-    List<Genre> findAllRowsSearchFilmIdByGenreId(Long filmId);
+    List<Genre> findAllGenreByFilmId(Long filmId);
 
-    List<TotalGenreFilm> findRows();
+    List<TotalGenreFilm> findTotalGenreFilm();
 
-    List<TotalGenreFilm> findRowsByFilmId(Long filmId);
+    List<TotalGenreFilm> findAllTotalGenreFilm(Long filmId);
 
-    List<TotalGenreFilm> findRowsByGenreId(Integer genreId);
+    List<TotalGenreFilm> findAllTotalGenreFilm(Integer genreId);
 
-    Optional<TotalGenreFilm> findRow(Long filmId, Integer genreId);
+    Optional<TotalGenreFilm> findTotalGenreFilm(Long filmId, Integer genreId);
 
     void insert(Long filmId, Integer genreId);
 
