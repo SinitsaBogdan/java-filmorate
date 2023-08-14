@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorete.sql.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,6 @@ import java.util.*;
 
 @Slf4j
 @Component
-@Primary
 @Qualifier("UserDaoImpl")
 public class UserDaoImpl implements UserDao {
 
