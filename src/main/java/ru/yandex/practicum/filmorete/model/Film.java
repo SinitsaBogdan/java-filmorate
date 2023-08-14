@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,7 +25,8 @@ public class Film {
     @Size(max = 200)
     private final String description;
 
-    private List<Genre> genres;
+    @Builder.Default
+    private List<Genre> genres = new ArrayList<>();
 
     @NotNull
     private final LocalDate releaseDate;
@@ -36,4 +38,8 @@ public class Film {
 
     @NotNull
     private Mpa mpa;
+
+    public void addGenre(Genre genre) {
+        genres.add(genre);
+    }
 }

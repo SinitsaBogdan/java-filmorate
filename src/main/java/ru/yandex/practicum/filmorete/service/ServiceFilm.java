@@ -78,18 +78,14 @@ public class ServiceFilm {
                     film.getName(), film.getDescription(),
                     film.getReleaseDate(), film.getDuration()
             );
-        } else {
-            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        }
+        } else throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         List<TotalGenreFilm> totalGenreFilms = totalGenreFilmDao.findAllTotalGenreFilm(film.getId());
-        if (!totalGenreFilms.isEmpty()) {
-            totalGenreFilmDao.deleteAllFilmId(film.getId());
-            if (film.getGenres() != null) {
-                for (Genre genreFilm : film.getGenres()) {
-                    Optional<TotalGenreFilm> totalGenreFilm = totalGenreFilmDao.findTotalGenreFilm(film.getId(), genreFilm.getId());
-                    if (totalGenreFilm.isEmpty()) {
-                        totalGenreFilmDao.insert(film.getId(), genreFilm.getId());
-                    }
+        if (!totalGenreFilms.isEmpty()) totalGenreFilmDao.deleteAllFilmId(film.getId());
+        if (film.getGenres() != null) {
+            for (Genre genreFilm : film.getGenres()) {
+                Optional<TotalGenreFilm> totalGenreFilm = totalGenreFilmDao.findTotalGenreFilm(film.getId(), genreFilm.getId());
+                if (totalGenreFilm.isEmpty()) {
+                    totalGenreFilmDao.insert(film.getId(), genreFilm.getId());
                 }
             }
         }

@@ -35,32 +35,45 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     @Override
     public List<Film> findPopularFilms(Integer limit) {
-        List<Film> result = new ArrayList<>();
+        Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
-                        "FILMS.ID AS ID, " +
-                        "ROSTER_MPA.ID AS MPA_ID, " +
-                        "ROSTER_MPA.NAME AS MPA_NAME, " +
-                        "FILMS.NAME AS NAME, " +
-                        "FILMS.DESCRIPTION AS DESCRIPTION, " +
-                        "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
-                        "FILMS.DURATION AS DURATION, " +
-                        "(" +
-                            "SELECT COUNT(*) " +
-                            "FROM TOTAL_FILM_LIKE " +
-                            "WHERE TOTAL_FILM_LIKE.FILM_ID = FILMS.ID" +
-                        ") AS SIZE_LIKE " +
-                    "FROM FILMS AS FILMS " +
-                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
-                    "ORDER BY SIZE_LIKE DESC " +
-                    "LIMIT ?;",
+                        "F.ID AS FILM_ID, " +
+                        "F.NAME AS FILM_NAME, " +
+                        "F.DESCRIPTION AS FILM_DESCRIPTION, " +
+                        "F.RELEASE_DATE AS FILM_RELEASE_DATE, " +
+                        "F.DURATION AS FILM_DURATION, " +
+                        "R.ID AS MPA_ID, " +
+                        "R.NAME AS MPA_NAME, " +
+                        "G.ID AS GENRE_ID, " +
+                        "G.NAME AS GENRE_NAME, " +
+                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS L WHERE L.FILM_ID = F.ID ) AS SIZE_LIKE " +
+                    "FROM FILMS AS F " +
+                    "INNER JOIN ROSTER_MPA AS R ON F.MPA_ID = R.ID " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS T ON F.ID=T.FILM_ID " +
+                    "LEFT JOIN ROSTER_GENRE AS G ON T.GENRE_ID=G.ID " +
+                    "WHERE F.ID IN ( " +
+                        "SELECT F.ID FROM FILMS AS F " +
+                        "ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS L WHERE L.FILM_ID = F.ID ) DESC " +
+                        "LIMIT ? " +
+                    ");",
                 limit
         );
         while (rows.next()) {
-            List<Genre> genres = totalGenreFilmDao.findAllGenreByFilmId(rows.getLong("ID"));
-            result.add(filmDao.buildModel(rows, genres.isEmpty() ? new ArrayList<>() : genres));
+            Long filmId = rows.getLong("FILM_ID");
+            Integer genreId = rows.getInt("GENRE_ID");
+            String genreName = rows.getString("GENRE_NAME");
+            if (!result.containsKey(filmId)) {
+                Film film = filmDao.buildModel(rows);
+                result.put(filmId, film);
+            }
+            if (genreName != null) {
+                Genre genre = Genre.builder().id(genreId).name(genreName).build();
+                result.get(filmId).addGenre(genre);
+            }
         }
-        return result;
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
     }
 
     @Override
@@ -81,34 +94,41 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     @Override
     public List<Film> findFilmToLikeUser(Long userId) {
-        List<Film> result = new ArrayList<>();
+        Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
-                        "FILMS.ID AS ID, " +
-                        "ROSTER_MPA.ID AS MPA_ID, " +
-                        "ROSTER_MPA.NAME AS MPA_NAME, " +
-                        "FILMS.NAME AS NAME, " +
-                        "FILMS.DESCRIPTION AS DESCRIPTION, " +
-                        "FILMS.RELEASE_DATE AS RELEASE_DATE, " +
-                        "FILMS.DURATION AS DURATION, " +
-                        "(" +
-                            "SELECT COUNT(*) " +
-                            "FROM TOTAL_FILM_LIKE " +
-                            "WHERE TOTAL_FILM_LIKE.FILM_ID = FILMS.ID" +
-                        ") AS SIZE_LIKE " +
-                    "FROM FILMS AS FILMS " +
-                    "INNER JOIN ROSTER_MPA AS ROSTER_MPA ON FILMS.MPA_ID = ROSTER_MPA.ID " +
-                    "WHERE FILMS.ID IN (" +
-                        "SELECT FILM_ID FROM TOTAL_FILM_LIKE " +
-                        "WHERE USER_ID = ?" +
-                    ");",
+                        "F.ID AS FILM_ID, " +
+                        "F.NAME AS FILM_NAME, " +
+                        "F.DESCRIPTION AS FILM_DESCRIPTION, " +
+                        "F.RELEASE_DATE AS FILM_RELEASE_DATE, " +
+                        "F.DURATION AS FILM_DURATION, " +
+                        "R.ID AS MPA_ID, " +
+                        "R.NAME AS MPA_NAME, " +
+                        "G.ID AS GENRE_ID, " +
+                        "G.NAME AS GENRE_NAME, " +
+                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS L WHERE L.FILM_ID = F.ID ) AS SIZE_LIKE " +
+                    "FROM FILMS AS F " +
+                    "INNER JOIN ROSTER_MPA AS R ON F.MPA_ID = R.ID " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS T ON F.ID=T.FILM_ID " +
+                    "LEFT JOIN ROSTER_GENRE AS G ON T.GENRE_ID=G.ID " +
+                    "WHERE F.ID IN (SELECT FILM_ID FROM TOTAL_FILM_LIKE WHERE USER_ID = ?);",
                 userId
         );
         while (rows.next()) {
-            List<Genre> genres = totalGenreFilmDao.findAllGenreByFilmId(rows.getLong("ID"));
-            result.add(filmDao.buildModel(rows, genres.isEmpty() ? new ArrayList<>() : genres));
+            Long filmId = rows.getLong("FILM_ID");
+            Integer genreId = rows.getInt("GENRE_ID");
+            String genreName = rows.getString("GENRE_NAME");
+            if (!result.containsKey(filmId)) {
+                Film film = filmDao.buildModel(rows);
+                result.put(filmId, film);
+            }
+            if (genreName != null) {
+                Genre genre = Genre.builder().id(genreId).name(genreName).build();
+                result.get(filmId).addGenre(genre);
+            }
         }
-        return result;
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
     }
 
     @Override
