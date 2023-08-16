@@ -16,9 +16,9 @@ import java.util.*;
 @RestController
 public class UserController {
 
-    final ServiceUser serviceUser;
+    private final ServiceUser serviceUser;
 
-    final ServiceFilm serviceFilm;
+    private final ServiceFilm serviceFilm;
 
     public UserController(ServiceUser serviceUser, ServiceFilm serviceFilm) {
         this.serviceUser = serviceUser;
