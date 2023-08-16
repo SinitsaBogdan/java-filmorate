@@ -27,9 +27,9 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT NAME FROM ROSTER_STATUS_FRIENDS;"
+                "SELECT name FROM ROSTER_STATUS_FRIENDS;"
         );
-        while (rows.next()) result.add(rows.getString("NAME"));
+        while (rows.next()) result.add(rows.getString("name"));
         return result;
     }
 
@@ -46,7 +46,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public Optional<StatusFriends> findStatusFriends(Long rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE ID = ?;",
+                "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE id = ?;",
                 rowId
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -56,7 +56,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public Optional<StatusFriends> findStatusFriends(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE NAME = ?;",
+                "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE name = ?;",
                 name
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -66,7 +66,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void insert(String name) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_STATUS_FRIENDS (NAME) VALUES(?);",
+                "INSERT INTO ROSTER_STATUS_FRIENDS (name) VALUES(?);",
                 name
         );
     }
@@ -74,7 +74,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void insert(Long rowId, String name) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_STATUS_FRIENDS (ID, NAME) VALUES(?, ?);",
+                "INSERT INTO ROSTER_STATUS_FRIENDS (id, name) VALUES(?, ?);",
                 rowId, name
         );
     }
@@ -82,7 +82,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void update(Long searchRowId, String name) {
         jdbcTemplate.update(
-                "UPDATE ROSTER_STATUS_FRIENDS SET NAME = ? WHERE ID = ?;",
+                "UPDATE ROSTER_STATUS_FRIENDS SET name = ? WHERE id = ?;",
                 name, searchRowId
         );
     }
@@ -97,7 +97,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void delete(Long rowId) {
         jdbcTemplate.update(
-                "DELETE FROM ROSTER_STATUS_FRIENDS WHERE ID = ?;",
+                "DELETE FROM ROSTER_STATUS_FRIENDS WHERE id = ?;",
                 rowId
         );
     }
@@ -105,7 +105,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     @Override
     public void delete(String name) {
         jdbcTemplate.update(
-                "DELETE FROM ROSTER_STATUS_FRIENDS WHERE NAME = ?;",
+                "DELETE FROM ROSTER_STATUS_FRIENDS WHERE name = ?;",
                 name
         );
     }
@@ -113,7 +113,7 @@ public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
     protected StatusFriends buildModel(@NotNull SqlRowSet row) {
         return StatusFriends.builder()
                 .id(row.getLong("id"))
-                .status(row.getString("NAME"))
+                .status(row.getString("name"))
                 .build();
     }
 }

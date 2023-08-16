@@ -26,9 +26,9 @@ public class UserDaoImpl implements UserDao {
 
     public Optional<Long> findLastIdUser() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT MAX(ID) AS LAST_ID FROM USERS;"
+                "SELECT MAX(id) AS last_id FROM USERS;"
         );
-        if (row.next()) return Optional.of(row.getLong("LAST_ID"));
+        if (row.next()) return Optional.of(row.getLong("last_id"));
         else return Optional.empty();
     }
 
@@ -45,7 +45,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findUser(Long userId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM USERS WHERE ID = ?;",
+                "SELECT * FROM USERS WHERE id = ?;",
                 userId
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -55,7 +55,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findUser(String email) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM USERS WHERE EMAIL = ?;",
+                "SELECT * FROM USERS WHERE email = ?;",
                 email
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -65,7 +65,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(Long id, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                "INSERT INTO USERS (ID, NAME, BIRTHDAY, LOGIN, EMAIL) VALUES (?, ?, ?, ?, ?);",
+                "INSERT INTO USERS (id, name, birthday, login, email) VALUES (?, ?, ?, ?, ?);",
                 id, name, birthday, login, email
         );
     }
@@ -73,7 +73,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                "INSERT INTO USERS (NAME, BIRTHDAY, LOGIN, EMAIL) VALUES (?, ?, ?, ?);",
+                "INSERT INTO USERS (name, birthday, login, email) VALUES (?, ?, ?, ?);",
                 name, birthday, login, email
         );
     }
@@ -81,7 +81,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(Long rowId, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                "UPDATE USERS SET NAME = ?, BIRTHDAY = ?, LOGIN = ?, EMAIL = ? WHERE  ID = ?;",
+                "UPDATE USERS SET name = ?, birthday = ?, login = ?, email = ? WHERE  id = ?;",
                 name, birthday, login, email, rowId
         );
     }
@@ -96,7 +96,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void delete(Long rowId) {
         jdbcTemplate.update(
-                "DELETE FROM USERS WHERE ID = ?;",
+                "DELETE FROM USERS WHERE id = ?;",
                 rowId
         );
     }
@@ -104,7 +104,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void delete(String login) {
         jdbcTemplate.update(
-                "DELETE FROM USERS WHERE LOGIN = ?;",
+                "DELETE FROM USERS WHERE login = ?;",
                 login
         );
     }

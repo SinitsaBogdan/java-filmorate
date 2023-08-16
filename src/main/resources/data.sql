@@ -1,6 +1,6 @@
 -- TABLE ROSTER_RATING
 
-INSERT INTO ROSTER_MPA (NAME, DESCRIPTION)
+INSERT INTO ROSTER_MPA (name, description)
 VALUES
         ('G', 'У фильма нет возрастных ограничений'),
         ('PG', 'Детям рекомендуется смотреть фильм с родителями'),
@@ -11,7 +11,7 @@ VALUES
 
 -- TABLE ROSTER_GENRE
 
-INSERT INTO ROSTER_GENRE (NAME)
+INSERT INTO ROSTER_GENRE (name)
 VALUES  ('Комедия'),
         ('Драма'),
         ('Мультфильм'),
@@ -22,7 +22,7 @@ VALUES  ('Комедия'),
 
 -- TABLE ROSTER_STATUS_FRIENDS
 
-INSERT INTO ROSTER_STATUS_FRIENDS (NAME)
+INSERT INTO ROSTER_STATUS_FRIENDS (name)
 VALUES  ('Не подтвержденная'),
-        ('Подвержденная')
+        ('Подтвержденная')
 ;

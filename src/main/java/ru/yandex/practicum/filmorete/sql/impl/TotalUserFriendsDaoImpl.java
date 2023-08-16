@@ -32,11 +32,11 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
         List<User> users = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS " +
-                    "WHERE ID IN (" +
-                        "SELECT FRIEND_ID FROM TOTAL_USER_FRIENDS " +
-                        "WHERE USER_ID = ? AND STATUS_ID = 2" +
+                    "WHERE id IN (" +
+                        "SELECT friend_id FROM TOTAL_USER_FRIENDS " +
+                        "WHERE user_id = ? AND status_id = 2" +
                     ") " +
-                    "ORDER BY ID ASC;",
+                    "ORDER BY id ASC;",
                 userId
         );
         while (rows.next()) users.add(userDao.buildModel(rows));
@@ -48,13 +48,13 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
         List<User> users = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS " +
-                    "WHERE ID IN (" +
-                        "SELECT FRIEND_ID " +
+                    "WHERE id IN (" +
+                        "SELECT friend_id " +
                         "FROM TOTAL_USER_FRIENDS " +
-                        "WHERE USER_ID = ? AND STATUS_ID = 2 AND FRIEND_ID IN (" +
-                            "SELECT FRIEND_ID " +
+                        "WHERE user_id = ? AND status_id = 2 AND friend_id IN (" +
+                            "SELECT friend_id " +
                             "FROM TOTAL_USER_FRIENDS " +
-                            "WHERE USER_ID = ? AND STATUS_ID = 2" +
+                            "WHERE user_id = ? AND status_id = 2" +
                         ")" +
                     ");",
                 userId, friendId
@@ -77,7 +77,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     public List<TotalUserFriends> findAllTotalFriendByUserId(Long userId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_USER_FRIENDS WHERE USER_ID = ?;",
+                "SELECT * FROM TOTAL_USER_FRIENDS WHERE user_id = ?;",
                 userId
         );
         while (rows.next()) result.add(buildModel(rows));
@@ -88,7 +88,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     public List<TotalUserFriends> findAllTotalUserByFriendId(Long friendId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_USER_FRIENDS WHERE FRIEND_ID = ?;",
+                "SELECT * FROM TOTAL_USER_FRIENDS WHERE friend_id = ?;",
                 friendId
         );
         while (rows.next()) result.add(buildModel(rows));
@@ -99,7 +99,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     public List<TotalUserFriends> findAllTotalByStatusId(Integer statusId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_USER_FRIENDS WHERE STATUS_ID = ?;",
+                "SELECT * FROM TOTAL_USER_FRIENDS WHERE status_id = ?;",
                 statusId
         );
         while (rows.next()) result.add(buildModel(rows));
@@ -109,7 +109,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     @Override
     public Optional<TotalUserFriends> findTotalUserFriend(Long userId, Long friendId) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_USER_FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?;",
+                "SELECT * FROM TOTAL_USER_FRIENDS WHERE user_id = ? AND friend_id = ?;",
                 userId, friendId
         );
         if (rows.next()) return Optional.of(buildModel(rows));
@@ -119,7 +119,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     @Override
     public void insert(Long userId, Long friendId, Integer statusId) {
         jdbcTemplate.update(
-                "INSERT INTO TOTAL_USER_FRIENDS (USER_ID, FRIEND_ID, STATUS_ID) VALUES(?, ?, ?);",
+                "INSERT INTO TOTAL_USER_FRIENDS (user_id, friend_id, status_id) VALUES(?, ?, ?);",
                 userId, friendId, statusId
         );
     }
@@ -127,7 +127,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     @Override
     public void update(Long searchUserId, Long searchFriendId, Integer statusId) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_USER_FRIENDS SET STATUS_ID = ? WHERE USER_ID = ? AND FRIEND_ID = ?;",
+                "UPDATE TOTAL_USER_FRIENDS SET status_id = ? WHERE user_id = ? AND friend_id = ?;",
                 statusId, searchUserId, searchFriendId
         );
     }
@@ -142,7 +142,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     @Override
     public void delete(Long userId, Long friendId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_USER_FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?;",
+                "DELETE FROM TOTAL_USER_FRIENDS WHERE user_id = ? AND friend_id = ?;",
                 userId, friendId
         );
     }
@@ -150,7 +150,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     @Override
     public void deleteAllUserId(Long userId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_USER_FRIENDS WHERE USER_ID = ?;",
+                "DELETE FROM TOTAL_USER_FRIENDS WHERE user_id = ?;",
                 userId
         );
     }
@@ -158,7 +158,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     @Override
     public void deleteAllFriendId(Long friendId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_USER_FRIENDS WHERE FRIEND_ID = ?;",
+                "DELETE FROM TOTAL_USER_FRIENDS WHERE friend_id = ?;",
                 friendId
         );
     }
@@ -166,16 +166,16 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     @Override
     public void deleteAllStatusId(Integer statusId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_USER_FRIENDS WHERE STATUS_ID = ?;",
+                "DELETE FROM TOTAL_USER_FRIENDS WHERE status_id = ?;",
                 statusId
         );
     }
 
     protected TotalUserFriends buildModel(@NotNull SqlRowSet row) {
         return TotalUserFriends.builder()
-                .userId(row.getLong("USER_ID"))
-                .friendId(row.getLong("FRIEND_ID"))
-                .statusId(row.getLong("STATUS_ID"))
+                .userId(row.getLong("user_id"))
+                .friendId(row.getLong("friend_id"))
+                .statusId(row.getLong("status_id"))
                 .build();
     }
 }

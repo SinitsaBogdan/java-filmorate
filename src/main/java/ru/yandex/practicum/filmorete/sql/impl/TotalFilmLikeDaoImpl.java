@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.*;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
-
 import java.util.*;
 
 
@@ -38,24 +37,24 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
-                        "F.ID AS FILM_ID, " +
-                        "F.NAME AS FILM_NAME, " +
-                        "F.DESCRIPTION AS FILM_DESCRIPTION, " +
-                        "F.RELEASE_DATE AS FILM_RELEASE_DATE, " +
-                        "F.DURATION AS FILM_DURATION, " +
-                        "R.ID AS MPA_ID, " +
-                        "R.NAME AS MPA_NAME, " +
-                        "G.ID AS GENRE_ID, " +
-                        "G.NAME AS GENRE_NAME, " +
-                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS L WHERE L.FILM_ID = F.ID ) AS SIZE_LIKE " +
-                    "FROM FILMS AS F " +
-                    "INNER JOIN ROSTER_MPA AS R ON F.MPA_ID = R.ID " +
-                    "LEFT JOIN TOTAL_GENRE_FILM AS T ON F.ID=T.FILM_ID " +
-                    "LEFT JOIN ROSTER_GENRE AS G ON T.GENRE_ID=G.ID " +
-                    "WHERE F.ID IN ( " +
-                        "SELECT F.ID FROM FILMS AS F " +
-                        "ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS L WHERE L.FILM_ID = F.ID ) DESC " +
-                        "LIMIT ? " +
+                        "f.id AS film_id, " +
+                        "f.name AS film_name, " +
+                        "f.description AS film_description, " +
+                        "f.release_date AS film_release_date, " +
+                        "f.duration AS film_duration, " +
+                        "r.id AS mpa_id, " +
+                        "r.name AS mpa_name, " +
+                        "g.id AS genre_id, " +
+                        "g.name AS genre_name, " +
+                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
+                    "FROM FILMS AS f " +
+                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "WHERE f.id IN ( " +
+                        "SELECT f.id FROM FILMS AS f " +
+                        "ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) DESC " +
+                    "LIMIT ? " +
                     ");",
                 limit
         );
@@ -82,9 +81,9 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * " +
                     "FROM USERS " +
-                    "WHERE ID IN (" +
-                        "SELECT USER_ID FROM TOTAL_FILM_LIKE " +
-                        "WHERE FILM_ID = ?" +
+                    "WHERE id IN (" +
+                        "SELECT user_id FROM TOTAL_FILM_LIKE " +
+                        "WHERE film_id = ?" +
                     ");",
                 filmId
         );
@@ -97,21 +96,21 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
-                        "F.ID AS FILM_ID, " +
-                        "F.NAME AS FILM_NAME, " +
-                        "F.DESCRIPTION AS FILM_DESCRIPTION, " +
-                        "F.RELEASE_DATE AS FILM_RELEASE_DATE, " +
-                        "F.DURATION AS FILM_DURATION, " +
-                        "R.ID AS MPA_ID, " +
-                        "R.NAME AS MPA_NAME, " +
-                        "G.ID AS GENRE_ID, " +
-                        "G.NAME AS GENRE_NAME, " +
-                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS L WHERE L.FILM_ID = F.ID ) AS SIZE_LIKE " +
-                    "FROM FILMS AS F " +
-                    "INNER JOIN ROSTER_MPA AS R ON F.MPA_ID = R.ID " +
-                    "LEFT JOIN TOTAL_GENRE_FILM AS T ON F.ID=T.FILM_ID " +
-                    "LEFT JOIN ROSTER_GENRE AS G ON T.GENRE_ID=G.ID " +
-                    "WHERE F.ID IN (SELECT FILM_ID FROM TOTAL_FILM_LIKE WHERE USER_ID = ?);",
+                        "f.id AS film_id, " +
+                        "f.name AS film_name, " +
+                        "f.description AS film_description, " +
+                        "f.release_date AS film_release_date, " +
+                        "f.duration AS film_duration, " +
+                        "r.id AS mpa_id, " +
+                        "r.name AS mpa_name, " +
+                        "g.id AS genre_id, " +
+                        "g.name AS genre_name, " +
+                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
+                    "FROM FILMS AS f " +
+                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "WHERE f.id IN (SELECT film_id FROM TOTAL_FILM_LIKE WHERE user_id = ?);",
                 userId
         );
         while (rows.next()) {
@@ -145,7 +144,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public List<TotalFilmLike> findAllTotalFilmLikeByFilmId(Long filmId) {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_FILM_LIKE WHERE FILM_ID = ?;",
+                "SELECT * FROM TOTAL_FILM_LIKE WHERE film_id = ?;",
                 filmId
         );
         while (rows.next()) result.add(buildModel(rows));
@@ -156,7 +155,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public List<TotalFilmLike> findAllTotalFilmLikeByUserId(Long userId) {
         List<TotalFilmLike> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_FILM_LIKE WHERE USER_ID = ?;",
+                "SELECT * FROM TOTAL_FILM_LIKE WHERE user_id = ?;",
                 userId
         );
         while (rows.next()) result.add(buildModel(rows));
@@ -166,7 +165,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public void insert(Long filmId, Long userId) {
         jdbcTemplate.update(
-                "INSERT INTO TOTAL_FILM_LIKE (FILM_ID, USER_ID) VALUES(?, ?);",
+                "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id) VALUES(?, ?);",
                 filmId, userId
         );
     }
@@ -174,7 +173,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_FILM_LIKE SET FILM_ID = ?, USER_ID = ? WHERE FILM_ID = ? AND USER_ID = ?;",
+                "UPDATE TOTAL_FILM_LIKE SET film_id = ?, user_id = ? WHERE film_id = ? AND user_id = ?;",
                 filmId, userId, searchFilmId, searchUserId
         );
     }
@@ -189,15 +188,15 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public void delete(Long filmId, Long userId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_FILM_LIKE WHERE FILM_ID = ? AND USER_ID = ?;",
+                "DELETE FROM TOTAL_FILM_LIKE WHERE film_id = ? AND user_id = ?;",
                 filmId, userId
         );
     }
 
     protected TotalFilmLike buildModel(@NotNull SqlRowSet row) {
         return TotalFilmLike.builder()
-                .filmId(row.getLong("FILM_ID"))
-                .userId(row.getLong("USER_ID"))
+                .filmId(row.getLong("film_id"))
+                .userId(row.getLong("user_id"))
                 .build();
     }
 }

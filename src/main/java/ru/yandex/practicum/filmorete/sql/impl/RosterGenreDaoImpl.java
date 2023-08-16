@@ -27,9 +27,9 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT NAME FROM ROSTER_GENRE;"
+                "SELECT name FROM ROSTER_GENRE;"
         );
-        while (rows.next()) result.add(rows.getString("NAME"));
+        while (rows.next()) result.add(rows.getString("name"));
         return result;
     }
 
@@ -37,7 +37,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public List<Genre> findAllGenre() {
         List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE ORDER BY ID ASC;"
+                "SELECT * FROM ROSTER_GENRE ORDER BY id ASC;"
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;
@@ -46,7 +46,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public Optional<Genre> findGenre(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE WHERE ID = ?;",
+                "SELECT * FROM ROSTER_GENRE WHERE id = ?;",
                 rowId
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -56,7 +56,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public Optional<Genre> findGenre(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE WHERE NAME = ?;",
+                "SELECT * FROM ROSTER_GENRE WHERE name = ?;",
                 name
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -66,7 +66,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void insert(String name) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (NAME) VALUES(?);",
+                "INSERT INTO ROSTER_GENRE (name) VALUES(?);",
                 name
         );
     }
@@ -74,7 +74,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void insert(Integer rowId, String name) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (ID, NAME) VALUES(?, ?);",
+                "INSERT INTO ROSTER_GENRE (id, name) VALUES(?, ?);",
                 rowId, name
         );
     }
@@ -82,7 +82,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void update(Integer searchRowId, String name) {
         jdbcTemplate.update(
-                "UPDATE ROSTER_GENRE SET NAME = ? WHERE ID = ?;",
+                "UPDATE ROSTER_GENRE SET name = ? WHERE id = ?;",
                 name, searchRowId
         );
     }
@@ -99,7 +99,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public void delete(Integer rowId) {
         jdbcTemplate.update(
                 "DELETE FROM ROSTER_GENRE " +
-                    "WHERE ID = ?;",
+                    "WHERE id = ?;",
                 rowId
         );
     }
@@ -108,15 +108,15 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public void delete(String name) {
         jdbcTemplate.update(
                 "DELETE FROM ROSTER_GENRE " +
-                    "WHERE NAME = ?;",
+                    "WHERE name = ?;",
                 name
         );
     }
 
     protected Genre buildModel(@NotNull SqlRowSet row) {
         return Genre.builder()
-                .id(row.getInt("ID"))
-                .name(row.getString("NAME"))
+                .id(row.getInt("id"))
+                .name(row.getString("name"))
                 .build();
     }
 }
