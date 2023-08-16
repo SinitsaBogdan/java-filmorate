@@ -4,119 +4,125 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorete.comparators.ComparatorUserToSeizeLike;
-import ru.yandex.practicum.filmorete.exeptions.ExceptionServiceFilmorate;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
 import ru.yandex.practicum.filmorete.model.Film;
+import ru.yandex.practicum.filmorete.model.Genre;
+import ru.yandex.practicum.filmorete.model.TotalGenreFilm;
 import ru.yandex.practicum.filmorete.model.User;
-import ru.yandex.practicum.filmorete.storage.StorageFilm;
-import ru.yandex.practicum.filmorete.storage.StorageUser;
+import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
+import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceFilmore.SERVICE_ERROR_POPULAR_FILM_NOT_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.*;
-import static ru.yandex.practicum.filmorete.service.ServiceValidators.*;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidFilm;
 
 @Slf4j
 @Service
 public class ServiceFilm {
 
-    private final StorageFilm filmStorage;
-    private final StorageUser userStorage;
+    private final FilmDao filmDao;
+    private final UserDao userDao;
+    private final TotalFilmLikeDao totalFilmLikeDao;
+    private final TotalGenreFilmDao totalGenreFilmDao;
 
     @Autowired
-    public ServiceFilm(StorageFilm filmStorage, StorageUser userStorage) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
+    public ServiceFilm(FilmDao filmDao, UserDao userDao, TotalFilmLikeDao totalFilmLikeDao, TotalGenreFilmDao totalGenreFilmDao) {
+        this.filmDao = filmDao;
+        this.userDao = userDao;
+        this.totalFilmLikeDao = totalFilmLikeDao;
+        this.totalGenreFilmDao = totalGenreFilmDao;
+    }
+
+    public Film getFilm(Long id) {
+        Optional<Film> optional = filmDao.findFilm(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        }
     }
 
     public Film createFilm(Film film) {
-        checkValidFilmNameContainsStorage(filmStorage, film.getName(), VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS);
         checkValidFilm(film);
-        filmStorage.addFilm(film);
-        log.info(String.format("Добавление нового фильма: %s", film.getName()));
-        return film;
+        Optional<Film> optionalFilm;
+        optionalFilm = filmDao.findFilm(film.getName());
+        if (optionalFilm.isEmpty()) {
+            filmDao.insert(
+                    film.getMpa().getId(), film.getName(), film.getDescription(),
+                    film.getReleaseDate(), film.getDuration()
+            );
+        } else {
+            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS);
+        }
+        optionalFilm = filmDao.findFilm(film.getName());
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                totalGenreFilmDao.insert(optionalFilm.get().getId(), genre.getId());
+            }
+        }
+        return filmDao.findFilm(film.getName()).get();
     }
 
     public Film updateFilm(Film film) {
         checkValidFilm(film);
-        filmStorage.updateFilm(film);
-        log.info("Обновление фильма: {}", film.getName());
-        return film;
-    }
-
-    public void removeFilm(Long filmId) {
-        filmStorage.removeFilm(filmId);
-    }
-
-    public Collection<Film> getAllFilms() {
-        log.info("Запрос всех фильмов: {}", filmStorage.getFilm().size());
-        return filmStorage.getFilm();
-    }
-
-    public Film getFilm(Long id) {
-        return filmStorage.getFilm(id);
-    }
-
-    public List<Film> getFilmsLikesToUser(@NotNull User user) {
-        return user.getLikesFilms().stream()
-                .filter(Objects::nonNull)
-                .map(filmStorage::getFilm)
-                .collect(Collectors.toList());
-
-    }
-
-    public List<User> getUserLikesToFilm(@NotNull Film film) {
-        return film.getLikeUsers().stream()
-                .map(userStorage::getUser)
-                .collect(Collectors.toList());
+        Optional<Film> optionalFilm = filmDao.findFilm(film.getId());
+        if (optionalFilm.isPresent()) {
+            filmDao.update(
+                    film.getId(), film.getMpa().getId(),
+                    film.getName(), film.getDescription(),
+                    film.getReleaseDate(), film.getDuration()
+            );
+        } else throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        List<TotalGenreFilm> totalGenreFilms = totalGenreFilmDao.findAllTotalGenreFilm(film.getId());
+        if (!totalGenreFilms.isEmpty()) totalGenreFilmDao.deleteAllFilmId(film.getId());
+        if (film.getGenres() != null) {
+            for (Genre genreFilm : film.getGenres()) {
+                Optional<TotalGenreFilm> totalGenreFilm = totalGenreFilmDao.findTotalGenreFilm(film.getId(), genreFilm.getId());
+                if (totalGenreFilm.isEmpty()) {
+                    totalGenreFilmDao.insert(film.getId(), genreFilm.getId());
+                }
+            }
+        }
+        return filmDao.findFilm(film.getId()).get();
     }
 
     public List<Film> getPopularFilms(Integer count) {
-        try {
-            List<Film> list = new ArrayList<>(filmStorage.getFilm());
-            list.sort(new ComparatorUserToSeizeLike().reversed());
+        return totalFilmLikeDao.findPopularFilms(count);
+    }
 
-            if (count > filmStorage.getNames().size()) {
-                count = filmStorage.getNames().size();
-            }
-            return list.subList(0, count);
-        } catch (Exception e) {
-            throw new ExceptionServiceFilmorate(SERVICE_ERROR_POPULAR_FILM_NOT_IN_COLLECTIONS);
-        }
+    public List<Film> getAllFilms() {
+        return filmDao.findAllFilms();
+    }
+
+    public List<Film> getFilmsToLikeUser(Long userId) {
+        return totalFilmLikeDao.findFilmToLikeUser(userId);
     }
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
+        Optional<Film> optionalFilm = filmDao.findFilm(filmId);
+        Optional<User> optionalUser = userDao.findUser(userId);
 
-        Film film = filmStorage.getFilm(filmId);
-        User user = userStorage.getUser(userId);
+        if (optionalFilm.isEmpty()) {
+            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        }
+        if (optionalUser.isEmpty()) {
+            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        }
 
-        if (user.getLikesFilms().contains(film.getId())) {
-            user.removeLikes(film);
-        }
-        if (film.getLikeUsers().contains(user.getId())) {
-            film.removeLike(user);
-        }
+        totalFilmLikeDao.delete(filmId, userId);
     }
 
     public void addLike(Long filmId, Long userId) {
-        Film film = filmStorage.getFilm(filmId);
-        User user = userStorage.getUser(userId);
-
-        checkValidUser(user);
-        checkValidFilm(film);
-
-        if (!user.getLikesFilms().contains(film.getId())) {
-            user.addLike(film);
-        }
-        if (!film.getLikeUsers().contains(user.getId())) {
-            film.addLike(user);
-        }
+        totalFilmLikeDao.insert(filmId, userId);
     }
 
     public void clearStorage() {
-        log.info("Очистка хранилища Фильмов!");
-        filmStorage.clear();
+        filmDao.delete();
     }
 }
