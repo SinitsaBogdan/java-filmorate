@@ -26,7 +26,7 @@ public class UserController {
     }
 
     /**
-     * Запрос всех пользователей
+     * Запрос всех пользователей.
      * */
     @GetMapping
     public List<User> findAll() {
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     /**
-     * Запрос пользователя по id
+     * Запрос пользователя по id.
      * */
     @GetMapping("/{userId}")
     public User findToId(@PathVariable Long userId) {
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     /**
-     * Запрос списка фильмов которые лайкнул пользователь
+     * Запрос списка фильмов которые лайкнул пользователь.
      * */
     @GetMapping("/{userId}/to-like")
     public List<Film> getUsersToLikeFilm(@PathVariable Long userId) {
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     /**
-     * Запрос списка друзей пользователя по id
+     * Запрос списка друзей пользователя по id.
      * */
     @GetMapping("/{userId}/friends")
     public List<User> getFriends(@PathVariable Long userId) {
@@ -58,7 +58,7 @@ public class UserController {
     }
 
     /**
-     * Запрос общих друзей по двум id
+     * Запрос общих друзей по двум id.
      * */
     @GetMapping("/{userId}/friends/common/{friendId}")
     public List<User> getFriendsCommon(@PathVariable Long userId, @PathVariable Long friendId) {
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     /**
-     * Добавление нового пользователя
+     * Добавление нового пользователя.
      * */
     @PostMapping
     public User create(@Valid @RequestBody User user) throws ExceptionValidationUser {
@@ -74,7 +74,7 @@ public class UserController {
     }
 
     /**
-     * Обновление пользователя по id
+     * Обновление пользователя по id.
      * */
     @PutMapping
     public User update(@Valid @RequestBody User user) throws ExceptionValidationUser {
@@ -82,7 +82,7 @@ public class UserController {
     }
 
     /**
-     * Добавление пользователя в друзья по id
+     * Добавление пользователя в друзья по id.
      * */
     @PutMapping("/{userId}/friends/{friendId}")
     public void addFriends(@PathVariable Long friendId, @PathVariable Long userId) {
@@ -90,7 +90,7 @@ public class UserController {
     }
 
     /**
-     * Удаление всех пользователей
+     * Удаление всех пользователей.
      * */
     @DeleteMapping
     public void clear() {
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     /**
-     * Удаление пользователя id
+     * Удаление пользователя id.
      * */
     @DeleteMapping("/{userId}")
     public void removeById(@PathVariable Long userId) {
@@ -106,10 +106,28 @@ public class UserController {
     }
 
     /**
-     * Удаление пользователя из друзей по id
+     * Удаление пользователя из друзей по id.
      * */
     @DeleteMapping("/{userId}/friends/{friendId}")
     public void deleteFriends(@PathVariable Long userId, @PathVariable Long friendId) {
         serviceUser.removeFriend(userId, friendId);
+    }
+
+    /**
+     * NEW!!!
+     * Возвращает рекомендации по фильмам для просмотра.
+     * */
+    @GetMapping("/{userId}/recommendations")
+    public void getRecommendedFilms(@PathVariable Long userId) {
+
+    }
+
+    /**
+     * NEW!!!
+     * Возвращает ленту событий пользователя.
+     * */
+    @GetMapping("/{userId}/feed")
+    public void getFeed(@PathVariable Long userId) {
+
     }
 }

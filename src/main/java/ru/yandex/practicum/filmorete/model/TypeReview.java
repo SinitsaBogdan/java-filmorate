@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.model;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
 import lombok.Builder;
@@ -7,14 +8,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class TotalUserFriends {
-
+public class TypeReview {
+    
     @Positive
-    private Long userId;
+    private final Integer id;
 
-    @Positive
-    private Long friendId;
-
-    @Positive
-    private Long statusId;
+    @NotBlank
+    private final String name;
 }

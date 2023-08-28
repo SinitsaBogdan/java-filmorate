@@ -7,14 +7,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class TotalUserFriends {
+public class TotalDirectorFilm {
+    
+    @Positive
+    private Long filmId;
 
     @Positive
-    private Long userId;
-
-    @Positive
-    private Long friendId;
-
-    @Positive
-    private Long statusId;
+    private Long directorId;
 }
