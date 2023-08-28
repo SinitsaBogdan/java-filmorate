@@ -25,7 +25,7 @@ public class FilmController {
     }
 
     /**
-     * Запрос всех фильмов
+     * Запрос всех фильмов.
      * */
     @GetMapping
     public List<Film> findAll() {
@@ -33,7 +33,7 @@ public class FilmController {
     }
 
     /**
-     * Запрос всех популярных фильмов
+     * Запрос всех популярных фильмов.
      * */
     @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
@@ -41,7 +41,7 @@ public class FilmController {
     }
 
     /**
-     * Запрос фильма по id
+     * Запрос фильма по id.
      * */
     @GetMapping("/{filmId}")
     public Film getToId(@PathVariable Long filmId) {
@@ -49,7 +49,7 @@ public class FilmController {
     }
 
     /**
-     * Запрос списка пользователей которые поставили лайк
+     * Запрос списка пользователей которые поставили лайк.
      * */
     @GetMapping("/{filmId}/to-like")
     public List<User> getUsersToLikeFilm(@PathVariable Long filmId) {
@@ -57,7 +57,7 @@ public class FilmController {
     }
 
     /**
-     * Добавление нового фильма
+     * Добавление нового фильма.
      * */
     @PostMapping
     public Film create(@Valid @RequestBody Film film) throws ExceptionValidationFilm {
@@ -65,7 +65,7 @@ public class FilmController {
     }
 
     /**
-     * Обновление существующего фильма
+     * Обновление существующего фильма.
      * */
     @PutMapping
     public Film update(@Valid @RequestBody Film film) throws ExceptionValidationFilm {
@@ -73,7 +73,7 @@ public class FilmController {
     }
 
     /**
-     * Пользователь ставит лайк фильму по id
+     * Пользователь ставит лайк фильму по id.
      * */
     @PutMapping("/{filmId}/like/{userId}")
     public void addLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
@@ -81,7 +81,7 @@ public class FilmController {
     }
 
     /**
-     * Удаление всех фильмов
+     * Удаление всех фильмов.
      * */
     @DeleteMapping
     public void clear() {
@@ -89,10 +89,48 @@ public class FilmController {
     }
 
     /**
-     * Пользователь удаляет лайк фильму по id
+     * Пользователь удаляет лайк фильму по id.
      * */
     @DeleteMapping("/{filmId}/like/{userId}")
     public void removeLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
         serviceFilms.removeLike(filmId, userId);
+    }
+
+    /**
+     * NEW!!!
+     * Удалить фильм по идентификатору.
+     * */
+    @DeleteMapping("/{filmId}")
+    public void deleteToId(@PathVariable Long filmId) {
+
+    }
+
+    /**
+     * NEW!!!
+     * Получить общие фильмы друзей, отсортированные по популярности.
+     * */
+    @GetMapping("/common")
+    public void getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
+
+    }
+
+    /**
+     * NEW!!!
+     * Получить список фильмов режиссера,
+     * отсортированных по количеству лайков или году выпуска.
+     * */
+    @GetMapping("/director/{directorId}")
+    public void getFilmsByDirectorSortedByParam(@PathVariable Long directorId, @RequestParam String by) {
+
+    }
+
+    /**
+     * NEW!!!
+     * Получить список самых популярных фильмов определённого года и жанра.
+     * */
+    @GetMapping("/popular")
+    public void getPopularFilmsSortedByParam(@RequestParam Integer count, @RequestParam Integer genreId,
+                                             @RequestParam Integer year) {
+
     }
 }
