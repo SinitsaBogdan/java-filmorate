@@ -121,4 +121,13 @@ public class UserController {
     public void getRecommendedFilms(@PathVariable Long userId) {
 
     }
+
+    /**
+     * NEW!!!
+     * Возвращает ленту событий пользователя.
+     * */
+    @GetMapping("/{userId}/feed")
+    public void getFeed(@PathVariable Long userId) {
+
+    }
 }

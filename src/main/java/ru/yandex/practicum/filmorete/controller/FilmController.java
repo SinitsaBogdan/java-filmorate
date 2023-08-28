@@ -38,8 +38,8 @@ public class FilmController {
      * */
     @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
-                                      @RequestParam(defaultValue = "0") Integer genreId,
-                                      @RequestParam(defaultValue = "0") Integer year) {
+                                      @RequestParam(defaultValue = "null") Integer genreId,
+                                      @RequestParam(defaultValue = "null") Integer year) {
         //тут можно сделать перегрузку метода и сделать проверки на 0 у параметров запросов
         /*if (genreId != 0 && year != 0) {
             return serviceFilms.getPopularFilms(count, genreId, year);
