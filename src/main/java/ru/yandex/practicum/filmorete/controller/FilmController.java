@@ -33,10 +33,17 @@ public class FilmController {
     }
 
     /**
-     * Запрос всех популярных фильмов.
+     * NEW!!!
+     * Запрос всех популярных фильмов с возможностью фильтрации по году и жанру.
      * */
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
+                                      @RequestParam(defaultValue = "0") Integer genreId,
+                                      @RequestParam(defaultValue = "0") Integer year) {
+        //тут можно сделать перегрузку метода и сделать проверки на 0 у параметров запросов
+        /*if (genreId != 0 && year != 0) {
+            return serviceFilms.getPopularFilms(count, genreId, year);
+        }*/
         return serviceFilms.getPopularFilms(count);
     }
 
@@ -126,11 +133,11 @@ public class FilmController {
 
     /**
      * NEW!!!
-     * Получить список самых популярных фильмов определённого года и жанра.
+     * Поиск фильмов по режиссеру и/или названию.
      * */
-    @GetMapping("/popular")
-    public void getPopularFilmsSortedByParam(@RequestParam Integer count, @RequestParam Integer genreId,
-                                             @RequestParam Integer year) {
+    @GetMapping("/search")
+    public void getFilmsBySearchParam(@RequestParam String query, @RequestParam List<String> by) {
+
 
     }
 }

@@ -115,15 +115,6 @@ public class UserController {
 
     /**
      * NEW!!!
-     * Удалить пользователя по идентификатору.
-     * */
-    @DeleteMapping("/{userId}")
-    public void deleteToId(@PathVariable Long userId) {
-
-    }
-
-    /**
-     * NEW!!!
      * Возвращает рекомендации по фильмам для просмотра.
      * */
     @GetMapping("/{userId}/recommendations")
