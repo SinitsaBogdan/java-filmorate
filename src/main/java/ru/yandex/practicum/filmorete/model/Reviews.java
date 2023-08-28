@@ -1,5 +1,35 @@
 package ru.yandex.practicum.filmorete.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class Reviews {
     
+    @Positive
+    private Long id;
+
+    @NotBlank
+    @Size(max = 200)
+    private String content;
+
+    @Positive
+    private Long userId;
+
+    @Positive
+    private Long filmId;
+
+    @Positive
+    private Long typeId;
+
+    @Positive
+    private Long evalutionId;
+
+    @Positive
+    private Integer useful;
 }
