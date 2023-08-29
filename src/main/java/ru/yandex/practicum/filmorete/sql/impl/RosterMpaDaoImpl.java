@@ -1,27 +1,26 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.Mpa;
 import ru.yandex.practicum.filmorete.sql.dao.RosterMpaDao;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
 @Component
-@Qualifier("RosterMpaDaoImpl")
+@RequiredArgsConstructor
 public class RosterMpaDaoImpl implements RosterMpaDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private RosterMpaDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<String> findAllName() {
@@ -44,7 +43,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public List<Mpa> findAllMpa()  {
+    public List<Mpa> findAllMpa() {
         List<Mpa> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_MPA;"

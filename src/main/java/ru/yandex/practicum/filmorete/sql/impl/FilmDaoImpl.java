@@ -1,29 +1,26 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.model.Mpa;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
-import ru.yandex.practicum.filmorete.model.Film;
+
 import java.time.LocalDate;
 import java.util.*;
 
 
 @Slf4j
 @Component
-@Qualifier("FilmDaoImpl")
+@RequiredArgsConstructor
 public class FilmDaoImpl implements FilmDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    private FilmDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<Film> findAllFilms() {
@@ -40,10 +37,10 @@ public class FilmDaoImpl implements FilmDao {
                         "g.id AS genre_id, " +
                         "g.name AS genre_name " +
                         "FROM FILMS AS f " +
-                    "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                    "ORDER BY f.id;"
+                        "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                        "ORDER BY f.id;"
         );
         while (rows.next()) {
             Long filmId = rows.getLong("FILM_ID");
@@ -77,11 +74,11 @@ public class FilmDaoImpl implements FilmDao {
                         "g.id AS genre_id, " +
                         "g.name AS genre_name " +
                         "FROM FILMS AS f " +
-                    "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                    "WHERE f.name = ? " +
-                    "ORDER BY f.id;",
+                        "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                        "WHERE f.name = ? " +
+                        "ORDER BY f.id;",
                 filmName
         );
         while (rows.next()) {
@@ -113,12 +110,12 @@ public class FilmDaoImpl implements FilmDao {
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
                         "g.name AS genre_name " +
-                    "FROM FILMS AS f " +
-                    "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                    "WHERE f.id = ? " +
-                    "ORDER BY f.id;",
+                        "FROM FILMS AS f " +
+                        "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                        "WHERE f.id = ? " +
+                        "ORDER BY f.id;",
                 rowId
         );
         while (rows.next()) {
@@ -164,7 +161,7 @@ public class FilmDaoImpl implements FilmDao {
                         "description = ?, " +
                         "release_date = ?, " +
                         "duration = ? " +
-                    "WHERE id = ?;",
+                        "WHERE id = ?;",
                 mpaId, name, descriptions, releaseDate, duration, searchRowId
         );
     }
@@ -179,7 +176,7 @@ public class FilmDaoImpl implements FilmDao {
                         "description = ?, " +
                         "release_date = ?, " +
                         "duration = ? " +
-                    "WHERE name = ?;",
+                        "WHERE name = ?;",
                 mpaId, name, descriptions, releaseDate, duration, searchName
         );
     }

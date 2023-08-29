@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -10,19 +10,17 @@ import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.model.TotalGenreFilm;
 import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
 @Component
-@Qualifier("TotalGenreFilmDaoImpl")
+@RequiredArgsConstructor
 public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    private TotalGenreFilmDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public Optional<TotalGenreFilm> findTotalGenreFilm(Long filmId, Integer genreId) {
@@ -39,12 +37,12 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
         List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * " +
-                    "FROM ROSTER_GENRE " +
-                    "WHERE id IN (" +
+                        "FROM ROSTER_GENRE " +
+                        "WHERE id IN (" +
                         "SELECT genre_id " +
                         "FROM TOTAL_GENRE_FILM " +
                         "WHERE film_id = ?" +
-                    ");",
+                        ");",
                 id
         );
         while (rows.next()) result.add(

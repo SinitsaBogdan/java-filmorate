@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Reviews {
+public class Review {
     
     @Positive
     private Long id;
