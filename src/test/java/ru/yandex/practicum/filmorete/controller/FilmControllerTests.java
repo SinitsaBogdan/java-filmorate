@@ -140,6 +140,51 @@ public class FilmControllerTests {
                     .andExpect(jsonPath("$.length()").value(2))
             ;
         }
+
+        @Test
+        @DisplayName("Запрос списка популярных фильмов: genreId : 0, year : 0")
+        public void methodGet_PopularFilmsOverloadTest() throws Exception {
+        }
+
+        @Test
+        @DisplayName("Запрос списка популярных фильмов: genreId : 1")
+        public void methodGet_PopularFilmsGenreId1Test() throws Exception {
+        }
+
+        @Test
+        @DisplayName("Запрос списка популярных фильмов: year : 2000")
+        public void methodGet_PopularFilmsYear2000Test() throws Exception {
+        }
+
+        @Test
+        @DisplayName("Запрос списка общих фильмов, отсортированные по популярности")
+        public void methodGet_CommonFilms() throws Exception {
+        }
+
+        @Test
+        @DisplayName("Запрос списка фильмов режиссера, отсортированные по популярности")
+        public void methodGet_FilmsByDirectorSortedByLikes() throws Exception {
+        }
+
+        @Test
+        @DisplayName("Запрос списка фильмов режиссера, отсортированные по годам")
+        public void methodGet_FilmsByDirectorSortedByYear() throws Exception {
+        }
+
+        @Test
+        @DisplayName("Запрос списка фильмов по слову")
+        public void methodGet_SearchFilmsByTitle() throws Exception {
+        }
+
+        @Test
+        @DisplayName("Запрос фильма по полному названию")
+        public void methodGet_SearchFilmByTitle() throws Exception {
+        }
+
+        @Test
+        @DisplayName("Запрос фильма по режиссёру")
+        public void methodGet_SearchFilmsByDirector() throws Exception {
+        }
     }
 
     @Nested
@@ -635,6 +680,16 @@ public class FilmControllerTests {
                     )
                     .andExpect(status().is4xxClientError())
             ;
+        }
+    }
+
+    @Nested
+    @DisplayName("")
+    public class MethodDelete {
+        @Test
+        @DisplayName("Удаление фильма - id : 101")
+        public void methodDelete_DeleteFilmByIdTest() throws Exception {
+
         }
     }
 }

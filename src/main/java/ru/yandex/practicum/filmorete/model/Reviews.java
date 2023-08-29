@@ -10,13 +10,15 @@ import lombok.Data;
 @Data
 @Builder
 public class Reviews {
-    
+
     @Positive
     private Long id;
 
     @NotBlank
     @Size(max = 200)
     private String content;
+
+    private boolean isPositive;
 
     @Positive
     private Long userId;

@@ -108,7 +108,7 @@ public class FilmController {
      * Удалить фильм по идентификатору.
      * */
     @DeleteMapping("/{filmId}")
-    public void deleteToId(@PathVariable Long filmId) {
+    public void removeToId(@PathVariable Long filmId) {
 
     }
 

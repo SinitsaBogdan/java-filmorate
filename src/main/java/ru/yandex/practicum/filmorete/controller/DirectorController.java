@@ -46,7 +46,7 @@ public class DirectorController {
      * Удаление режиссёра по идентификатору.
      * */
     @DeleteMapping("/{directorId}")
-    public void deleteSearchId(@PathVariable Long directorId) {
+    public void removeSearchId(@PathVariable Long directorId) {
 
     }
 

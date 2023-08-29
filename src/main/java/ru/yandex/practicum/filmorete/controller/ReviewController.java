@@ -39,7 +39,7 @@ public class ReviewController {
      * Удаление уже имеющегося отзыва.
      * */
     @DeleteMapping("/{reviewId}")
-    public void deleteSearchId(@PathVariable Long reviewId) {
+    public void removeSearchId(@PathVariable Long reviewId) {
 
     }
 
