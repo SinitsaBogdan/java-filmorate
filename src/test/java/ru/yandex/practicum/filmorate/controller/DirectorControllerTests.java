@@ -12,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Director;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
