@@ -6,21 +6,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorete.model.Director;
+import ru.yandex.practicum.filmorete.service.ServiceDirectors;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RequestMapping("/directors")
 @RestController
 public class DirectorController {
 
+    private final ServiceDirectors serviceDirectors;
+
+    public DirectorController(ServiceDirectors serviceDirectors) {
+        this.serviceDirectors = serviceDirectors;
+    }
+
     /**
      * NEW!!!
      * Получение режиссёра по идентификатору.
      */
     @GetMapping("/{directorId}")
-    public void getSearchId(@PathVariable Long directorId) {
-
+    public Director getSearchId(@PathVariable Long directorId) {
+        return serviceDirectors.getDirectorSearchId(directorId);
     }
 
     /**
@@ -28,8 +40,8 @@ public class DirectorController {
      * Получение всех режиссёров.
      */
     @GetMapping()
-    public void getAllDirectors() {
-
+    public List<Director> getAllDirectors() {
+        return serviceDirectors.getAllDirector();
     }
 
     /**
@@ -37,8 +49,8 @@ public class DirectorController {
      * Добавление нового режиссёра.
      */
     @PostMapping
-    public void create(/* @Valid @RequestBody Director director */) {
-
+    public Director create(@Valid @RequestBody Director director) {
+        return serviceDirectors.add(director);
     }
 
     /**
@@ -47,7 +59,7 @@ public class DirectorController {
      */
     @DeleteMapping("/{directorId}")
     public void removeSearchId(@PathVariable Long directorId) {
-
+        serviceDirectors.deleteSearchId(directorId);
     }
 
     /**
@@ -55,7 +67,7 @@ public class DirectorController {
      * Изменение параметров режиссёра.
      */
     @PutMapping()
-    public void update(@Valid @RequestBody Director director */) {
-
+    public Director update(@Valid @RequestBody Director director) {
+        return serviceDirectors.update(director);
     }
 }

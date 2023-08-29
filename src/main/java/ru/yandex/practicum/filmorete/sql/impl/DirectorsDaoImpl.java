@@ -6,10 +6,14 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundGenreStorage;
 import ru.yandex.practicum.filmorete.model.Director;
+import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorsDao;
 
 import java.util.*;
+
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceGenre.SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS;
 
 
 @Slf4j
@@ -21,68 +25,46 @@ public class DirectorsDaoImpl implements DirectorsDao {
 
     @Override
     public List<Director> findAll() {
-        Map<Long, Director> result = new HashMap<>();
+        List<Director> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "d.id AS id, " +
-                        "d.NAME AS name, " +
-                        "FROM DIRECTORS AS d " +
-                        "LEFT JOIN TOTAL_FILM_DIRECTOR AS tf ON d.id = tf.director_id " +
-                        "ORDER BY d.id;"
+                "SELECT * FROM DIRECTORS;"
         );
-        while (rows.next()) {
-            Long directorId = rows.getLong("ID");
-            if (!result.containsKey(directorId)) {
-                Director director = buildModel(rows);
-                result.put(directorId, director);
-            }
-        }
-        if (result.values().isEmpty()) return new ArrayList<>();
-        else return new ArrayList<>(result.values());
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
     public Optional<Director> findById(Long rowId) {
-        Map<Long, Director> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "d.id AS id, " +
-                        "d.NAME AS name, " +
-                        "FROM DIRECTORS AS d " +
-                        "LEFT JOIN TOTAL_FILM_DIRECTOR AS tf ON d.id = tf.director_id " +
-                        "ORDER BY d.id;",
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM DIRECTORS WHERE id = ?;",
                 rowId
         );
-        while (rows.next()) {
-            Long directorId = rows.getLong("ID");
-            if (!result.containsKey(directorId)) {
-                Director director = buildModel(rows);
-                result.put(rowId, director);
-            }
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
+    }
+
+    @Override
+    public Director insert(Director director) {
+        jdbcTemplate.update(
+                "INSERT INTO DIRECTORS (name) " +
+                        "VALUES (?);",
+                director.getName()
+        );
+        Optional<Director> optional = findByName(director.getName());
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            throw new ExceptionNotFoundGenreStorage(SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS); //создать новое исключение
         }
-        return Optional.ofNullable(result.get(rowId));
     }
 
     @Override
-    public void insert(Director director) {
+    public Director update(Director director) {
         jdbcTemplate.update(
-                "INSERT INTO DIRECTORS (id, name) " +
-                        "VALUES (?, ?);",
-                director.getId(), director.getName()
+                "UPDATE DIRECTORS SET name = ? WHERE id = ?;",
+                director.getName(), director.getId()
         );
-
-    }
-
-    @Override
-    public void update(Director director) {
-        jdbcTemplate.update(
-                "UPDATE DIRECTORS " +
-                        "SET " +
-                        "id = ?, " +
-                        "name = ?, " +
-                        "WHERE id = ?;",
-                director.getId(), director.getName()
-        );
+        return director;
     }
 
     @Override
@@ -91,6 +73,15 @@ public class DirectorsDaoImpl implements DirectorsDao {
                 "DELETE FROM DIRECTORS WHERE id = ?;",
                 rowId
         );
+    }
+
+    protected Optional<Director> findByName(String name) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM DIRECTORS WHERE name = ?;",
+                name
+        );
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     protected Director buildModel(@NotNull SqlRowSet row) {

@@ -11,9 +11,11 @@ import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.model.TotalGenreFilm;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalDirectorFilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
+import ru.yandex.practicum.filmorete.sql.impl.TotalDirectorFilmDaoImpl;
 
 import java.util.*;
 
@@ -30,13 +32,15 @@ public class ServiceFilm {
     private final UserDao userDao;
     private final TotalFilmLikeDao totalFilmLikeDao;
     private final TotalGenreFilmDao totalGenreFilmDao;
+    private final TotalDirectorFilmDao totalDirectorFilmDao;
 
     @Autowired
-    public ServiceFilm(FilmDao filmDao, UserDao userDao, TotalFilmLikeDao totalFilmLikeDao, TotalGenreFilmDao totalGenreFilmDao) {
+    public ServiceFilm(FilmDao filmDao, UserDao userDao, TotalFilmLikeDao totalFilmLikeDao, TotalGenreFilmDao totalGenreFilmDao, TotalDirectorFilmDaoImpl totalDirectorFilmDao) {
         this.filmDao = filmDao;
         this.userDao = userDao;
         this.totalFilmLikeDao = totalFilmLikeDao;
         this.totalGenreFilmDao = totalGenreFilmDao;
+        this.totalDirectorFilmDao = totalDirectorFilmDao;
     }
 
     public Film getFilm(Long id) {
@@ -114,8 +118,14 @@ public class ServiceFilm {
         if (optionalUser.isEmpty()) {
             throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         }
-
         totalFilmLikeDao.delete(filmId, userId);
+    }
+
+    public List<Film> getFilmsToDirector(Long directorId, String sorted) {
+        if (sorted.equals("likes")) {
+            return totalDirectorFilmDao.findPopularFilmsByDirector(directorId);
+        }
+        return totalDirectorFilmDao.findFilmsByDirectorSortedByYear(directorId);
     }
 
     public void addLike(Long filmId, Long userId) {

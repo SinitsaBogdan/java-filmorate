@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.sql.dao;
 
+import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.TotalDirectorFilm;
 
 import java.util.List;
@@ -14,6 +15,10 @@ public interface TotalDirectorFilmDao {
     void insert(TotalDirectorFilm totalDirectorFilm);
 
     void update(TotalDirectorFilm totalDirectorFilm);
+
+    List<Film> findPopularFilmsByDirector(Long directorId);
+
+    List<Film> findFilmsByDirectorSortedByYear(Long directorId);
 
     void deleteById(Long rowId);
 }
