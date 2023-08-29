@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.model.TotalDirectorFilm;
+import ru.yandex.practicum.filmorete.model.TotalGenreFilm;
 import ru.yandex.practicum.filmorete.sql.dao.TotalDirectorFilmDao;
 
 import java.util.*;
@@ -44,6 +45,17 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     }
 
     @Override
+    public List<TotalDirectorFilm> findAllTotalDirectorFilm(Long filmId) {
+        List<TotalDirectorFilm> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM TOTAL_FILM_DIRECTOR WHERE film_id = ?;",
+                filmId
+        );
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
+    }
+
+    @Override
     public Optional<TotalDirectorFilm> findById(Long rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_DIRECTOR WHERE director_id = ?;",
@@ -57,11 +69,11 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     }
 
     @Override
-    public void insert(TotalDirectorFilm totalDirectorFilm) {
+    public void insert(Long filmId, Long directorId) {
         jdbcTemplate.update(
                 "INSERT INTO TOTAL_FILM_DIRECTOR (film_id, director_id ) " +
                         "VALUES (?, ?);",
-                totalDirectorFilm.getFilmId(), totalDirectorFilm.getFilmId()
+                filmId, directorId
         );
     }
 
@@ -69,7 +81,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     public void update(TotalDirectorFilm totalDirectorFilm) {
         jdbcTemplate.update(
                 "UPDATE TOTAL_FILM_DIRECTOR SET film_id = ?  WHERE director_id = ?;",
-                totalDirectorFilm.getFilmId(), totalDirectorFilm.getFilmId()
+                totalDirectorFilm.getFilmId(), totalDirectorFilm.getDirectorId()
         );
     }
 
@@ -79,6 +91,24 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
                 "DELETE FROM TOTAL_FILM_DIRECTOR WHERE director_id = ?;",
                 rowId
         );
+    }
+
+    @Override
+    public void deleteAllFilmId(Long filmId) {
+        jdbcTemplate.update(
+                "DELETE FROM TOTAL_FILM_DIRECTOR WHERE film_id = ?;",
+                filmId
+        );
+    }
+
+    @Override
+    public Optional<TotalDirectorFilm> findTotalDirectorFilm(Long filmId, Long dirId) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM TOTAL_FILM_DIRECTOR WHERE film_id = ? AND director_id = ?;",
+                filmId, dirId
+        );
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override

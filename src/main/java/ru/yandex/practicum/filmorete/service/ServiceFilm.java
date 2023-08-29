@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
+import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
+import ru.yandex.practicum.filmorete.model.TotalDirectorFilm;
 import ru.yandex.practicum.filmorete.model.TotalGenreFilm;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
@@ -70,6 +72,11 @@ public class ServiceFilm {
                 totalGenreFilmDao.insert(optionalFilm.get().getId(), genre.getId());
             }
         }
+        if (film.getDirector() != null) {
+            for (Director director : film.getDirector()) {
+                totalDirectorFilmDao.insert(optionalFilm.get().getId(), director.getId());
+            }
+        }
         return filmDao.findFilm(film.getName()).get();
     }
 
@@ -90,6 +97,16 @@ public class ServiceFilm {
                 Optional<TotalGenreFilm> totalGenreFilm = totalGenreFilmDao.findTotalGenreFilm(film.getId(), genreFilm.getId());
                 if (totalGenreFilm.isEmpty()) {
                     totalGenreFilmDao.insert(film.getId(), genreFilm.getId());
+                }
+            }
+        }
+        List<TotalDirectorFilm> totalDirectorFilms = totalDirectorFilmDao.findAllTotalDirectorFilm(film.getId());
+        if (!totalDirectorFilms.isEmpty()) totalDirectorFilmDao.deleteAllFilmId(film.getId());
+        if (film.getDirector() != null) {
+            for (Director director : film.getDirector()) {
+                Optional<TotalDirectorFilm> totalDirectorFilm = totalDirectorFilmDao.findTotalDirectorFilm(film.getId(), director.getId());
+                if (totalDirectorFilm.isEmpty()) {
+                    totalDirectorFilmDao.insert(film.getId(), director.getId());
                 }
             }
         }
