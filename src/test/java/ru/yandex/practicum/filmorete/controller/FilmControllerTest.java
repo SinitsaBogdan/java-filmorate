@@ -15,6 +15,7 @@ import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -24,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class FilmControllerTest {
-
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -72,6 +72,7 @@ public class FilmControllerTest {
 
         userDao.insert(1L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
         userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
+        userDao.insert(3L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
 
         totalFilmLikeDao.insert(1L, 1L);
         totalFilmLikeDao.insert(2L, 1L);
@@ -159,6 +160,43 @@ public class FilmControllerTest {
         @Test
         @DisplayName("Запрос списка общих фильмов, отсортированные по популярности")
         public void methodGet_CommonFilms() throws Exception {
+            mockMvc.perform(get("/films/common?userId=1&friendId=2"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+            ;
+            totalFilmLikeDao.insert(1L, 3L);
+            totalFilmLikeDao.insert(2L, 3L);
+            totalFilmLikeDao.insert(3L, 3L);
+
+            Film film1 = filmDao.findFilm(1L).get();
+            Film film2 = filmDao.findFilm(2L).get();
+
+            mockMvc.perform(get("/films/common?userId=1&friendId=3"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(film2, film1))));
+            ;
+        }
+
+        @Test
+        @DisplayName("Запрос списка общих фильмов, когда он должен быть пустым")
+        public void methodGet_EmptyCommonFilms() throws Exception {
+            totalFilmLikeDao.delete(1L, 2L);
+            totalFilmLikeDao.delete(2L, 1L);
+            totalFilmLikeDao.delete(2L, 2L);
+
+            mockMvc.perform(get("/films/common?userId=1&friendId=2"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0))
+            ;
+        }
+
+        @Test
+        @DisplayName("Запрос списка общих фильмов, когда пользователь не известен.")
+        public void methodGet_EmptyCommonFilmsWhenUnknownFilmOrUser() throws Exception {
+            mockMvc.perform(get("/films/common?userId=999&friendId=10001"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0))
+            ;
         }
 
         @Test
