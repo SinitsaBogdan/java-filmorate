@@ -9,6 +9,8 @@ public interface FilmDao {
 
     List<Film> findAllFilms();
 
+    List<Film> findCommonFilms(Long firstUserId, Long secondUserId);
+
     Optional<Film> findFilm(Long rowId);
 
     Optional<Film> findFilm(String filmName);

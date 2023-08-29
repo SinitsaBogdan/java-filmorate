@@ -118,6 +118,10 @@ public class ServiceFilm {
         totalFilmLikeDao.delete(filmId, userId);
     }
 
+    public List<Film> getCommonFilms(Long firstUserId, Long secondUserId) {
+        return filmDao.findCommonFilms(firstUserId, secondUserId);
+    }
+
     public void addLike(Long filmId, Long userId) {
         totalFilmLikeDao.insert(filmId, userId);
     }

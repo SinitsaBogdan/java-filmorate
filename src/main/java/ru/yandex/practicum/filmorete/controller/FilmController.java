@@ -117,8 +117,8 @@ public class FilmController {
      * Получить общие фильмы друзей, отсортированные по популярности.
      * */
     @GetMapping("/common")
-    public void getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
-
+    public List<Film> getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
+        return serviceFilms.getCommonFilms(userId, friendId);
     }
 
     /**
