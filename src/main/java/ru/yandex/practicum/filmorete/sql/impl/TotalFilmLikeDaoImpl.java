@@ -204,8 +204,9 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                 result.get(filmId).addGenre(genre);
             }
         }
-        if (result.values().isEmpty()) return new ArrayList<>();
-        else return new ArrayList<>(result.values());
+        if (result.values().isEmpty())
+            return new ArrayList<>();
+        return new ArrayList<>(result.values());
     }
 
     @Override
