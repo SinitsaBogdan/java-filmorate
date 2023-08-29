@@ -39,12 +39,10 @@ public class ServiceGenre {
     public void add(@NotNull Genre genre) {
         if (genre.getId() == null) {
             genreDao.insert(
-                    genre.getName()
-            );
+                    genre.getName());
         } else {
             genreDao.insert(
-                    genre.getId(), genre.getName()
-            );
+                    genre.getId(), genre.getName());
         }
     }
 
@@ -52,8 +50,7 @@ public class ServiceGenre {
         if (genre.getId() != null) {
             genreDao.update(
                     genre.getId(),
-                    genre.getName()
-            );
+                    genre.getName());
         }
     }
 
