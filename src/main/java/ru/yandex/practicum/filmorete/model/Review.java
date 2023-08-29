@@ -18,6 +18,8 @@ public class Reviews {
     @Size(max = 200)
     private String content;
 
+    private boolean isPositive;
+
     @Positive
     private Long userId;
 
@@ -28,7 +30,7 @@ public class Reviews {
     private Long typeId;
 
     @Positive
-    private Long evalutionId;
+    private Long evaluationId;
 
     @Positive
     private Integer useful;

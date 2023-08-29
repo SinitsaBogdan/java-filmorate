@@ -25,5 +25,5 @@ public class Event {
     private final LocalDate releaseDate;
 
     @Positive
-    private Long entityIdId;
+    private Long entityId;
 }

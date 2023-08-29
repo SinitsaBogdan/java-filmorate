@@ -14,7 +14,7 @@ public class DirectorController {
     /**
      * NEW!!!
      * Получение режиссёра по идентификатору.
-     * */
+     */
     @GetMapping("/{directorId}")
     public void getSearchId(@PathVariable Long directorId) {
 
@@ -23,7 +23,7 @@ public class DirectorController {
     /**
      * NEW!!!
      * Получение всех режиссёров.
-     * */
+     */
     @GetMapping()
     public void getAllDirectors() {
 
@@ -32,25 +32,25 @@ public class DirectorController {
     /**
      * NEW!!!
      * Добавление нового режиссёра.
-     * */
+     */
     @PostMapping
-    public void create(/*@Valid @RequestBody Director director*/) {
+    public void create(/* @Valid @RequestBody Director director */) {
 
     }
 
     /**
      * NEW!!!
      * Удаление режиссёра по идентификатору.
-     * */
+     */
     @DeleteMapping("/{directorId}")
-    public void deleteSearchId(@PathVariable Long directorId) {
+    public void removeSearchId(@PathVariable Long directorId) {
 
     }
 
     /**
      * NEW!!!
      * Изменение параметров режиссёра.
-     * */
+     */
     @PutMapping()
     public void update(@Valid @RequestBody Director director) {
 
