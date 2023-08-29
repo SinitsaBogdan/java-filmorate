@@ -16,6 +16,5 @@ public class Mpa {
     @NotBlank
     private String name;
 
-    @Positive
     private String description;
 }
