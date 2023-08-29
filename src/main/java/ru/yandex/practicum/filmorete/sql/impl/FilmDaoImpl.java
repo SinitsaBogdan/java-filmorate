@@ -62,7 +62,6 @@ public class FilmDaoImpl implements FilmDao {
         else return new ArrayList<>(result.values());
     }
 
-
     @Override
     public Optional<Film> findFilm(String filmName) {
         Map<String, Film> result = new HashMap<>();
