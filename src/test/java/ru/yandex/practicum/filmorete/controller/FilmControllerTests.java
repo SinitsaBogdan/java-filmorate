@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class FilmControllerTests {
 
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -72,6 +71,7 @@ public class FilmControllerTests {
 
         userDao.insert(1L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
         userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
+        userDao.insert(3L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
 
         totalFilmLikeDao.insert(1L, 1L);
         totalFilmLikeDao.insert(2L, 1L);
@@ -159,6 +159,18 @@ public class FilmControllerTests {
         @Test
         @DisplayName("Запрос списка общих фильмов, отсортированные по популярности")
         public void methodGet_CommonFilms() throws Exception {
+            mockMvc.perform(get("/films/common?userId=1&friendId=2"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+            ;
+            totalFilmLikeDao.insert(1L, 3L);
+            totalFilmLikeDao.insert(2L, 3L);
+            totalFilmLikeDao.insert(3L, 3L);
+
+            mockMvc.perform(get("/films/common?userId=1&friendId=3"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2))
+            ;
         }
 
         @Test
