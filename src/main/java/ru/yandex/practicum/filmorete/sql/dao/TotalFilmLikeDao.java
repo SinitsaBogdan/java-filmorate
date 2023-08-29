@@ -29,5 +29,4 @@ public interface TotalFilmLikeDao {
 
     void delete(Long filmId, Long userId);
 
-
 }
