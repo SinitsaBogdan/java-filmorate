@@ -7,7 +7,7 @@ import javax.validation.constraints.Positive;
 
 @Data
 @Builder
-public class TotalReviewLike {
+public class TotalLikeReview {
 
     @Positive
     private Long reviewId;

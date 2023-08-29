@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -29,9 +28,9 @@ public class EventsDaoImpl implements EventsDao {
                         "e.type_id AS typeId, " +
                         "e.timestamp AS releaseDate, " +
                         "e.entity_id AS entityId, " +
-                        "FROM EVENTS AS e " +
-                        "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.id = re.id " +
-                        "ORDER BY e.id;"
+                    "FROM EVENTS AS e " +
+                    "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.id = re.id " +
+                    "ORDER BY e.id;"
         );
         while (rows.next()) {
             Long eventId = rows.getLong("ID");
@@ -54,9 +53,9 @@ public class EventsDaoImpl implements EventsDao {
                         "e.type_id AS typeId, " +
                         "e.timestamp AS releaseDate, " +
                         "e.entity_id AS entityId, " +
-                        "FROM EVENTS AS e " +
-                        "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.id = re.id " +
-                        "ORDER BY e.id;",
+                    "FROM EVENTS AS e " +
+                    "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.id = re.id " +
+                    "ORDER BY e.id;",
                 rowId
         );
         while (rows.next()) {

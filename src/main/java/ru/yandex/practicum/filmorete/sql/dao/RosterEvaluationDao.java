@@ -15,5 +15,9 @@ public interface RosterEvaluationDao {
 
     void update(Evaluation evaluation);
 
-    void deleteById(Long rowId);
+    void delete();
+
+    void delete(Long rowId);
+
+    void delete(String name);
 }

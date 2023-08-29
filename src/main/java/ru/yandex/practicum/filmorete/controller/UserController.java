@@ -119,7 +119,6 @@ public class UserController {
      * */
     @GetMapping("/{userId}/recommendations")
     public void getRecommendedFilms(@PathVariable Long userId) {
-
     }
 
     /**
@@ -128,6 +127,5 @@ public class UserController {
      * */
     @GetMapping("/{userId}/feed")
     public void getFeed(@PathVariable Long userId) {
-
     }
 }

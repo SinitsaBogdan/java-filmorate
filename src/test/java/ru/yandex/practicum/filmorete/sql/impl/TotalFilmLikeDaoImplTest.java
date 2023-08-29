@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class TotalFilmLikeDaoTest {
+class TotalFilmLikeDaoImplTest {
 
     private final TotalFilmLikeDao totalFilmLikeDao;
     private final FilmDao filmDao;

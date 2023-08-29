@@ -15,96 +15,128 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class ReviewsDaoImpl implements ReviewDao {
+
     private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Review> findAll() {
-
-        Map<Long, Review> result = new HashMap<>();
+        List<Review> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "r.id AS id, " +
-                        "r.content AS content, " +
-                        "r.user_id AS userId, " +
-                        "r.film_id AS filmId, " +
-                        "r.type_id AS typeId, " +
-                        "r.evaluation_id AS evalutionId, " +
-                        "r.useful AS useful, " +
-                        "FROM REVIEWS AS r " +
-                        "ORDER BY r.id;"
+                "SELECT * FROM REVIEWS;"
         );
-        while (rows.next()) {
-            Long reviewsId = rows.getLong("ID");
-            if (!result.containsKey(reviewsId)) {
-                Review review = buildModel(rows);
-                result.put(reviewsId, review);
-            }
-        }
-        if (result.values().isEmpty()) return new ArrayList<>();
-        else return new ArrayList<>(result.values());
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
     public Optional<Review> findById(Long rowId) {
         Map<Long, Review> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "r.id AS id, " +
-                        "r.content AS content, " +
-                        "r.user_id AS userId, " +
-                        "r.film_id AS filmId, " +
-                        "r.type_id AS typeId, " +
-                        "r.evaluation_id AS evalutionId, " +
-                        "r.useful AS useful, " +
-                        "FROM REVIEWS AS r " +
-                        "ORDER BY r.id;",
+                "SELECT * FROM REVIEWS " +
+                    "WHERE id = ?;",
                 rowId
         );
         while (rows.next()) {
             Long reviewsId = rows.getLong("ID");
-            if (!result.containsKey(reviewsId)) {
-                Review review = buildModel(rows);
-                result.put(rowId, review);
-            }
+            if (!result.containsKey(reviewsId)) result.put(rowId, buildModel(rows));
         }
         return Optional.ofNullable(result.get(rowId));
     }
 
     @Override
-    public void insert(Review reviews) {
+    public void insert(Long id, String content, Boolean status, Long userId, Long filmId, Integer typeId, Integer evaluationId) {
         jdbcTemplate.update(
                 "INSERT INTO REVIEWS (id, content, user_id, film_id, type_id, evaluation_id, useful) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?);",
-                reviews.getId(), reviews.getContent(), reviews.getUserId(), reviews.getFilmId(), reviews.getTypeId(),
-                reviews.getEvaluationId(), reviews.getUseful()
+                    "VALUES (?, ?, ?, ?, ?, ?, ?);",
+                id, content, status, userId, filmId, typeId, evaluationId
         );
     }
 
     @Override
-    public void update(Review reviews) {
+    public void update(Long id, String content, Boolean status, Long userId, Long filmId, Integer typeId, Integer evaluationId) {
         jdbcTemplate.update(
-                "SELECT " +
-                        "r.id AS id, " +
-                        "r.content AS content, " +
-                        "r.user_id AS userId, " +
-                        "r.film_id AS filmId, " +
-                        "r.type_id AS typeId, " +
-                        "r.evaluation_id AS evalutionId, " +
-                        "r.useful AS useful, " +
-                        "FROM REVIEWS AS r " +
-                        "ORDER BY r.id;",
-                reviews.getId(), reviews.getContent(), reviews.getUserId(), reviews.getFilmId(), reviews.getTypeId(),
-                reviews.getEvaluationId(), reviews.getUseful()
+                "UPDATE REVIEWS " +
+                    "SET " +
+                        "content = ?, " +
+                        "status = ?, " +
+                        "userId = ?, " +
+                        "filmId = ?, " +
+                        "typeId = ?, " +
+                        "evaluationId = ? " +
+                    "WHERE user_id = ?;",
+                content, status, userId, filmId, typeId, evaluationId, id
         );
     }
 
     @Override
-    public void deleteById(Long rowId) {
+    public void delete() {
+        jdbcTemplate.update(
+                "DELETE FROM REVIEWS;"
+        );
+    }
+
+    @Override
+    public void delete(Long rowId) {
         jdbcTemplate.update(
                 "DELETE FROM REVIEWS WHERE id = ?;",
                 rowId
         );
     }
+
+    @Override
+    public void deleteAllIsPositive(Boolean isPositive) {
+        jdbcTemplate.update(
+                "DELETE FROM REVIEWS " +
+                "WHERE isPositive = ?;",
+                isPositive
+        );
+    }
+
+    @Override
+    public void deleteAllUserId(Long userId) {
+        jdbcTemplate.update(
+                "DELETE FROM REVIEWS " +
+                        "WHERE user_id = ?;",
+                userId
+        );
+    }
+
+    @Override
+    public void deleteAllFilmId(Long filmId) {
+        jdbcTemplate.update(
+                "DELETE FROM REVIEWS " +
+                        "WHERE film_id = ?;",
+                filmId
+        );
+    }
+
+    @Override
+    public void deleteAllTypeId(Integer typeId) {
+        jdbcTemplate.update(
+                "DELETE FROM REVIEWS " +
+                        "WHERE type_id = ?;",
+                typeId
+        );
+    }
+
+    @Override
+    public void deleteAllEvaluationId(Integer evaluationId) {
+        jdbcTemplate.update(
+                "DELETE FROM REVIEWS " +
+                        "WHERE evaluation_id = ?;",
+                evaluationId
+        );
+    }
+
+    @Override
+    public void deleteAllUseful(Integer useful) {
+        jdbcTemplate.update(
+                "DELETE FROM REVIEWS " +
+                        "WHERE useful = ?;",
+                useful
+        );
+    }
+
     protected Review buildModel(@NotNull SqlRowSet row) {
         return Review.builder()
                 .id(row.getLong("ID"))

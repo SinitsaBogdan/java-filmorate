@@ -14,9 +14,8 @@ import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.*;
 public class ServiceValidators {
 
     public static void checkValidUser(User user) {
-        if (user.getName() == null || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
+        if (user.getName() == null || user.getName().isEmpty()) user.setName(user.getLogin());
+
         if (user.getLogin().isBlank()) {
             throw new ExceptionValidationUser(VALID_ERROR_USER_NOT_LOGIN);
         }
@@ -32,7 +31,6 @@ public class ServiceValidators {
         if (film.getDuration() == null) {
             throw new ExceptionValidationFilm(VALID_ERROR_FILM_NOT_DURATION);
         }
-
         if (film.getDuration() < 0) {
             throw new ExceptionValidationFilm(VALID_ERROR_FILM_DURATION_MIN);
         }

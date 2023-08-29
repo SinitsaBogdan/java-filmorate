@@ -1,28 +1,23 @@
 package ru.yandex.practicum.filmorete.service;
 
 import java.util.ArrayList;
-
 import javax.validation.constraints.NotBlank;
-
-import org.hibernate.mapping.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-
 import ru.yandex.practicum.filmorete.model.Director;
-import ru.yandex.practicum.filmorete.model.Genre;
-import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
+import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalDirectorFilmDao;
 
 @Service
 public class ServiceDirectors {
 
-    // private final DirectorsDao directorsDao;
-    // private final TotalFilmDirectorDao totalFilmDirectorDao;
+     private final DirectorDao directorsDao;
+     private final TotalDirectorFilmDao totalFilmDirectorDao;
 
-    // private ServiceDirectors(DirectorsDao directorsDao, TotalFilmDirectorDao
-    // totalFilmDirectorDao) {
-    // this.directorsDao = directorsDao;
-    // this.totalFilmDirectorDao = totalFilmDirectorDao;
-    // }
+     private ServiceDirectors(DirectorDao directorsDao, TotalDirectorFilmDao totalFilmDirectorDao) {
+         this.directorsDao = directorsDao;
+         this.totalFilmDirectorDao = totalFilmDirectorDao;
+     }
 
     /**
      * NEW!!!

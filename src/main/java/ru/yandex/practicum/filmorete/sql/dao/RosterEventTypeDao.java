@@ -15,5 +15,7 @@ public interface RosterEventTypeDao {
 
     void update(EventType eventType);
 
-    void deleteById(Long rowId);
+    void delete(Long rowId);
+
+    void delete(String name);
 }

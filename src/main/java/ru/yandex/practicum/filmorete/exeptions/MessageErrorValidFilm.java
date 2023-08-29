@@ -3,11 +3,6 @@ package ru.yandex.practicum.filmorete.exeptions;
 
 public enum MessageErrorValidFilm {
 
-    VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS(
-        "Ошибка обработки поля name",
-        "Фильм уже есть в коллекции!",
-        400
-    ),
     VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS(
         "Ошибка обработки поля id",
         "Указанный ID фильма отсутствует в коллекции!",

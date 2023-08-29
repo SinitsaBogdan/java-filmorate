@@ -9,38 +9,38 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorete.model.Director;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
 
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
-class DirectorControllerTests {
+class DirectorControllerTest {
+
     @Autowired
     private ObjectMapper objectMapper;
+
     @Autowired
     private MockMvc mockMvc;
 
-    /*@Autowired
-    private DirectorDao directorDao;*/
+    @Autowired
+    private DirectorDao directorDao;
 
     private final Director duplicate = Director.builder().id(1L).name("director-1").build();
 
     @BeforeEach
     public void beforeEach() {
-        //directorDao.delete();
-        //directorDao.insert(1L,"director-1");
-        //directorDao.insert(2L,"director-2");
-        //directorDao.insert(3L,"director-3");
+        directorDao.delete();
+        directorDao.insert(1L,"director-1");
+        directorDao.insert(2L,"director-2");
+        directorDao.insert(3L,"director-3");
     }
 
     @Nested
     @DisplayName("GET")
     public class MethodGet {
+
         @Test
         @DisplayName("Получение режиссёра: ID 1")
         void methodGet_DirectorId1Test() {
@@ -55,7 +55,6 @@ class DirectorControllerTests {
         @Test
         @DisplayName("Запрос режиссёра: ID -1")
         public void methodGet_DirectorIdMinus1Test() throws Exception {
-
         }
 
 
@@ -68,15 +67,10 @@ class DirectorControllerTests {
     @Nested
     @DisplayName("POST")
     public class MethodPost {
+
         @Test
         @DisplayName("Проверка добавления дубликата режиссёра")
         void methodPost_NewDirectorValidTrue_AndDoubleFalseTest() throws Exception {
-            /*mockMvc.perform(post("/directors")
-                            .content(objectMapper.writeValueAsString(duplicate))
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andExpect(status().is4xxClientError())
-            ;*/
         }
 
         @Test
@@ -92,6 +86,7 @@ class DirectorControllerTests {
     @Nested
     @DisplayName("PUT")
     public class MethodPut {
+
         @Test
         @DisplayName("Обновление режиссёра")
         void methodPut_DirectorValidTrueTest() throws Exception {
@@ -137,10 +132,20 @@ class DirectorControllerTests {
     @Nested
     @DisplayName("DELETE")
     public class MethodDelete {
+
+        @Test
+        @DisplayName("Удаление всех режиссёров")
+        void methodDelete_DeleteAllDirectorTest() {
+        }
+
         @Test
         @DisplayName("Удаление режиссёра по ID")
         void methodDelete_DeleteDirectorByIdTest() {
         }
-    }
 
+        @Test
+        @DisplayName("Удаление режиссёра по NAME")
+        void methodDelete_DeleteDirectorByNameTest() {
+        }
+    }
 }

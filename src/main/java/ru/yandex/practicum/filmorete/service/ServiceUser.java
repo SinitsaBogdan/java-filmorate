@@ -21,7 +21,9 @@ import static ru.yandex.practicum.filmorete.service.ServiceValidators.*;
 public class ServiceUser {
 
     private final UserDao userDao;
+
     private final TotalUserFriendsDao totalUserFriendsDao;
+
     private final TotalFilmLikeDao totalFilmLikeDao;
 
     @Autowired
@@ -33,11 +35,8 @@ public class ServiceUser {
 
     public User getUser(Long userId) {
         Optional<User> optional = userDao.findUser(userId);
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        }
+        if (optional.isPresent()) return optional.get();
+        else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public User createUser(User user) {
@@ -46,9 +45,7 @@ public class ServiceUser {
         if (optional.isEmpty()) {
             userDao.insert(user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
             return userDao.findUser(user.getEmail()).get();
-        } else {
-            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
-        }
+        } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
     }
 
     public User updateUser(User user) {
@@ -57,9 +54,7 @@ public class ServiceUser {
         if (optional.isPresent()) {
             userDao.update(user.getId(), user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
             return user;
-        } else {
-            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        }
+        } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public List<User> getAllUsers() {
@@ -67,7 +62,10 @@ public class ServiceUser {
     }
 
     public List<User> getFriends(Long id) {
-        return totalUserFriendsDao.findFriendsByUser(id);
+        Optional<User> optional = userDao.findUser(id);
+        if (optional.isPresent()) {
+            return totalUserFriendsDao.findFriendsByUser(id);
+        } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public List<User> getUsersToLikeFilm(Long filmId) {
@@ -78,31 +76,24 @@ public class ServiceUser {
         return totalUserFriendsDao.findFriendsCommon(userId, friendId);
     }
 
-    public void removeUser(Long id) {
-        userDao.delete(id);
+    public void removeUser(Long userId) {
+        Optional<User> optionalUser = userDao.findUser(userId);
+        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        userDao.delete(userId);
     }
 
     public void addFriend(Long friendId, Long userId) {
         Optional<User> optionalUser = userDao.findUser(userId);
         Optional<User> optionalFriend = userDao.findUser(friendId);
-
         if (optionalUser.isPresent() && optionalFriend.isPresent()) {
             Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.findTotalUserFriend(userId, friendId);
             if (optionalRowStatusUser.isPresent()) {
                 TotalUserFriends userStatus = optionalRowStatusUser.get();
-                if (userStatus.getStatusId() == 1) {
-                    totalUserFriendsDao.update(userId, friendId, 2);
-                }
-            } else {
-                totalUserFriendsDao.insert(userId, friendId, 2);
-            }
+                if (userStatus.getStatusId() == 1) totalUserFriendsDao.update(userId, friendId, 2);
+            } else totalUserFriendsDao.insert(userId, friendId, 2);
             Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findTotalUserFriend(friendId, userId);
-            if (optionalRowStatusFriend.isEmpty()) {
-                totalUserFriendsDao.insert(friendId, userId, 1);
-            }
-        } else {
-            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        }
+            if (optionalRowStatusFriend.isEmpty()) totalUserFriendsDao.insert(friendId, userId, 1);
+        } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public void removeFriend(Long userId, Long friendId) {

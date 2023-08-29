@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class TotalGenreFilmDaoTest {
+class TotalGenreFilmDaoImplTest {
 
     private final TotalGenreFilmDao totalGenreFilmDao;
 

@@ -7,15 +7,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.Director;
-import ru.yandex.practicum.filmorete.sql.dao.DirectorsDao;
+import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
 
 import java.util.*;
-
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DirectorsDaoImpl implements DirectorsDao {
+public class DirectorDaoImpl implements DirectorDao {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -64,32 +63,47 @@ public class DirectorsDaoImpl implements DirectorsDao {
     }
 
     @Override
-    public void insert(Director director) {
+    public void insert(Long id, String name) {
         jdbcTemplate.update(
                 "INSERT INTO DIRECTORS (id, name) " +
-                        "VALUES (?, ?);",
-                director.getId(), director.getName()
+                    "VALUES (?, ?);",
+                id, name
         );
 
     }
 
     @Override
-    public void update(Director director) {
+    public void update(Long id, String name) {
         jdbcTemplate.update(
                 "UPDATE DIRECTORS " +
-                        "SET " +
+                    "SET " +
                         "id = ?, " +
-                        "name = ?, " +
-                        "WHERE id = ?;",
-                director.getId(), director.getName()
+                        "name = ? " +
+                    "WHERE id = ?;",
+                id, name
         );
     }
 
     @Override
-    public void deleteById(Long rowId) {
+    public void delete() {
+        jdbcTemplate.update(
+                "DELETE FROM DIRECTORS;"
+        );
+    }
+
+    @Override
+    public void delete(Long rowId) {
         jdbcTemplate.update(
                 "DELETE FROM DIRECTORS WHERE id = ?;",
                 rowId
+        );
+    }
+
+    @Override
+    public void delete(String name) {
+        jdbcTemplate.update(
+                "DELETE FROM DIRECTORS WHERE name = ?;",
+                name
         );
     }
 

@@ -21,7 +21,6 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-
     @Override
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
@@ -36,7 +35,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     public List<String> findAllDescription() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT description FROM ROSTER_MPA;"
+                "SELECT description " +
+                    "FROM ROSTER_MPA;"
         );
         while (rows.next()) result.add(rows.getString("description"));
         return result;
@@ -55,7 +55,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public Optional<Mpa> findMpa(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_MPA WHERE id = ?;",
+                "SELECT * FROM ROSTER_MPA " +
+                    "WHERE id = ?;",
                 rowId
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -65,7 +66,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public Optional<Mpa> findMpa(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_MPA WHERE name = ?;",
+                "SELECT * FROM ROSTER_MPA " +
+                    "WHERE name = ?;",
                 name
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -75,7 +77,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void insert(String name, String description) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_MPA (name, description) VALUES(?, ?);",
+                "INSERT INTO ROSTER_MPA (name, description) " +
+                    "VALUES(?, ?);",
                 name, description
         );
     }
@@ -83,7 +86,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void insert(Integer rowId, String name, String description) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_MPA (id, name, description) VALUES(?, ?, ?);",
+                "INSERT INTO ROSTER_MPA (id, name, description) " +
+                    "VALUES(?, ?, ?);",
                 rowId, name, description
         );
     }
@@ -91,7 +95,11 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void update(Integer searchRowId, String name, String description) {
         jdbcTemplate.update(
-                "UPDATE ROSTER_MPA SET name = ?, description = ? WHERE id = ?;",
+                "UPDATE ROSTER_MPA " +
+                    "SET " +
+                        "name = ?, " +
+                        "description = ? " +
+                    "WHERE id = ?;",
                 name, description, searchRowId
         );
     }
@@ -99,7 +107,11 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void update(String searchName, String name, String description) {
         jdbcTemplate.update(
-                "UPDATE ROSTER_MPA SET name = ?, description = ? WHERE name = ?;",
+                "UPDATE ROSTER_MPA " +
+                    "SET " +
+                        "name = ?, " +
+                        "description = ? " +
+                    "WHERE name = ?;",
                 name, description, searchName
         );
     }
@@ -114,7 +126,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void delete(Integer rowId) {
         jdbcTemplate.update(
-                "DELETE FROM ROSTER_MPA WHERE id = ?;",
+                "DELETE FROM ROSTER_MPA " +
+                    "WHERE id = ?;",
                 rowId
         );
     }
@@ -122,7 +135,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public void delete(String name) {
         jdbcTemplate.update(
-                "DELETE FROM ROSTER_MPA WHERE name = ?;",
+                "DELETE FROM ROSTER_MPA " +
+                    "WHERE name = ?;",
                 name
         );
     }
