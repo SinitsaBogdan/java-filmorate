@@ -15,6 +15,7 @@ import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -167,9 +168,12 @@ public class FilmControllerTests {
             totalFilmLikeDao.insert(2L, 3L);
             totalFilmLikeDao.insert(3L, 3L);
 
+            Film film1 = filmDao.findFilm(1L).get();
+            Film film2 = filmDao.findFilm(2L).get();
+
             mockMvc.perform(get("/films/common?userId=1&friendId=3"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(2))
+                    .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(film2, film1))));
             ;
         }
 
