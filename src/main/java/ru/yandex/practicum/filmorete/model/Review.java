@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Reviews {
+public class Review {
     
     @Positive
     private Long id;
@@ -28,7 +28,7 @@ public class Reviews {
     private Long typeId;
 
     @Positive
-    private Long evalutionId;
+    private Long evaluationId;
 
     @Positive
     private Integer useful;

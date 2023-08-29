@@ -26,3 +26,29 @@ INSERT INTO ROSTER_STATUS_FRIENDS (name)
 VALUES  ('Не подтвержденная'),
         ('Подтвержденная')
 ;
+
+--TABLE ROSTER_TYPE_REVIEW
+
+INSERT INTO ROSTER_TYPE_REVIEW (name)
+VALUES ('Положительный'),
+       ('Нейтральный'),
+       ('Отрицательный')
+;
+
+--TABLE ROSTER_EVALUATION
+
+INSERT INTO ROSTER_EVALUATION (name)
+VALUES ('Полезный'),
+       ('Нейтральный'),
+       ('Безполезный')
+;
+
+--TABLE ROSTER_EVENT_TYPE
+
+INSERT INTO ROSTER_EVENT_TYPE (name)
+VALUES ('CREATE'),
+       ('GET'),
+       ('UPDATE'),
+       ('DELETE')
+;
+
