@@ -119,7 +119,7 @@ public class ServiceFilm {
     }
 
     public List<Film> getCommonFilms(Long firstUserId, Long secondUserId) {
-        return filmDao.findCommonFilms(firstUserId, secondUserId);
+        return totalFilmLikeDao.findCommonFilms(firstUserId, secondUserId);
     }
 
     public void addLike(Long filmId, Long userId) {
