@@ -39,6 +39,9 @@ public class Film {
     @NotNull
     private Mpa mpa;
 
+    @Builder.Default
+    private List<Director> director = new ArrayList<>();
+
     public void addGenre(Genre genre) {
         genres.add(genre);
     }
