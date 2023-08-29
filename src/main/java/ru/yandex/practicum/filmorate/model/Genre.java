@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 @Builder
 public class Genre {
-
     @Positive
     private Integer id;
 

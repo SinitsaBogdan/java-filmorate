@@ -11,7 +11,6 @@ import lombok.Data;
 @Data
 @Builder
 public class Event {
-    
     @Positive
     private Long id;
 

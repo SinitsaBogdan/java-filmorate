@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @Builder
 public class TotalDirectorFilm {
-    
     @Positive
     private Long filmId;
 

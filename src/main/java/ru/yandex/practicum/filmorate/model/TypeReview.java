@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 @Builder
 public class TypeReview {
-    
     @Positive
     private final Integer id;
 

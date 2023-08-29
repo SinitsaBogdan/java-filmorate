@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 @Builder
 public class Mpa {
-
     @Positive
     private Integer id;
 

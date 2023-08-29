@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @Builder
 public class TotalUserFriends {
-
     @Positive
     private Long userId;
 

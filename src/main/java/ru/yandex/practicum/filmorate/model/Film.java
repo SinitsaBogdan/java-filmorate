@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 @Builder
 public class Film {
-
     @Positive
     private final Long id;
 

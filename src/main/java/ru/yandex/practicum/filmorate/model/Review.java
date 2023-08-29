@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 @Builder
 public class Review {
-    
     @Positive
     private Long id;
 
