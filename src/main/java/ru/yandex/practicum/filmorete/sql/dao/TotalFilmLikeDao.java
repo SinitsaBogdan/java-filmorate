@@ -19,6 +19,8 @@ public interface TotalFilmLikeDao {
 
     List<TotalFilmLike> findAllTotalFilmLikeByUserId(Long userId);
 
+    List<Film> findCommonFilms(Long firstId, Long secondId);
+
     void insert(Long filmId, Long userId);
 
     void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId);
@@ -26,4 +28,6 @@ public interface TotalFilmLikeDao {
     void delete();
 
     void delete(Long filmId, Long userId);
+
+
 }

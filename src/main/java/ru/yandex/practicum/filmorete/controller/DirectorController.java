@@ -55,7 +55,7 @@ public class DirectorController {
      * Изменение параметров режиссёра.
      */
     @PutMapping()
-    public void update(@Valid @RequestBody Director director */) {
+    public void update(/*@Valid @RequestBody Director director */) {
 
     }
 }

@@ -49,7 +49,7 @@ INSERT INTO ROSTER_EVENT_TYPE (name)
 VALUES ('CREATE FILM'),
        ('CREATE REVIEW'),
        ('PUT LIKE'),
-       ('PUT FRIEND').
+       ('PUT FRIEND'),
        ('UPDATE FILM'),
        ('UPDATE REVIEW'),
        ('UPDATE FRIEND'),
