@@ -1,42 +1,40 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
-import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
 import ru.yandex.practicum.filmorete.model.User;
+import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
 @Component
-@Qualifier("TotalUserFriendsDaoImpl")
+@RequiredArgsConstructor
 public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
 
     private final JdbcTemplate jdbcTemplate;
 
     private final UserDaoImpl userDao;
 
-    private TotalUserFriendsDaoImpl(JdbcTemplate jdbcTemplate, UserDaoImpl userDao) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.userDao = userDao;
-    }
 
     @Override
     public List<User> findFriendsByUser(Long userId) {
         List<User> users = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS " +
-                    "WHERE id IN (" +
+                        "WHERE id IN (" +
                         "SELECT friend_id FROM TOTAL_USER_FRIENDS " +
                         "WHERE user_id = ? AND status_id = 2" +
-                    ") " +
-                    "ORDER BY id ASC;",
+                        ") " +
+                        "ORDER BY id ASC;",
                 userId
         );
         while (rows.next()) users.add(userDao.buildModel(rows));
@@ -48,15 +46,15 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
         List<User> users = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS " +
-                    "WHERE id IN (" +
+                        "WHERE id IN (" +
                         "SELECT friend_id " +
                         "FROM TOTAL_USER_FRIENDS " +
                         "WHERE user_id = ? AND status_id = 2 AND friend_id IN (" +
-                            "SELECT friend_id " +
-                            "FROM TOTAL_USER_FRIENDS " +
-                            "WHERE user_id = ? AND status_id = 2" +
+                        "SELECT friend_id " +
+                        "FROM TOTAL_USER_FRIENDS " +
+                        "WHERE user_id = ? AND status_id = 2" +
                         ")" +
-                    ");",
+                        ");",
                 userId, friendId
         );
         while (rows.next()) users.add(userDao.buildModel(rows));

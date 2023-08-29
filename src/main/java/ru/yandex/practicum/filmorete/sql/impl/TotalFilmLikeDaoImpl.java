@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,12 +10,13 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.*;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
+
 import java.util.*;
 
 
 @Slf4j
 @Component
-@Qualifier("TotalFilmLikeDaoImpl")
+@RequiredArgsConstructor
 public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -25,12 +27,6 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     private final UserDaoImpl userDao;
 
-    private TotalFilmLikeDaoImpl(JdbcTemplate jdbcTemplate, TotalGenreFilmDao totalGenreFilmDao, FilmDaoImpl filmDao, UserDaoImpl userDao) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.totalGenreFilmDao = totalGenreFilmDao;
-        this.filmDao = filmDao;
-        this.userDao = userDao;
-    }
 
     @Override
     public List<Film> findPopularFilms(Integer limit) {
@@ -47,15 +43,15 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "g.id AS genre_id, " +
                         "g.name AS genre_name, " +
                         "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
-                    "FROM FILMS AS f " +
-                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                    "WHERE f.id IN ( " +
+                        "FROM FILMS AS f " +
+                        "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                        "WHERE f.id IN ( " +
                         "SELECT f.id FROM FILMS AS f " +
                         "ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) DESC " +
-                    "LIMIT ? " +
-                    ");",
+                        "LIMIT ? " +
+                        ");",
                 limit
         );
         while (rows.next()) {
@@ -80,11 +76,11 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         List<User> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * " +
-                    "FROM USERS " +
-                    "WHERE id IN (" +
+                        "FROM USERS " +
+                        "WHERE id IN (" +
                         "SELECT user_id FROM TOTAL_FILM_LIKE " +
                         "WHERE film_id = ?" +
-                    ");",
+                        ");",
                 filmId
         );
         while (rows.next()) result.add(userDao.buildModel(rows));
@@ -106,11 +102,11 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "g.id AS genre_id, " +
                         "g.name AS genre_name, " +
                         "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
-                    "FROM FILMS AS f " +
-                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                    "WHERE f.id IN (SELECT film_id FROM TOTAL_FILM_LIKE WHERE user_id = ?);",
+                        "FROM FILMS AS f " +
+                        "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                        "WHERE f.id IN (SELECT film_id FROM TOTAL_FILM_LIKE WHERE user_id = ?);",
                 userId
         );
         while (rows.next()) {

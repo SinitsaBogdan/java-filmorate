@@ -1,27 +1,26 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
 @Component
-@Qualifier("RosterGenreDaoImpl")
+@RequiredArgsConstructor
 public class RosterGenreDaoImpl implements RosterGenreDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private RosterGenreDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<String> findAllName() {
@@ -99,7 +98,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public void delete(Integer rowId) {
         jdbcTemplate.update(
                 "DELETE FROM ROSTER_GENRE " +
-                    "WHERE id = ?;",
+                        "WHERE id = ?;",
                 rowId
         );
     }
@@ -108,7 +107,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public void delete(String name) {
         jdbcTemplate.update(
                 "DELETE FROM ROSTER_GENRE " +
-                    "WHERE name = ?;",
+                        "WHERE name = ?;",
                 name
         );
     }

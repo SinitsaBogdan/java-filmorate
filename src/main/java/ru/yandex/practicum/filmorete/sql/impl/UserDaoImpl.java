@@ -1,28 +1,28 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 import ru.yandex.practicum.filmorete.model.User;
+import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Slf4j
 @Component
-@Qualifier("UserDaoImpl")
+@RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private UserDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public Optional<Long> findLastIdUser() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
