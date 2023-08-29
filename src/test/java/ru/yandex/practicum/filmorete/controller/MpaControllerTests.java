@@ -93,16 +93,14 @@ public class MpaControllerTests {
                             .content(objectMapper.writeValueAsString(listMpa.get(2)))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(status().isOk())
-            ;
+                    .andExpect(status().isOk());
 
             mockMvc.perform(get("/mpa"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(3))
                     .andExpect(jsonPath("$.[2].id").value(3))
                     .andExpect(jsonPath("$.[2].name").value("G"))
-                    .andExpect(jsonPath("$.[2].description").value(""))
-            ;
+                    .andExpect(jsonPath("$.[2].description").value(""));
         }
     }
 
@@ -115,7 +113,12 @@ public class MpaControllerTests {
         public void testDeleteAll() throws Exception {
             mockMvc.perform(put("/mpa")
                             .content(objectMapper.writeValueAsString(
-                                    Mpa.builder().id(1).name("W").description("Up").build()
+                                    Mpa
+                                            .builder()
+                                            .id(1)
+                                            .name("W")
+                                            .description("Up")
+                                            .build()
                             ))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
@@ -129,7 +132,6 @@ public class MpaControllerTests {
                     .andExpect(jsonPath("$.description").value("Up"))
             ;
         }
-
     }
 
     @Nested

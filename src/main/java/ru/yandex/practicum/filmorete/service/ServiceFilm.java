@@ -118,7 +118,12 @@ public class ServiceFilm {
         if (optionalUser.isEmpty()) {
             throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         }
+
         totalFilmLikeDao.delete(filmId, userId);
+    }
+
+    public List<Film> findCommonFilms(Long firstId, Long secondId) {
+        return totalFilmLikeDao.findCommonFilms(firstId, secondId);
     }
 
     public List<Film> getFilmsToDirector(Long directorId, String sorted) {
