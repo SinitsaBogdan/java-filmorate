@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.yandex.practicum.filmorete.model.Reviews;
+import ru.yandex.practicum.filmorete.model.Review;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
@@ -42,14 +42,14 @@ class ReviewControllerTests {
 
 
 
-    private final Reviews duplicate = Reviews.builder()
+    private final Review duplicate = Review.builder()
             .id(1L)
             .content("content-1")
             .isPositive(false)
             .userId(1L)
             .filmId(1L)
             .typeId(1L)
-            .evalutionId(1L)
+            .evaluationId(1L)
             .useful(1)
             .build();
 
@@ -115,14 +115,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Добавление нового отзыва - userId : null")
         public void methodPost_NewReviewValidTrue_UserIdNullTest() throws Exception {
-            Reviews duplicate = Reviews.builder()
+            Review duplicate = Review.builder()
                     .id(1L)
                     .content("content-1")
                     .isPositive(false)
                     .userId(null)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(1)
                     .build();
         }
@@ -130,14 +130,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Добавление нового отзыва - filmId : null")
         public void methodPost_NewReviewValidTrue_FilmIdNullTest() throws Exception {
-            Reviews duplicate = Reviews.builder()
+            Review duplicate = Review.builder()
                     .id(1L)
                     .content("content-1")
                     .isPositive(false)
                     .userId(1L)
                     .filmId(null)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(1)
                     .build();
         }
@@ -145,14 +145,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Добавление нового отзыва - content : null")
         public void methodPost_NewReviewValidTrue_ContentNullTest() throws Exception {
-            Reviews duplicate = Reviews.builder()
+            Review duplicate = Review.builder()
                     .id(1L)
                     .content(null)
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(1)
                     .build();
         }
@@ -160,14 +160,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Добавление нового отзыва - content : empty")
         public void methodPost_NewReviewValidTrue_ContentEmptyTest() throws Exception {
-            Reviews duplicate = Reviews.builder()
+            Review duplicate = Review.builder()
                     .id(1L)
                     .content("")
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(1)
                     .build();
         }
@@ -175,14 +175,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Добавление нового отзыва - content : max length")
         public void methodPost_NewReviewValidTrue_ContentMaxLengthTest() throws Exception {
-            Reviews duplicate = Reviews.builder()
+            Review duplicate = Review.builder()
                     .id(1L)
                     .content("Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание.")
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(1)
                     .build();
         }
@@ -200,14 +200,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Обновление отзыва - id : null")
         public void methodPut_ReviewValidFalse_IdNullTest() throws Exception {
-            Reviews reviews = Reviews.builder()
+            Review reviews = Review.builder()
                     .id(null)
                     .content("content-1")
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(1)
                     .build();
         }
@@ -215,14 +215,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Обновление отзыва - id : 99")
         public void methodPut_ReviewValidFalse_IdNotInCollectionsTest() throws Exception {
-            Reviews reviews = Reviews.builder()
+            Review reviews = Review.builder()
                     .id(99L)
                     .content("content-1")
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(1)
                     .build();
         }
@@ -230,14 +230,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Обновление отзыва - content : empty")
         public void methodPut_ReviewValidFalse_ContentEmptyTest() throws Exception {
-            Reviews reviews = Reviews.builder()
+            Review reviews = Review.builder()
                     .id(1L)
                     .content("")
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(1)
                     .build();
         }
@@ -245,14 +245,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Обновление отзыва - content : null")
         public void methodPut_ReviewValidFalse_ContentNullTest() throws Exception {
-            Reviews reviews = Reviews.builder()
+            Review reviews = Review.builder()
                     .id(1L)
                     .content(null)
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(1)
                     .build();
         }
@@ -260,14 +260,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Обновление отзыва - useful : -1")
         public void methodPut_ReviewValidFalse_UsefulNegativeTest() throws Exception {
-            Reviews reviews = Reviews.builder()
+            Review reviews = Review.builder()
                     .id(1L)
                     .content("content-1")
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(-1)
                     .build();
         }
@@ -275,14 +275,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Обновление отзыва - добавление лайка")
         public void methodPut_ReviewAddLikeTest() throws Exception {
-            Reviews reviews = Reviews.builder()
+            Review reviews = Review.builder()
                     .id(1L)
                     .content("content-1")
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(-1)
                     .build();
         }
@@ -290,14 +290,14 @@ class ReviewControllerTests {
         @Test
         @DisplayName("Обновление отзыва - добавление дизлайка")
         public void methodPut_ReviewAddDislikeTest() throws Exception {
-            Reviews reviews = Reviews.builder()
+            Review reviews = Review.builder()
                     .id(1L)
                     .content("content-1")
                     .isPositive(false)
                     .userId(1L)
                     .filmId(1L)
                     .typeId(1L)
-                    .evalutionId(1L)
+                    .evaluationId(1L)
                     .useful(-1)
                     .build();
         }
