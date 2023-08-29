@@ -178,6 +178,28 @@ public class FilmControllerTest {
         }
 
         @Test
+        @DisplayName("Запрос списка общих фильмов, когда он должен быть пустым")
+        public void methodGet_EmptyCommonFilms() throws Exception {
+            totalFilmLikeDao.delete(1L, 2L);
+            totalFilmLikeDao.delete(2L, 1L);
+            totalFilmLikeDao.delete(2L, 2L);
+
+            mockMvc.perform(get("/films/common?userId=1&friendId=2"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0))
+            ;
+        }
+
+        @Test
+        @DisplayName("Запрос списка общих фильмов, когда пользователь не известен.")
+        public void methodGet_EmptyCommonFilmsWhenUnknownFilmOrUser() throws Exception {
+            mockMvc.perform(get("/films/common?userId=999&friendId=10001"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0))
+            ;
+        }
+
+        @Test
         @DisplayName("Запрос списка фильмов режиссера, отсортированные по популярности")
         public void methodGet_FilmsByDirectorSortedByLikes() throws Exception {
         }
