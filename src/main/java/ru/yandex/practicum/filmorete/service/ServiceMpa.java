@@ -26,11 +26,8 @@ public class ServiceMpa {
 
     public Mpa getSearchId(Integer mpaId) {
         Optional<Mpa> optional = mpaDao.findMpa(mpaId);
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            throw new ExceptionNotFoundMpaStorage(SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
-        }
+        if (optional.isPresent()) return optional.get();
+        else throw new ExceptionNotFoundMpaStorage(SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
     }
 
     public List<Mpa> getAll() {
@@ -38,25 +35,12 @@ public class ServiceMpa {
     }
 
     public void add(@NotNull Mpa mpa) {
-        if (mpa.getId() == null) {
-            mpaDao.insert(
-                    mpa.getName(), mpa.getDescription()
-            );
-        } else {
-            mpaDao.insert(
-                    mpa.getId(), mpa.getName(), mpa.getDescription()
-            );
-        }
+        if (mpa.getId() == null) mpaDao.insert(mpa.getName(), mpa.getDescription());
+        else mpaDao.insert(mpa.getId(), mpa.getName(), mpa.getDescription());
     }
 
     public void update(@NotNull Mpa mpa) {
-        if (mpa.getId() != null) {
-            mpaDao.update(
-                    mpa.getId(),
-                    mpa.getName(),
-                    mpa.getDescription()
-            );
-        }
+        if (mpa.getId() != null) mpaDao.update(mpa.getId(), mpa.getName(), mpa.getDescription());
     }
 
     public void deleteAll() {

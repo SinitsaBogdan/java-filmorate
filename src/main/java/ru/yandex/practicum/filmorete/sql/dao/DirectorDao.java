@@ -5,16 +5,19 @@ import ru.yandex.practicum.filmorete.model.Director;
 import java.util.List;
 import java.util.Optional;
 
-public interface DirectorsDao {
+public interface DirectorDao {
 
     List<Director> findAll();
 
     Optional<Director> findById(Long rowId);
 
-    void insert(Director director);
+    void insert(Long id, String name);
 
-    void update(Director director);
+    void update(Long id, String name);
 
-    void deleteById(Long rowId);
+    void delete();
 
+    void delete(Long rowId);
+
+    void delete(String name);
 }

@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class RosterStatusFriendsDaoTest {
+class RosterStatusFriendsDaoImplTest {
 
     private final RosterStatusFriendsDao dao;
 
@@ -27,7 +27,6 @@ class RosterStatusFriendsDaoTest {
         dao.delete();
         dao.insert(1L, "Не подтвержденная");
         dao.insert(2L, "Подтвержденная");
-
     }
 
     @Test

@@ -21,7 +21,6 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-
     @Override
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
@@ -36,7 +35,8 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public List<Genre> findAllGenre() {
         List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE ORDER BY id ASC;"
+                "SELECT * FROM ROSTER_GENRE " +
+                    "ORDER BY id ASC;"
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;
@@ -45,7 +45,8 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public Optional<Genre> findGenre(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE WHERE id = ?;",
+                "SELECT * FROM ROSTER_GENRE " +
+                    "WHERE id = ?;",
                 rowId
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -55,7 +56,8 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public Optional<Genre> findGenre(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE WHERE name = ?;",
+                "SELECT * FROM ROSTER_GENRE " +
+                    "WHERE name = ?;",
                 name
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -65,7 +67,8 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void insert(String name) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (name) VALUES(?);",
+                "INSERT INTO ROSTER_GENRE (name) " +
+                    "VALUES(?);",
                 name
         );
     }
@@ -73,7 +76,8 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void insert(Integer rowId, String name) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (id, name) VALUES(?, ?);",
+                "INSERT INTO ROSTER_GENRE (id, name) " +
+                    "VALUES(?, ?);",
                 rowId, name
         );
     }
@@ -81,7 +85,9 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void update(Integer searchRowId, String name) {
         jdbcTemplate.update(
-                "UPDATE ROSTER_GENRE SET name = ? WHERE id = ?;",
+                "UPDATE ROSTER_GENRE " +
+                    "SET name = ? " +
+                    "WHERE id = ?;",
                 name, searchRowId
         );
     }
@@ -91,14 +97,13 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
         jdbcTemplate.update(
                 "DELETE FROM ROSTER_GENRE;"
         );
-
     }
 
     @Override
     public void delete(Integer rowId) {
         jdbcTemplate.update(
                 "DELETE FROM ROSTER_GENRE " +
-                        "WHERE id = ?;",
+                    "WHERE id = ?;",
                 rowId
         );
     }
@@ -107,7 +112,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public void delete(String name) {
         jdbcTemplate.update(
                 "DELETE FROM ROSTER_GENRE " +
-                        "WHERE name = ?;",
+                    "WHERE name = ?;",
                 name
         );
     }

@@ -23,13 +23,9 @@ public class ServiceGenre {
     }
 
     public Genre getGenresSearchId(Integer genreId) {
-
         Optional<Genre> optional = genreDao.findGenre(genreId);
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            throw new ExceptionNotFoundGenreStorage(SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS);
-        }
+        if (optional.isPresent()) return optional.get();
+        else throw new ExceptionNotFoundGenreStorage(SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS);
     }
 
     public List<Genre> getAllGenres() {
@@ -37,21 +33,12 @@ public class ServiceGenre {
     }
 
     public void add(@NotNull Genre genre) {
-        if (genre.getId() == null) {
-            genreDao.insert(
-                    genre.getName());
-        } else {
-            genreDao.insert(
-                    genre.getId(), genre.getName());
-        }
+        if (genre.getId() == null) genreDao.insert(genre.getName());
+        else genreDao.insert(genre.getId(), genre.getName());
     }
 
     public void update(@NotNull Genre genre) {
-        if (genre.getId() != null) {
-            genreDao.update(
-                    genre.getId(),
-                    genre.getName());
-        }
+        if (genre.getId() != null) genreDao.update(genre.getId(), genre.getName());
     }
 
     public void deleteAll() {

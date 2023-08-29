@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class RosterMpaDaoTest {
+class RosterMpaDaoImplTest {
 
     private final RosterMpaDao dao;
 

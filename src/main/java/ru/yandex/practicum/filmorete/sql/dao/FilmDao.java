@@ -13,9 +13,9 @@ public interface FilmDao {
 
     Optional<Film> findFilm(String filmName);
 
-    void insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
+    Long insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
 
-    void insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
+    Long insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
 
     void update(Long searchRowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration);
 
@@ -23,9 +23,9 @@ public interface FilmDao {
 
     void delete();
 
-    void delete(Long rowId);
+    void delete(Long filmId);
 
-    void delete(String name);
+    void delete(String filmName);
 
     void delete(LocalDate releaseDate);
 

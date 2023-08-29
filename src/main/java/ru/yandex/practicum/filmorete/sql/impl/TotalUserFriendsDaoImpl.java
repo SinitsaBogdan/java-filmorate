@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -23,7 +22,6 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     private final JdbcTemplate jdbcTemplate;
 
     private final UserDaoImpl userDao;
-
 
     @Override
     public List<User> findFriendsByUser(Long userId) {

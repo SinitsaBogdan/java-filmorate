@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
-public class GenreControllerTests {
+public class GenreControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -90,7 +90,6 @@ public class GenreControllerTests {
                     )
                     .andExpect(status().isOk())
             ;
-
             mockMvc.perform(get("/genres"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(3))
@@ -115,14 +114,12 @@ public class GenreControllerTests {
                     )
                     .andExpect(status().isOk())
             ;
-
             mockMvc.perform(get("/genres/1"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(1))
                     .andExpect(jsonPath("$.name").value("W"))
             ;
         }
-
     }
 
     @Nested
@@ -135,7 +132,6 @@ public class GenreControllerTests {
             mockMvc.perform(delete("/genres"))
                     .andExpect(status().isOk())
             ;
-
             mockMvc.perform(get("/genres"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(0))
@@ -148,7 +144,6 @@ public class GenreControllerTests {
             mockMvc.perform(delete("/genres/1"))
                     .andExpect(status().isOk())
             ;
-
             mockMvc.perform(get("/genres"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(1))

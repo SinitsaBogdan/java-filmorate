@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FilmControllerTests {
+public class FilmControllerTest {
 
 
     @Autowired
@@ -272,9 +272,9 @@ public class FilmControllerTests {
         @DisplayName("Добавление нового фильма - descriptions : max length")
         public void methodPost_NewFilmValidFalse_DescriptionMaxLengthTest() throws Exception {
             Film film = Film.builder()
-                    .id(125L)
+                    .id(126L)
                     .name("Фильм 10")
-                    .description("Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание.")
+                    .description("Очень длинное название. Очень длинное название. Очень длинное название. Очень длинное название. Очень длинное название. Очень длинное название. Очень длинное название. Очень длинное название. Очень длинное название.")
                     .genres(Collections.singletonList(Genre.builder().id(1).build()))
                     .releaseDate(LocalDate.parse("2000-01-01"))
                     .duration(90)
@@ -578,7 +578,7 @@ public class FilmControllerTests {
             Film film = Film.builder()
                     .id(1L)
                     .name("update")
-                    .description("dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
+                    .description("Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание. Очень длинное описание.")
                     .genres(Collections.singletonList(Genre.builder().id(1).build()))
                     .releaseDate(LocalDate.parse("2010-01-01"))
                     .duration(120)
@@ -684,12 +684,31 @@ public class FilmControllerTests {
     }
 
     @Nested
-    @DisplayName("")
+    @DisplayName("DELETE")
     public class MethodDelete {
-        @Test
-        @DisplayName("Удаление фильма - id : 101")
-        public void methodDelete_DeleteFilmByIdTest() throws Exception {
 
+        @Test
+        @DisplayName("Удаление не существующего фильма фильма - id : 101")
+        public void methodDelete_DeleteFilmById_FailTest() throws Exception {
+            mockMvc.perform(delete("/films/101")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
+        }
+
+        @Test
+        @DisplayName("Удаление не существующего фильма фильма - id : 101")
+        public void methodDelete_DeleteFilmByIdTest() throws Exception {
+            mockMvc.perform(delete("/films/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+            ;
+            mockMvc.perform(get("/films"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(4))
+            ;
         }
     }
 }

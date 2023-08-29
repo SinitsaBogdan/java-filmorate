@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.Evaluation;
-import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.RosterEvaluationDao;
 
 import java.util.*;
@@ -16,6 +15,7 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class RosterEvaluationDaoImpl implements RosterEvaluationDao {
+
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -69,13 +69,29 @@ public class RosterEvaluationDaoImpl implements RosterEvaluationDao {
     }
 
     @Override
-    public void deleteById(Long rowId) {
+    public void delete() {
         jdbcTemplate.update(
-                "DELETE FROM ROSTER_EVALUATION WHERE id = ?;",
+                "DELETE FROM ROSTER_EVALUATION;"
+        );
+    }
+
+    @Override
+    public void delete(Long rowId) {
+        jdbcTemplate.update(
+                "DELETE FROM ROSTER_EVALUATION " +
+                    "WHERE id = ?;",
                 rowId
         );
     }
 
+    @Override
+    public void delete(String name) {
+        jdbcTemplate.update(
+                "DELETE FROM ROSTER_EVALUATION " +
+                "WHERE name = ?;",
+                name
+        );
+    }
 
     protected Evaluation buildModel(@NotNull SqlRowSet row) {
         return Evaluation.builder()

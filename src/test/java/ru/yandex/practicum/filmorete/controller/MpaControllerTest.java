@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MpaControllerTests {
+public class MpaControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -124,7 +124,6 @@ public class MpaControllerTests {
                     )
                     .andExpect(status().isOk())
             ;
-
             mockMvc.perform(get("/mpa/1"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(1))
@@ -144,7 +143,6 @@ public class MpaControllerTests {
             mockMvc.perform(delete("/mpa"))
                     .andExpect(status().isOk())
             ;
-
             mockMvc.perform(get("/mpa"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(0))
@@ -157,7 +155,6 @@ public class MpaControllerTests {
             mockMvc.perform(delete("/mpa/1"))
                     .andExpect(status().isOk())
             ;
-
             mockMvc.perform(get("/mpa"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(1))

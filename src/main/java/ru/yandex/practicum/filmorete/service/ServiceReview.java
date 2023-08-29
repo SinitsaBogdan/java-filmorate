@@ -4,20 +4,22 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.model.Review;
-import ru.yandex.practicum.filmorete.model.TotalReviewLike;
+import ru.yandex.practicum.filmorete.model.TotalLikeReview;
+import ru.yandex.practicum.filmorete.sql.dao.ReviewDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalLikeReviewDao;
 
 import java.util.ArrayList;
 
 @Service
 public class ServiceReview {
 
-//    private final ReviewsDao reviewsDao;
-//    private final TotalReviewLikeDao totalReviewLikeDao;
-//
-//    private ServiceReview(ReviewsDao reviewsDao, TotalReviewLikeDao totalReviewLikeDao) {
-//        this.reviewsDao = reviewsDao;
-//        this.totalReviewLikeDao = totalReviewLikeDao;
-//    }
+    private final ReviewDao reviewDao;
+    private final TotalLikeReviewDao totalReviewLikeDao;
+
+    private ServiceReview(ReviewDao reviewDao, TotalLikeReviewDao totalReviewLikeDao) {
+        this.reviewDao = reviewDao;
+        this.totalReviewLikeDao = totalReviewLikeDao;
+    }
 
     /**
      * NEW!!!
@@ -121,7 +123,7 @@ public class ServiceReview {
      * NEW!!!
      * Запрос всех записей [ TOTAL_LIKE_REVIEWS ].
      */
-    public ArrayList<TotalReviewLike> getAllTotalReviewLike() {
+    public ArrayList<TotalLikeReview> getAllTotalReviewLike() {
         return new ArrayList<>();
     }
 
@@ -129,7 +131,7 @@ public class ServiceReview {
      * NEW!!!
      * Запрос всех записей по ID пользователя [ TOTAL_LIKE_REVIEWS ].
      */
-    public ArrayList<TotalReviewLike> getAllTotalReviewLikeSearchUserId(Long userId) {
+    public ArrayList<TotalLikeReview> getAllTotalReviewLikeSearchUserId(Long userId) {
         return new ArrayList<>();
     }
 
@@ -137,7 +139,7 @@ public class ServiceReview {
      * NEW!!!
      * Запрос всех записей по ID фильма [ TOTAL_LIKE_REVIEWS ].
      */
-    public ArrayList<TotalReviewLike> getAllTotalReviewLikeSearchFilmId(Long filmId) {
+    public ArrayList<TotalLikeReview> getAllTotalReviewLikeSearchFilmId(Long filmId) {
         return new ArrayList<>();
     }
 
@@ -145,7 +147,7 @@ public class ServiceReview {
      * NEW!!!
      * Запрос всех записей по статусу оценки [ TOTAL_LIKE_REVIEWS ].
      */
-    public ArrayList<TotalReviewLike> getAllTotalReviewLikeSearchFilmId(Boolean status) {
+    public ArrayList<TotalLikeReview> getAllTotalReviewLikeSearchFilmId(Boolean status) {
         return new ArrayList<>();
     }
 
@@ -153,7 +155,7 @@ public class ServiceReview {
      * NEW!!!
      * Добавление нового лайка отзыва [ TOTAL_LIKE_REVIEWS ].
      */
-    public void add(@NotNull TotalReviewLike reviewLike) {
+    public void add(@NotNull TotalLikeReview reviewLike) {
     }
 
     /**

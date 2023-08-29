@@ -22,14 +22,12 @@ public class RosterEventTypeDaoImpl implements RosterEventTypeDao {
     public List<EventType> findAll() {
         Map<Long, EventType> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "rt.id AS id, " +
-                        "rt.name AS name, " +
-                        "FROM ROSTER_EVENT_TYPE AS rt " +
-                        "ORDER BY rt.id;"
+                "SELECT id, name, " +
+                    "FROM ROSTER_EVENT_TYPE " +
+                    "ORDER BY id;"
         );
         while (rows.next()) {
-            Long eventTypeId = rows.getLong("ID");
+            Long eventTypeId = rows.getLong("id");
             if (!result.containsKey(eventTypeId)) {
                 EventType eventType = buildModel(rows);
                 result.put(eventTypeId, eventType);
@@ -42,21 +40,19 @@ public class RosterEventTypeDaoImpl implements RosterEventTypeDao {
     @Override
     public Optional<EventType> findById(Long rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_EVENT_TYPE WHERE id = ?;",
+                "SELECT * FROM ROSTER_EVENT_TYPE " +
+                    "WHERE id = ?;",
                 rowId
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else {
-            return Optional.empty();
-        }
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override
     public void insert(EventType eventType) {
         jdbcTemplate.update(
                 "INSERT INTO ROSTER_EVENT_TYPE (id, name ) " +
-                        "VALUES (?, ?);",
+                    "VALUES (?, ?);",
                 eventType.getId(), eventType.getName()
         );
     }
@@ -64,23 +60,35 @@ public class RosterEventTypeDaoImpl implements RosterEventTypeDao {
     @Override
     public void update(EventType eventType) {
         jdbcTemplate.update(
-                "UPDATE ROSTER_EVENT_TYPE SET name = ?  WHERE id = ?;",
+                "UPDATE ROSTER_EVENT_TYPE " +
+                    "SET name = ? " +
+                    "WHERE id = ?;",
                 eventType.getId(), eventType.getName()
         );
     }
 
     @Override
-    public void deleteById(Long rowId) {
+    public void delete(Long rowId) {
         jdbcTemplate.update(
-                "DELETE FROM ROSTER_EVENT_TYPE WHERE id = ?;",
+                "DELETE FROM ROSTER_EVENT_TYPE " +
+                    "WHERE id = ?;",
                 rowId
+        );
+    }
+
+    @Override
+    public void delete(String name) {
+        jdbcTemplate.update(
+                "DELETE FROM ROSTER_EVENT_TYPE " +
+                "WHERE name = ?;",
+                name
         );
     }
 
     protected EventType buildModel(@NotNull SqlRowSet row) {
         return EventType.builder()
-                .id(row.getLong("ID"))
-                .name(row.getString("NAME"))
+                .id(row.getLong("id"))
+                .name(row.getString("name"))
                 .build();
     }
 }

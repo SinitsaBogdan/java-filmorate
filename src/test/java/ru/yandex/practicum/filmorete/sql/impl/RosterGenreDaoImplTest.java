@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class RosterGenreDaoTest {
+class RosterGenreDaoImplTest {
 
     private final RosterGenreDao dao;
 
@@ -83,7 +83,6 @@ class RosterGenreDaoTest {
         dao.delete();
         List<Genre> result = dao.findAllGenre();
         assertEquals(result.size(), 0);
-
     }
 
     @Test

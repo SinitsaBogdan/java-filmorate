@@ -36,11 +36,11 @@ public class FilmDaoImpl implements FilmDao {
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
                         "g.name AS genre_name " +
-                        "FROM FILMS AS f " +
-                        "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                        "ORDER BY f.id;"
+                    "FROM FILMS AS f " +
+                    "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "ORDER BY f.id;"
         );
         while (rows.next()) {
             Long filmId = rows.getLong("FILM_ID");
@@ -73,12 +73,12 @@ public class FilmDaoImpl implements FilmDao {
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
                         "g.name AS genre_name " +
-                        "FROM FILMS AS f " +
-                        "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                        "WHERE f.name = ? " +
-                        "ORDER BY f.id;",
+                    "FROM FILMS AS f " +
+                    "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "WHERE f.name = ? " +
+                    "ORDER BY f.id;",
                 filmName
         );
         while (rows.next()) {
@@ -110,12 +110,12 @@ public class FilmDaoImpl implements FilmDao {
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
                         "g.name AS genre_name " +
-                        "FROM FILMS AS f " +
-                        "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                        "WHERE f.id = ? " +
-                        "ORDER BY f.id;",
+                    "FROM FILMS AS f " +
+                    "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "WHERE f.id = ? " +
+                    "ORDER BY f.id;",
                 rowId
         );
         while (rows.next()) {
@@ -134,20 +134,26 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute) {
+    public Long insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute) {
         jdbcTemplate.update(
                 "INSERT INTO FILMS (id, mpa_id, name, description, release_date, duration) " +
                         "VALUES (?, ?, ?, ?, ?, ?);",
                 rowId, mpaId, name, descriptions, releaseDate, durationMinute
         );
+        return jdbcTemplate.queryForObject(
+                "SELECT MAX(ID) AS id FROM FILMS;", Long.class
+        );
     }
 
     @Override
-    public void insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute) {
+    public Long insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute) {
         jdbcTemplate.update(
                 "INSERT INTO FILMS (mpa_id, name, description, release_date, duration) " +
                         "VALUES (?, ?, ?, ?, ?);",
                 mpaId, name, descriptions, releaseDate, durationMinute
+        );
+        return jdbcTemplate.queryForObject(
+                "SELECT MAX(ID) AS id FROM FILMS;", Long.class
         );
     }
 
@@ -170,13 +176,13 @@ public class FilmDaoImpl implements FilmDao {
     public void update(String searchName, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration) {
         jdbcTemplate.update(
                 "UPDATE FILMS " +
-                        "SET " +
+                    "SET " +
                         "mpa_id = ?, " +
                         "name = ?, " +
                         "description = ?, " +
                         "release_date = ?, " +
                         "duration = ? " +
-                        "WHERE name = ?;",
+                    "WHERE name = ?;",
                 mpaId, name, descriptions, releaseDate, duration, searchName
         );
     }
@@ -187,18 +193,18 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void delete(Long rowId) {
+    public void delete(Long filmId) {
         jdbcTemplate.update(
                 "DELETE FROM FILMS WHERE id = ?;",
-                rowId
+                filmId
         );
     }
 
     @Override
-    public void delete(String name) {
+    public void delete(String filmName) {
         jdbcTemplate.update(
                 "DELETE FROM FILMS WHERE name = ?;",
-                name
+                filmName
         );
     }
 

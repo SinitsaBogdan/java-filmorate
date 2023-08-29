@@ -1,28 +1,22 @@
 package ru.yandex.practicum.filmorete.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorete.model.Review;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RequestMapping("/reviews")
 @RestController
 public class ReviewController {
 
-
     /**
      * NEW!!!
      * Добавление нового отзыва.
      * */
     @PostMapping
-    public void create(/*@Valid @RequestBody Review review*/) {
-
+    public void create(@Valid @RequestBody Review review) {
     }
 
     /**
@@ -30,8 +24,7 @@ public class ReviewController {
      * Редактирование уже имеющегося отзыва.
      * */
     @PutMapping
-    public void update(/*@Valid @RequestBody Review review*/) {
-
+    public void update(@Valid @RequestBody Review review) {
     }
 
     /**
@@ -40,7 +33,6 @@ public class ReviewController {
      * */
     @DeleteMapping("/{reviewId}")
     public void removeSearchId(@PathVariable Long reviewId) {
-
     }
 
     /**
@@ -49,7 +41,6 @@ public class ReviewController {
      * */
     @GetMapping("/{reviewId}")
     public void getSearchId(@PathVariable Long reviewId) {
-
     }
 
     /**
@@ -58,7 +49,6 @@ public class ReviewController {
      * */
     @GetMapping()
     public void getAllFilmReviews(@RequestParam Long filmId, @RequestParam(defaultValue = "10") Integer count) {
-
     }
 
     /**
@@ -67,7 +57,6 @@ public class ReviewController {
      * */
     @PutMapping("/{reviewId}/like/{userId}")
     public void addLikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-
     }
 
     /**
@@ -76,7 +65,6 @@ public class ReviewController {
      * */
     @PutMapping("/{reviewId}/dislike/{userId}")
     public void addDislikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-
     }
 
     /**
@@ -85,7 +73,6 @@ public class ReviewController {
      * */
     @DeleteMapping("/{reviewId}/like/{userId}")
     public void deleteLikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-
     }
 
     /**
@@ -94,6 +81,5 @@ public class ReviewController {
      * */
     @DeleteMapping("/{reviewId}/dislike/{userId}")
     public void deleteDislikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-
     }
 }

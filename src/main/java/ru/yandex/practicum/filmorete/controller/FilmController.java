@@ -109,7 +109,7 @@ public class FilmController {
      * */
     @DeleteMapping("/{filmId}")
     public void removeToId(@PathVariable Long filmId) {
-
+        serviceFilms.removeFilmSearchId(filmId);
     }
 
     /**
@@ -117,7 +117,7 @@ public class FilmController {
      * */
     @GetMapping("/common")
     public List<Film> getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
-        return serviceFilms.findCommonFilms(userId, friendId);
+        return serviceFilms.getCommonFilms(userId, friendId);
     }
 
     /**
@@ -127,7 +127,6 @@ public class FilmController {
      * */
     @GetMapping("/director/{directorId}")
     public void getFilmsByDirectorSortedByParam(@PathVariable Long directorId, @RequestParam String by) {
-
     }
 
     /**
@@ -136,7 +135,5 @@ public class FilmController {
      * */
     @GetMapping("/search")
     public void getFilmsBySearchParam(@RequestParam String query, @RequestParam List<String> by) {
-
-
     }
 }
