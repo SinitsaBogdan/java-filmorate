@@ -46,9 +46,16 @@ VALUES ('Полезный'),
 --TABLE ROSTER_EVENT_TYPE
 
 INSERT INTO ROSTER_EVENT_TYPE (name)
-VALUES ('CREATE'),
-       ('GET'),
-       ('UPDATE'),
-       ('DELETE')
+VALUES ('CREATE FILM'),
+       ('CREATE REVIEW'),
+       ('PUT LIKE'),
+       ('PUT FRIEND').
+       ('UPDATE FILM'),
+       ('UPDATE REVIEW'),
+       ('UPDATE FRIEND'),
+       ('DELETE FILM'),
+       ('DELETE FRIEND'),
+       ('DELETE LIKE'),
+       ('DELETE REVIEW')
 ;
 
