@@ -6,14 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
-import ru.yandex.practicum.filmorete.model.Film;
-import ru.yandex.practicum.filmorete.model.Genre;
-import ru.yandex.practicum.filmorete.model.TotalGenreFilm;
-import ru.yandex.practicum.filmorete.model.User;
-import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
-import ru.yandex.practicum.filmorete.sql.dao.UserDao;
+import ru.yandex.practicum.filmorete.model.*;
+import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.util.*;
 
@@ -30,15 +24,23 @@ public class ServiceFilm {
 
     private final UserDao userDao;
 
+    private final TotalDirectorFilmDao totalDirectorFilmDao;
+
     private final TotalFilmLikeDao totalFilmLikeDao;
 
     private final TotalGenreFilmDao totalGenreFilmDao;
 
 
     @Autowired
-    public ServiceFilm(FilmDao filmDao, UserDao userDao, TotalFilmLikeDao totalFilmLikeDao, TotalGenreFilmDao totalGenreFilmDao) {
+    public ServiceFilm(
+            FilmDao filmDao, UserDao userDao,
+            TotalDirectorFilmDao totalDirectorFilmDao,
+            TotalFilmLikeDao totalFilmLikeDao,
+            TotalGenreFilmDao totalGenreFilmDao
+    ) {
         this.filmDao = filmDao;
         this.userDao = userDao;
+        this.totalDirectorFilmDao = totalDirectorFilmDao;
         this.totalFilmLikeDao = totalFilmLikeDao;
         this.totalGenreFilmDao = totalGenreFilmDao;
     }
@@ -71,6 +73,11 @@ public class ServiceFilm {
                 film.getMpa().getId(), film.getName(), film.getDescription(),
                 film.getReleaseDate(), film.getDuration()
         );
+
+        if (film.getDirector() != null) {
+            for (Director director : film.getDirector()) totalDirectorFilmDao.insert(film.getId(), director.getId());
+        }
+
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
@@ -89,6 +96,12 @@ public class ServiceFilm {
                     film.getName(), film.getDescription(),
                     film.getReleaseDate(), film.getDuration()
             );
+
+            if (film.getDirector() != null) {
+                totalDirectorFilmDao.deleteAllByFilmId(film.getId());
+                for (Director director : film.getDirector()) totalDirectorFilmDao.insert(film.getId(), director.getId());
+            }
+
         } else throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
 
         List<TotalGenreFilm> totalGenreFilms = totalGenreFilmDao.findAllTotalGenreFilm(film.getId());
