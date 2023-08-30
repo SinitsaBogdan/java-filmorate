@@ -16,4 +16,6 @@ public interface EventsDao {
     void update(Event event);
 
     void deleteById(Long rowId);
+
+    List<Event> findAllByUserId(Long userId);
 }

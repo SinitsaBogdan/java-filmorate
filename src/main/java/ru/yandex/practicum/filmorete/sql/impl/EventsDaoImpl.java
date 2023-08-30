@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 
+import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
@@ -100,12 +101,37 @@ public class EventsDaoImpl implements EventsDao {
         );
     }
 
+    @Override
+    public List<Event> findAllByUserId(Long userId) {
+        Map<Long, Event> result = new HashMap<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT " +
+                        "e.id AS id, " +
+                        "e.user_id AS userId, " +
+                        "e.type_id AS typeId, " +
+                        "e.timestamp AS releaseDate, " +
+                        "e.entity_id AS entityId, " +
+                        "FROM EVENTS AS e " +
+                        "WHERE USER_ID = ?;", userId);
+        while (rows.next()) {
+            Long eventId = rows.getLong("ID");
+            if (!result.containsKey(eventId)) {
+                Event event = buildModel(rows);
+                result.put(eventId, event);
+            }
+        }
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
+    }
+
     protected Event buildModel(@NotNull SqlRowSet row) {
         return Event.builder()
                 .id(row.getLong("ID"))
                 .userId(row.getLong("USER_ID"))
                 .typeId(row.getLong("TYPE_ID"))
-                .releaseDate(Objects.requireNonNull(row.getDate("TIMESTAMP")).toLocalDate())
+                .releaseDate(Objects.requireNonNull(row.getDate("TIMESTAMP").toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime()))
                 .entityId(row.getLong("ENTITY_ID"))
                 .build();
     }

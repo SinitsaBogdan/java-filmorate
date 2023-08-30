@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -22,7 +23,7 @@ public class Event {
     private Long typeId;
 
     @NotNull
-    private final LocalDate releaseDate;
+    private final LocalDateTime releaseDate;
 
     @Positive
     private Long entityId;
