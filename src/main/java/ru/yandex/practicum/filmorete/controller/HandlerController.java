@@ -45,4 +45,10 @@ public class HandlerController {
         ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
         return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
     }
+
+    @ExceptionHandler(ExceptionNotFoundDirectorStorage.class)
+    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundDirectorStorage exception) {
+        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
+    }
 }
