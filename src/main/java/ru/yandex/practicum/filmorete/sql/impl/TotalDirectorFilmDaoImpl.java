@@ -10,8 +10,6 @@ import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.model.TotalDirectorFilm;
-import ru.yandex.practicum.filmorete.model.TotalGenreFilm;
-import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalDirectorFilmDao;
 
 import java.util.*;
