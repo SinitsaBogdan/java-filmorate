@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 
-import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
@@ -29,9 +28,10 @@ public class EventsDaoImpl implements EventsDao {
                         "e.type_id AS typeId, " +
                         "e.timestamp AS releaseDate, " +
                         "e.entity_id AS entityId, " +
-                    "FROM EVENTS AS e " +
-                    "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.id = re.id " +
-                    "ORDER BY e.id;"
+                        "re.name AS typeName " +
+                        "FROM EVENTS AS e " +
+                        "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.type_id = re.id " +
+                        "ORDER BY e.id;"
         );
         while (rows.next()) {
             Long eventId = rows.getLong("ID");
@@ -49,14 +49,11 @@ public class EventsDaoImpl implements EventsDao {
         Map<Long, Event> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
-                        "e.id AS id, " +
-                        "e.user_id AS userId, " +
-                        "e.type_id AS typeId, " +
-                        "e.timestamp AS releaseDate, " +
-                        "e.entity_id AS entityId, " +
-                    "FROM EVENTS AS e " +
-                    "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.id = re.id " +
-                    "ORDER BY e.id;",
+                        "*, " +
+                        "re.name AS TYPE_NAME " +
+                        "FROM EVENTS AS e " +
+                        "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.type_id = re.id " +
+                        "ORDER BY e.id;",
                 rowId
         );
         while (rows.next()) {
@@ -106,13 +103,10 @@ public class EventsDaoImpl implements EventsDao {
         Map<Long, Event> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
-                        "e.id AS id, " +
-                        "e.user_id AS userId, " +
-                        "e.type_id AS typeId, " +
-                        "e.timestamp AS releaseDate, " +
-                        "e.entity_id AS entityId, " +
+                        "*, " +
+                        "re.name AS TYPE_NAME " +
                         "FROM EVENTS AS e " +
-                        "WHERE USER_ID = ?;", userId);
+                        "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.type_id = re.id;");
         while (rows.next()) {
             Long eventId = rows.getLong("ID");
             if (!result.containsKey(eventId)) {
@@ -129,10 +123,10 @@ public class EventsDaoImpl implements EventsDao {
                 .id(row.getLong("ID"))
                 .userId(row.getLong("USER_ID"))
                 .typeId(row.getLong("TYPE_ID"))
-                .releaseDate(Objects.requireNonNull(row.getDate("TIMESTAMP").toInstant()
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDateTime()))
+                .timestamp(Objects.requireNonNull(row.getDate("TIMESTAMP")).toInstant().getEpochSecond())
                 .entityId(row.getLong("ENTITY_ID"))
+                .operation(Objects.requireNonNull(row.getString("TYPE_NAME")).split(" ")[0])
+                .eventType(Objects.requireNonNull(row.getString("TYPE_NAME")).split(" ")[1])
                 .build();
     }
 }
