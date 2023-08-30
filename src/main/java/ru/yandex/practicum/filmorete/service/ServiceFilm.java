@@ -99,11 +99,9 @@ public class ServiceFilm {
                     film.getReleaseDate(), film.getDuration()
             );
 
-            System.out.println(film.getDirector());
             if (film.getDirector() != null) {
                 totalDirectorFilmDao.deleteAllByFilmId(film.getId());
                 for (Director director : film.getDirector()) {
-                    System.out.println(director);
                     totalDirectorFilmDao.insert(film.getId(), director.getId());
                 }
             }
