@@ -129,4 +129,8 @@ public class ServiceFilm {
     public void clearStorage() {
         filmDao.delete();
     }
+
+    public List<Film> getFilmsBySearchParam(String query, List<String> by) {
+        return filmDao.getFilmsBySearchParam(query,by);
+    }
 }

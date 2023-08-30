@@ -210,13 +210,46 @@ public class FilmControllerTest {
         }
 
         @Test
-        @DisplayName("Запрос списка фильмов по слову")
+        @DisplayName("Поиск списка фильмов по букве: ф")
+        public void methodGet_SearchFilmsQueryByTitle() throws Exception {
+            mockMvc.perform(get("/films/search?query=ф&by=title"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(5))
+            ;
+        }
+
+        @Test
+        @DisplayName("Поиск списка фильмов по цифре: 5")
         public void methodGet_SearchFilmsByTitle() throws Exception {
+            mockMvc.perform(get("/films/search?query=5&by=title"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+            ;
+        }
+
+        @Test
+        @DisplayName("Поиск фильмов по пустым запросам : query: empty,by: empty")
+        public void methodGet_SearchFilmsByEmptyQuery() throws Exception {
+            mockMvc.perform(get("/films/search?query=&by="))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0))
+            ;
         }
 
         @Test
         @DisplayName("Запрос фильма по полному названию")
         public void methodGet_SearchFilmByTitle() throws Exception {
+            mockMvc.perform(get("/films/search?query=Фильм 1&by=title"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].id").value(1))
+                    .andExpect(jsonPath("$[0].name").value("Фильм 1"))
+                    .andExpect(jsonPath("$[0].description").value(""))
+                    .andExpect(jsonPath("$[0].genres.length()").value(2))
+                    .andExpect(jsonPath("$[0].releaseDate").value("2000-01-01"))
+                    .andExpect(jsonPath("$[0].duration").value(90))
+                    .andExpect(jsonPath("$[0].mpa.id").value(1))
+                    .andExpect(jsonPath("$[0].mpa.name").value("G"))
+            ;
         }
 
         @Test
