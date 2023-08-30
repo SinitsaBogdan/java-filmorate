@@ -49,8 +49,8 @@ public class DirectorController {
      * Добавление нового режиссёра.
      */
     @PostMapping
-    public Director create(@Valid @RequestBody Director director) {
-        return serviceDirectors.add(director);
+    public Director create(@Valid @RequestBody String directorName) {
+        return serviceDirectors.add(directorName);
     }
 
     /**

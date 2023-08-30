@@ -49,8 +49,8 @@ public class ServiceDirectors {
      * NEW!!!
      * Добавление нового режиссёра [ DIRECTORS ].
      */
-    public Director add(@NotNull Director director) {
-        return directorsDao.insert(director);
+    public Director add(@NotBlank String directorName) {
+        return directorsDao.insert(directorName);
     }
 
     /**

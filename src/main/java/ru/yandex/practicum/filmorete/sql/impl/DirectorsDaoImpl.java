@@ -44,18 +44,17 @@ public class DirectorsDaoImpl implements DirectorsDao {
     }
 
     @Override
-    public Director insert(Director director) {
+    public Director insert(String name) {
         jdbcTemplate.update(
                 "INSERT INTO DIRECTORS (name) " +
-                        "VALUES (?);",
-                director.getName()
+                    "VALUES (?);",
+                name
         );
-        Optional<Director> optional = findByName(director.getName());
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            throw new ExceptionNotFoundGenreStorage(SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS); //создать новое исключение
-        }
+        Optional<Director> optional = findByName(name);
+        if (optional.isPresent()) return optional.get();
+
+        // TODO создать новое исключение
+        else throw new ExceptionNotFoundGenreStorage(SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS);
     }
 
     @Override
