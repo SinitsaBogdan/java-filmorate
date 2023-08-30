@@ -36,17 +36,23 @@ public class FilmDaoImpl implements FilmDao {
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
-                        "g.name AS genre_name " +
+                        "g.name AS genre_name, " +
+                        "d.id AS director_id, " +
+                        "d.name AS director_name " +
                     "FROM FILMS AS f " +
                     "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
                     "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
                     "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
+                    "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
                     "ORDER BY f.id;"
         );
         while (rows.next()) {
             Long filmId = rows.getLong("FILM_ID");
             Integer genreId = rows.getInt("GENRE_ID");
             String genreName = rows.getString("GENRE_NAME");
+            Long dirId = rows.getLong("DIRECTOR_ID");
+            String dirName = rows.getString("DIRECTOR_NAME");
             if (!result.containsKey(filmId)) {
                 Film film = buildModel(rows);
                 result.put(filmId, film);
@@ -54,6 +60,10 @@ public class FilmDaoImpl implements FilmDao {
             if (genreName != null) {
                 Genre genre = Genre.builder().id(genreId).name(genreName).build();
                 result.get(filmId).addGenre(genre);
+            }
+            if (dirName != null) {
+                Director director = Director.builder().id(dirId).name(dirName).build();
+                result.get(filmId).addDirector(director);
             }
         }
         if (result.values().isEmpty()) return new ArrayList<>();

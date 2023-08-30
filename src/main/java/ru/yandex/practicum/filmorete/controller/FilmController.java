@@ -126,7 +126,8 @@ public class FilmController {
      * отсортированных по количеству лайков или году выпуска.
      * */
     @GetMapping("/director/{directorId}")
-    public void getFilmsByDirectorSortedByParam(@PathVariable Long directorId, @RequestParam String by) {
+    public List<Film> getFilmsByDirectorSortedByParam(@PathVariable Long directorId, @RequestParam(defaultValue = "likes") String sortBy) {
+        return serviceFilms.getFilmsToDirector(directorId, sortBy);
     }
 
     /**
