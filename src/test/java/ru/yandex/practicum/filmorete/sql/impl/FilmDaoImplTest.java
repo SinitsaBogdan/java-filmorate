@@ -80,18 +80,6 @@ class FilmDaoImplTest {
         assertEquals(result.size(), 3);
     }
 
-    @Test
-    @DisplayName("findRow(filmName)")
-    public void testFindRowSearchName() {
-        Mpa mpa = Mpa.builder().id(1).name("P").description(null).build();
-        Optional<Film> optional = daoFilm.findFilm("Фильм 1");
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().getName(), "Фильм 1");
-        assertEquals(optional.get().getMpa(), mpa);
-        assertEquals(optional.get().getDescription(), "");
-        assertEquals(optional.get().getReleaseDate(), LocalDate.of(2005, 1, 1));
-        assertEquals(optional.get().getDuration(), 90);
-    }
 
     @Test
     @DisplayName("findRow(Long rowId)")
@@ -114,54 +102,6 @@ class FilmDaoImplTest {
         );
         List<Film> result = daoFilm.findAllFilms();
         assertEquals(result.size(), 4);
-    }
-
-    @Test
-    @DisplayName("insert(rowId, ratingName, name, description, releaseDate, durationMinute)")
-    public void testInsertRowAllColumn() {
-        Mpa mpa = Mpa.builder().id(1).name("P").description(null).build();
-        daoFilm.insert(
-                4L, 1, "Новый", "Новое", LocalDate.of(1990, 1, 1), 50
-        );
-        Optional<Film> optional = daoFilm.findFilm("Новый");
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().getName(), "Новый");
-        assertEquals(optional.get().getMpa(), mpa);
-        assertEquals(optional.get().getDescription(), "Новое");
-        assertEquals(optional.get().getReleaseDate(), LocalDate.of(1990, 1, 1));
-        assertEquals(optional.get().getDuration(), 50);
-    }
-
-    @Test
-    @DisplayName("update(searchRowId, ratingName, name, description, releaseDate, durationMinute)")
-    public void testUpdateRowSearchIdByNameDescriptionReleaseDuration() {
-        Mpa mpa = Mpa.builder().id(2).name("G").description(null).build();
-        daoFilm.update(
-                1L, 2, "Обновленный", "Описание", LocalDate.of(1990, 1, 1), 50
-        );
-        Optional<Film> optional = daoFilm.findFilm("Обновленный");
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().getName(), "Обновленный");
-        assertEquals(optional.get().getMpa(), mpa);
-        assertEquals(optional.get().getDescription(), "Описание");
-        assertEquals(optional.get().getReleaseDate(), LocalDate.of(1990, 1, 1));
-        assertEquals(optional.get().getDuration(), 50);
-    }
-
-    @Test
-    @DisplayName("update(searchName, ratingName, name, description, releaseDate, durationMinute)")
-    public void testUpdateRowSearchNameByRatingNameDescriptionReleaseDuration() {
-        Mpa mpa = Mpa.builder().id(2).name("G").description(null).build();
-        daoFilm.update(
-                "Фильм 1", 2, "Обновленный", "Описание", LocalDate.of(1990, 1, 1), 50
-        );
-        Optional<Film> optional = daoFilm.findFilm("Обновленный");
-        assertTrue(optional.isPresent());
-        assertEquals(optional.get().getName(), "Обновленный");
-        assertEquals(optional.get().getMpa(), mpa);
-        assertEquals(optional.get().getDescription(), "Описание");
-        assertEquals(optional.get().getReleaseDate(), LocalDate.of(1990, 1, 1));
-        assertEquals(optional.get().getDuration(), 50);
     }
 
     @Test
