@@ -11,7 +11,7 @@ public interface DirectorDao {
 
     Optional<Director> findById(Long rowId);
 
-    void insert(Long id, String name);
+    Long insert(String name);
 
     void update(Long id, String name);
 
