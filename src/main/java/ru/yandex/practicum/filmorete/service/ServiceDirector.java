@@ -6,14 +6,11 @@ import javax.validation.constraints.NotBlank;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundDirectorStorage;
-import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.model.Director;
-import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalDirectorFilmDao;
 
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceDirector.SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 
 @Service
 public class ServiceDirector {

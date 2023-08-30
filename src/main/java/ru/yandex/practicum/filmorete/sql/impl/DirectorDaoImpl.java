@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundDirectorStorage;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
 
