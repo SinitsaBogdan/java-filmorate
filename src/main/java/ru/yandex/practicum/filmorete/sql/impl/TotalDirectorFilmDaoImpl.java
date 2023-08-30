@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.TotalDirectorFilm;
-import ru.yandex.practicum.filmorete.model.TypeReview;
 import ru.yandex.practicum.filmorete.sql.dao.TotalDirectorFilmDao;
 
 import java.util.*;
@@ -16,8 +15,8 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
-    private final JdbcTemplate jdbcTemplate;
 
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<TotalDirectorFilm> findAll() {
@@ -55,29 +54,39 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     }
 
     @Override
-    public void insert(TotalDirectorFilm totalDirectorFilm) {
+    public void insert(Long filmId, Long directorId) {
         jdbcTemplate.update(
                 "INSERT INTO TOTAL_FILM_DIRECTOR (film_id, director_id ) " +
-                        "VALUES (?, ?);",
-                totalDirectorFilm.getFilmId(), totalDirectorFilm.getFilmId()
+                    "VALUES (?, ?);",
+                filmId, directorId
         );
     }
 
     @Override
-    public void update(TotalDirectorFilm totalDirectorFilm) {
+    public void update(Long filmId, Long directorId) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_FILM_DIRECTOR SET film_id = ?  WHERE director_id = ?;",
-                totalDirectorFilm.getFilmId(), totalDirectorFilm.getFilmId()
+                "UPDATE TOTAL_FILM_DIRECTOR " +
+                        "SET film_id = ? " +
+                        "WHERE director_id = ?;",
+                filmId, directorId
         );
     }
 
     @Override
-    public void deleteById(Long rowId) {
-        jdbcTemplate.update(
-                "DELETE FROM TOTAL_FILM_DIRECTOR WHERE director_id = ?;",
-                rowId
-        );
+    public void delete() {
+
     }
+
+    @Override
+    public void deleteAllByFilmId(Long filmId) {
+
+    }
+
+    @Override
+    public void deleteAllByDirectorId(Long directorId) {
+
+    }
+
     protected TotalDirectorFilm buildModel(@NotNull SqlRowSet row) {
         return TotalDirectorFilm.builder()
                 .filmId(row.getLong("ID"))
