@@ -99,9 +99,12 @@ public class ServiceFilm {
                     film.getReleaseDate(), film.getDuration()
             );
 
+            List<TotalDirectorFilm> totalDirectorFilms = totalDirectorFilmDao.findAllTotalDirectorFilm(film.getId());
+            if (!totalDirectorFilms.isEmpty()) totalDirectorFilmDao.deleteAllByFilmId(film.getId());
             if (film.getDirectors() != null) {
-                totalDirectorFilmDao.deleteAllByFilmId(film.getId());
-                for (Director director : film.getDirectors()) totalDirectorFilmDao.insert(film.getId(), director.getId());
+                for (Director director : film.getDirectors()) {
+                    totalDirectorFilmDao.insert(film.getId(), director.getId());
+                }
             }
 
         } else throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
@@ -139,6 +142,14 @@ public class ServiceFilm {
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalFilmLikeDao.insert(filmId, userId);
+    }
+
+    public List<Film> getFilmsToDirector(Long directorId, String sorted) {
+        if (sorted.equals("year")) {
+            return totalDirectorFilmDao.findFilmsByDirectorSortedByYear(directorId);
+        } else {
+            return totalDirectorFilmDao.findPopularFilmsByDirector(directorId);
+        }
     }
 
     public void clearStorage() {
