@@ -81,8 +81,8 @@ public class ServiceFilm {
             }
         }
 
-        if (film.getDirector() != null) {
-            for (Director director : film.getDirector()) {
+        if (film.getDirectors() != null) {
+            for (Director director : film.getDirectors()) {
                 totalDirectorFilmDao.insert(optionalFilm.get().getId(), director.getId());
             }
         }
@@ -99,14 +99,11 @@ public class ServiceFilm {
                     film.getReleaseDate(), film.getDuration()
             );
 
-            System.out.println(film.getDirector());
-            if (film.getDirector() != null) {
+            if (film.getDirectors() != null) {
                 totalDirectorFilmDao.deleteAllByFilmId(film.getId());
-                for (Director director : film.getDirector()) {
-                    System.out.println(director);
-                    totalDirectorFilmDao.insert(film.getId(), director.getId());
-                }
+                for (Director director : film.getDirectors()) totalDirectorFilmDao.insert(film.getId(), director.getId());
             }
+
         } else throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
 
         List<TotalGenreFilm> totalGenreFilms = totalGenreFilmDao.findAllTotalGenreFilm(film.getId());
