@@ -239,14 +239,16 @@ public class FilmDaoImpl implements FilmDao {
     public List<Film> getFilmsBySearchParam(String query, List<String> by) {
         String sql = "SELECT " +
             "f.id AS film_id, " +
-            "f.name AS film_name, " +
+            "f.NAME AS film_name, " +
             "f.description AS film_description, " +
             "f.release_date AS film_release_date, " +
             "f.duration AS film_duration, " +
             "r.id AS mpa_id, " +
             "r.name AS mpa_name, " +
             "g.id AS genre_id, " +
-            "g.name AS genre_name " +
+            "g.name AS genre_name, " +
+            "d.id AS director_id, " +
+            "d.name AS director_name " +
             "FROM FILMS AS f " +
             "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
             "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
@@ -258,10 +260,11 @@ public class FilmDaoImpl implements FilmDao {
         sqlBuilder.append("WHERE ");
         List<String> conditions = new ArrayList<>();
 
-        if (by.contains("director")) {
-            conditions.add("EXISTS(SELECT 1 FROM TOTAL_FILM_DIRECTOR AS tfd WHERE f.id = tfd.film_id)");
-        }
-        if (by.contains("title")) {
+        if (by.contains("director") && by.contains("title")) {
+            conditions.add("(f.name ILIKE '%" + query + "%' OR d.name ILIKE '%" + query + "%')");
+        } else if (by.contains("director")) {
+            conditions.add("d.name ILIKE '%" + query + "%'");
+        } else if (by.contains("title")) {
             conditions.add("f.name ILIKE '%" + query + "%'");
         }
         if (!conditions.isEmpty()) {
