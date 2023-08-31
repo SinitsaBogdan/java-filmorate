@@ -1,28 +1,32 @@
 package ru.yandex.practicum.filmorete.model;
 
-import java.time.LocalDate;
+import lombok.Builder;
+import lombok.Data;
+import ru.yandex.practicum.filmorete.enums.EventOperation;
+import ru.yandex.practicum.filmorete.enums.EventType;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-
-import lombok.Builder;
-import lombok.Data;
+import java.time.Instant;
 
 @Data
 @Builder
 public class Event {
-    
+
     @Positive
-    private Long id;
+    private Long eventId;
+
+    @Builder.Default
+    private Long timestamp = Instant.now().getEpochSecond();
 
     @Positive
     private Long userId;
 
-    @Positive
-    private Long typeId;
+    @NotNull
+    private EventType eventType;
 
     @NotNull
-    private final LocalDate releaseDate;
+    private EventOperation operation;
 
     @Positive
     private Long entityId;

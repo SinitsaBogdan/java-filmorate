@@ -133,7 +133,7 @@ public class FilmDaoImpl implements FilmDao {
     public Long insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute) {
         jdbcTemplate.update(
                 "INSERT INTO FILMS (mpa_id, name, description, release_date, duration) " +
-                        "VALUES (?, ?, ?, ?, ?);",
+                    "VALUES (?, ?, ?, ?, ?);",
                 mpaId, name, descriptions, releaseDate, durationMinute
         );
         return jdbcTemplate.queryForObject(
@@ -145,13 +145,13 @@ public class FilmDaoImpl implements FilmDao {
     public void update(Long searchRowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration) {
         jdbcTemplate.update(
                 "UPDATE FILMS " +
-                        "SET " +
+                    "SET " +
                         "mpa_id = ?, " +
                         "name = ?, " +
                         "description = ?, " +
                         "release_date = ?, " +
                         "duration = ? " +
-                        "WHERE id = ?;",
+                    "WHERE id = ?;",
                 mpaId, name, descriptions, releaseDate, duration, searchRowId
         );
     }
@@ -221,6 +221,7 @@ public class FilmDaoImpl implements FilmDao {
                 .id(row.getInt("MPA_ID"))
                 .name(row.getString("MPA_NAME"))
                 .build();
+
         return Film.builder()
                 .id(row.getLong("FILM_ID"))
                 .mpa(mpa)

@@ -8,7 +8,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.model.*;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 
 import java.util.*;
 
@@ -20,12 +19,9 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final TotalGenreFilmDao totalGenreFilmDao;
-
     private final FilmDaoImpl filmDao;
 
     private final UserDaoImpl userDao;
-
 
     @Override
     public List<Film> findPopularFilms(Integer limit) {
@@ -41,16 +37,20 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
                         "g.name AS genre_name, " +
-                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
-                        "FROM FILMS AS f " +
-                        "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                        "WHERE f.id IN ( " +
-                        "   SELECT f.id FROM FILMS AS f " +
-                        "   ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) DESC " +
-                        "   LIMIT ? " +
-                        "   );",
+                        "( " +
+                            "SELECT COUNT(*) " +
+                            "FROM TOTAL_FILM_LIKE AS l " +
+                            "WHERE l.film_id = f.id " +
+                        ") AS size_like " +
+                    "FROM FILMS AS f " +
+                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "WHERE f.id IN ( " +
+                        "SELECT f.id FROM FILMS AS f " +
+                        "ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) DESC " +
+                        "LIMIT ? " +
+                    ");",
                 limit
         );
         while (rows.next()) {
@@ -75,11 +75,11 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         List<User> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * " +
-                        "FROM USERS " +
-                        "WHERE id IN (" +
+                    "FROM USERS " +
+                    "WHERE id IN (" +
                         "SELECT user_id FROM TOTAL_FILM_LIKE " +
                         "WHERE film_id = ?" +
-                        ");",
+                    ");",
                 filmId
         );
         while (rows.next()) result.add(userDao.buildModel(rows));
@@ -101,11 +101,15 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "g.id AS genre_id, " +
                         "g.name AS genre_name, " +
                         "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
-                        "FROM FILMS AS f " +
-                        "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                        "WHERE f.id IN (SELECT film_id FROM TOTAL_FILM_LIKE WHERE user_id = ?);",
+                    "FROM FILMS AS f " +
+                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "WHERE f.id IN (" +
+                        "SELECT film_id " +
+                        "FROM TOTAL_FILM_LIKE " +
+                        "WHERE user_id = ?" +
+                    ");",
                 userId
         );
         while (rows.next()) {
@@ -170,26 +174,27 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                             "r.name AS mpa_name, " +
                             "g.id AS genre_id, " +
                             "g.name AS genre_name " +
-                            "FROM FILMS AS f " +
-                            "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                            "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                            "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                            "WHERE f.id IN ( " +
-                            "   SELECT f.id FROM FILMS AS f " +
-                            "    ORDER BY ( " +
-                            "       SELECT COUNT(*) " +
-                            "        FROM TOTAL_FILM_LIKE AS l " +
-                            "        WHERE l.film_id = f.id ) DESC " +
-                            "    )" +
-                            "AND f.id IN ( " +
-                            "   SELECT film_id " +
-                            "   FROM total_film_like " +
-                            "   WHERE user_id = ? AND film_id IN ( " +
-                            "       SELECT film_id " +
-                            "       FROM total_film_like " +
-                            "       WHERE user_id = ? " +
-                            "    ) " +
-                            ")",
+                        "FROM FILMS AS f " +
+                        "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                        "WHERE f.id IN (" +
+                            "SELECT f.id FROM FILMS AS f " +
+                            "ORDER BY (" +
+                                "SELECT COUNT(*) " +
+                                "FROM TOTAL_FILM_LIKE AS l " +
+                                "WHERE l.film_id = f.id" +
+                            ") DESC" +
+                        ")" +
+                        "AND f.id IN ( " +
+                            "SELECT film_id " +
+                            "FROM total_film_like " +
+                            "WHERE user_id = ? AND film_id IN ( " +
+                                "SELECT film_id " +
+                                "FROM total_film_like " +
+                                "WHERE user_id = ? " +
+                            ")" +
+                        ")",
                 firstUserId, secondUserId
         );
         while (rows.next()) {
@@ -205,16 +210,15 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                 result.get(filmId).addGenre(genre);
             }
         }
-        if (result.values().isEmpty())
-            return new ArrayList<>();
-        return new ArrayList<>(result.values());
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
     }
-
 
     @Override
     public void insert(Long filmId, Long userId) {
         jdbcTemplate.update(
-                "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id) VALUES(?, ?);",
+                "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id) " +
+                    "VALUES(?, ?);",
                 filmId, userId
         );
     }
@@ -222,7 +226,8 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_FILM_LIKE SET film_id = ?, user_id = ? WHERE film_id = ? AND user_id = ?;",
+                "UPDATE TOTAL_FILM_LIKE SET film_id = ?, user_id = ? " +
+                    "WHERE film_id = ? AND user_id = ?;",
                 filmId, userId, searchFilmId, searchUserId
         );
     }
@@ -237,7 +242,8 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public void delete(Long filmId, Long userId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_FILM_LIKE WHERE film_id = ? AND user_id = ?;",
+                "DELETE FROM TOTAL_FILM_LIKE " +
+                    "WHERE film_id = ? AND user_id = ?;",
                 filmId, userId
         );
     }

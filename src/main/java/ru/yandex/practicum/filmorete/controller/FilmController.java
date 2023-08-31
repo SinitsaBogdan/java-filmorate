@@ -40,10 +40,6 @@ public class FilmController {
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
                                       @RequestParam(defaultValue = "") Integer genreId,
                                       @RequestParam(defaultValue = "") Integer year) {
-        //тут можно сделать перегрузку метода и сделать проверки на 0 у параметров запросов
-        /*if (genreId != 0 && year != 0) {
-            return serviceFilms.getPopularFilms(count, genreId, year);
-        }*/
         return serviceFilms.getPopularFilms(count);
     }
 

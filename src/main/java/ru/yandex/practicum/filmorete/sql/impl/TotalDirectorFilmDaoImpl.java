@@ -25,24 +25,15 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
 
     @Override
     public List<TotalDirectorFilm> findAll() {
-        Map<Long, TotalDirectorFilm> result = new HashMap<>();
+        List<TotalDirectorFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
-                        "tf.film_id AS filmId, " +
-                        "tf.director_id AS directorId, " +
-                        "FROM TOTAL_FILM_DIRECTOR AS tf " +
-                        "LEFT JOIN DIRECTORS AS d ON tf.director_id = d.id " +
-                        "ORDER BY d.id;"
+                        "t.film_id AS filmId, " +
+                        "t.director_id AS directorId " +
+                    "FROM TOTAL_FILM_DIRECTOR AS t;"
         );
-        while (rows.next()) {
-            Long totalDirectorFilmId = rows.getLong("ID");
-            if (!result.containsKey(totalDirectorFilmId)) {
-                TotalDirectorFilm totalDirectorFilm = buildModel(rows);
-                result.put(totalDirectorFilmId, totalDirectorFilm);
-            }
-        }
-        if (result.values().isEmpty()) return new ArrayList<>();
-        else return new ArrayList<>(result.values());
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
@@ -59,14 +50,12 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     @Override
     public Optional<TotalDirectorFilm> findById(Long rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_FILM_DIRECTOR WHERE director_id = ?;",
+                "SELECT * FROM TOTAL_FILM_DIRECTOR " +
+                "WHERE director_id = ?;",
                 rowId
         );
-        if (row.next()) {
-            return Optional.of(buildModel(row));
-        } else {
-            return Optional.empty();
-        }
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override
@@ -210,7 +199,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
                 "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id ";
     }
 
-    protected TotalDirectorFilm buildModel(@NotNull SqlRowSet row) {
+    public TotalDirectorFilm buildModel(@NotNull SqlRowSet row) {
         return TotalDirectorFilm.builder()
                 .filmId(row.getLong("FILM_ID"))
                 .directorId(row.getLong("DIRECTOR_ID"))
