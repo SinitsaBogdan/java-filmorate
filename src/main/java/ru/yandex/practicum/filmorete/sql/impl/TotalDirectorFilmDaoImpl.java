@@ -133,9 +133,32 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     @Override
     public List<Film> findFilmsByDirectorSortedByYear(Long directorId) { // метод падает в постмане,
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(generateSqlRequest() + "WHERE f.id IN ( SELECT film_id FROM " +
-                "TOTAL_FILM_DIRECTOR WHERE director_id = ? ) " +
-                "ORDER BY EXTRACT(YEAR FROM f.release_date) ASC;", directorId);
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT " +
+                        "f.id AS film_id, " +
+                        "f.name AS film_name, " +
+                        "f.description AS film_description, " +
+                        "f.release_date AS film_release_date, " +
+                        "f.duration AS film_duration, " +
+                        "r.id AS mpa_id, " +
+                        "r.name AS mpa_name, " +
+                        "g.id AS genre_id, " +
+                        "g.name AS genre_name, " +
+                        "d.id AS director_id, " +
+                        "d.name AS director_name, " +
+                    "EXTRACT(YEAR FROM f.release_date) AS release_year, " +
+                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
+                    "FROM FILMS AS f " +
+                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
+                    "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
+                    "WHERE f.id IN ( " +
+                        "SELECT film_id FROM " +
+                        "TOTAL_FILM_DIRECTOR WHERE director_id = ?" +
+                    ") " +
+                    "ORDER BY EXTRACT(YEAR FROM f.release_date) ASC;", directorId);
         while (rows.next()) {
             Long filmId = rows.getLong("FILM_ID");
             Integer genreId = rows.getInt("GENRE_ID");

@@ -58,6 +58,4 @@ public class DirectorController {
     public void removeSearchId(@PathVariable Long directorId) {
         serviceDirector.deleteSearchId(directorId);
     }
-
-
 }

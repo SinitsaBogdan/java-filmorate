@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.util.*;
 
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceFilm.SERVICE_ERROR_COLLECTIONS_IN_NULL;
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidFilm;
@@ -144,11 +145,11 @@ public class ServiceFilm {
     }
 
     public List<Film> getFilmsToDirector(Long directorId, String sorted) {
-        if (sorted.equals("year")) {
-            return totalDirectorFilmDao.findFilmsByDirectorSortedByYear(directorId);
-        } else {
-            return totalDirectorFilmDao.findPopularFilmsByDirector(directorId);
-        }
+        List<Film> result;
+        if (sorted.equals("year")) result = totalDirectorFilmDao.findFilmsByDirectorSortedByYear(directorId);
+        else result = totalDirectorFilmDao.findPopularFilmsByDirector(directorId);
+        if (result.size() == 0) throw new ExceptionNotFoundFilmStorage(SERVICE_ERROR_COLLECTIONS_IN_NULL);
+        else return result;
     }
 
     public void clearStorage() {
