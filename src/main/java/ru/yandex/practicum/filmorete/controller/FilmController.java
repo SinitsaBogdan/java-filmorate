@@ -84,19 +84,19 @@ public class FilmController {
     }
 
     /**
-     * Удаление всех фильмов.
-     * */
-    @DeleteMapping
-    public void clear() {
-        serviceFilms.clearStorage();
-    }
-
-    /**
      * Пользователь удаляет лайк фильму по id.
      * */
     @DeleteMapping("/{filmId}/like/{userId}")
     public void removeLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
         serviceFilms.removeLike(filmId, userId);
+    }
+
+    /**
+     * Удаление всех фильмов.
+     * */
+    @DeleteMapping
+    public void clear() {
+        serviceFilms.clearStorage();
     }
 
     /**
