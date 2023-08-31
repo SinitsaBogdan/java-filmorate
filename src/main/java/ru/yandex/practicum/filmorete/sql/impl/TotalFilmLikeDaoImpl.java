@@ -279,15 +279,14 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     private Optional<Long> findFriendByFilmsId(Long userId) {
         Map<Long, Set<Long>> userLikeToFilm = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet("SELECT user_id, film_id FROM TOTAL_FILM_LIKE");
-        while(rows.next()) {
+        while (rows.next()) {
             Long userLikeId = rows.getLong("user_id");
             Long filmId = rows.getLong("film_id");
             if (!userLikeToFilm.containsKey(userLikeId)) {
                 Set<Long> idLikedFilms = new HashSet<>();
                 idLikedFilms.add(filmId);
                 userLikeToFilm.put(userLikeId, idLikedFilms);
-            }
-            else {
+            } else {
                 Set<Long> idLikedFilms = userLikeToFilm.get(userLikeId);
                 idLikedFilms.add(filmId);
             }
