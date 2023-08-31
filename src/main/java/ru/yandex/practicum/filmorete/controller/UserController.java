@@ -26,7 +26,6 @@ public class UserController {
 
     private final ServiceEvent serviceEvent;
 
-
     public UserController(ServiceUser serviceUser, ServiceFilm serviceFilm, ServiceEvent serviceEvent) {
         this.serviceUser = serviceUser;
         this.serviceFilm = serviceFilm;
