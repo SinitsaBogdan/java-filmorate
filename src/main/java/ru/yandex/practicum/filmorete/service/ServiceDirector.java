@@ -16,11 +16,9 @@ import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceDirecto
 public class ServiceDirector {
 
      private final DirectorDao directorDao;
-     private final TotalDirectorFilmDao totalFilmDirectorDao;
 
      private ServiceDirector(DirectorDao directorsDao, TotalDirectorFilmDao totalFilmDirectorDao) {
          this.directorDao = directorsDao;
-         this.totalFilmDirectorDao = totalFilmDirectorDao;
      }
 
     /**

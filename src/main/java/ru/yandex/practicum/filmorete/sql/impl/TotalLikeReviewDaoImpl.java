@@ -20,25 +20,16 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
 
     @Override
     public List<TotalLikeReview> findAll() {
-        Map<Long, TotalLikeReview> result = new HashMap<>();
+        List<TotalLikeReview> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
-                        "tl.review_id AS reviewId, " +
-                        "tl.user_id  AS userId, " +
-                        "tl.isPositive AS typeLike " +
-                    "FROM TOTAL_LIKE_REVIEWS AS tl " +
-                    "LEFT JOIN REVIEWS AS r ON tl.review_id = r.id " +
-                    "ORDER BY tl.review_id;"
+                        "t.review_id AS reviewId, " +
+                        "t.user_id  AS userId, " +
+                        "t.isPositive AS typeLike " +
+                    "FROM TOTAL_LIKE_REVIEWS AS t;"
         );
-        while (rows.next()) {
-            Long totalReviewLikeId = rows.getLong("REVIEW_ID");
-            if (!result.containsKey(totalReviewLikeId)) {
-                TotalLikeReview totalLikeReview = buildModel(rows);
-                result.put(totalReviewLikeId, totalLikeReview);
-            }
-        }
-        if (result.values().isEmpty()) return new ArrayList<>();
-        else return new ArrayList<>(result.values());
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
@@ -96,11 +87,11 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     }
 
     @Override
-    public void deleteAllTypeLike(Boolean typeLike) {
+    public void deleteAllTypeLike(Boolean type) {
         jdbcTemplate.update(
                 "DELETE FROM TOTAL_LIKE_REVIEWS " +
                 "WHERE isPositive = ?;",
-                typeLike
+                type
         );
     }
 

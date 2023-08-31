@@ -22,10 +22,13 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private final RosterGenreDaoImpl rosterGenreDao;
+
     @Override
     public Optional<TotalGenreFilm> findTotalGenreFilm(Long filmId, Integer genreId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_GENRE_FILM WHERE film_id = ? AND genre_id = ?;",
+                "SELECT * FROM TOTAL_GENRE_FILM " +
+                    "WHERE film_id = ? AND genre_id = ?;",
                 filmId, genreId
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -37,20 +40,15 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
         List<Genre> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * " +
-                        "FROM ROSTER_GENRE " +
-                        "WHERE id IN (" +
+                    "FROM ROSTER_GENRE " +
+                    "WHERE id IN (" +
                         "SELECT genre_id " +
                         "FROM TOTAL_GENRE_FILM " +
                         "WHERE film_id = ?" +
-                        ");",
+                    ");",
                 id
         );
-        while (rows.next()) result.add(
-                Genre.builder()
-                        .id(rows.getInt("id"))
-                        .name(rows.getString("name"))
-                        .build()
-        );
+        while (rows.next()) result.add(rosterGenreDao.buildModel(rows));
         return result;
     }
 
@@ -68,7 +66,9 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     public List<TotalGenreFilm> findAllTotalGenreFilm(Long filmId) {
         List<TotalGenreFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_GENRE_FILM WHERE film_id = ?;",
+                "SELECT * " +
+                    "FROM TOTAL_GENRE_FILM " +
+                    "WHERE film_id = ?;",
                 filmId
         );
         while (rows.next()) result.add(buildModel(rows));
@@ -79,7 +79,9 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     public List<TotalGenreFilm> findAllTotalGenreFilm(Integer genreId) {
         List<TotalGenreFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_GENRE_FILM WHERE genre_id = ?;",
+                "SELECT * " +
+                    "FROM TOTAL_GENRE_FILM " +
+                    "WHERE genre_id = ?;",
                 genreId
         );
         while (rows.next()) result.add(buildModel(rows));
@@ -89,7 +91,8 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     @Override
     public void insert(Long filmId, Integer genreId) {
         jdbcTemplate.update(
-                "INSERT INTO TOTAL_GENRE_FILM (film_id, genre_id) VALUES(?, ?);",
+                "INSERT INTO TOTAL_GENRE_FILM (film_id, genre_id) " +
+                    "VALUES(?, ?);",
                 filmId, genreId
         );
     }
@@ -104,7 +107,8 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     @Override
     public void delete(Long filmId, Integer genreId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_GENRE_FILM WHERE film_id = ? AND genre_id = ?;",
+                "DELETE FROM TOTAL_GENRE_FILM " +
+                    "WHERE film_id = ? AND genre_id = ?;",
                 filmId, genreId
         );
     }
@@ -112,7 +116,8 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     @Override
     public void deleteAllFilmId(Long filmId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_GENRE_FILM WHERE film_id = ?;",
+                "DELETE FROM TOTAL_GENRE_FILM " +
+                    "WHERE film_id = ?;",
                 filmId
         );
     }
@@ -120,7 +125,8 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     @Override
     public void deleteAllGenreId(Integer genreId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_GENRE_FILM WHERE genre_id = ?;",
+                "DELETE FROM TOTAL_GENRE_FILM " +
+                    "WHERE genre_id = ?;",
                 genreId
         );
     }

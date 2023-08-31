@@ -1,14 +1,16 @@
 package ru.yandex.practicum.filmorete.service;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorete.exeptions.*;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionValidationFilm;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionValidationUser;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.User;
 
 import java.time.LocalDate;
 
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.*;
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.*;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_LOGIN_IS_WHITESPACE;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_NOT_LOGIN;
 
 @Slf4j
 public class ServiceValidators {

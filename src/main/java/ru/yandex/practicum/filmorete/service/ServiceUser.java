@@ -3,18 +3,20 @@ package ru.yandex.practicum.filmorete.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorete.enums.StatusFriend;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
+import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
-import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.*;
-import static ru.yandex.practicum.filmorete.service.ServiceValidators.*;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidUser;
 
 @Slf4j
 @Service
@@ -89,16 +91,16 @@ public class ServiceUser {
             Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.findTotalUserFriend(userId, friendId);
             if (optionalRowStatusUser.isPresent()) {
                 TotalUserFriends userStatus = optionalRowStatusUser.get();
-                if (userStatus.getStatusId() == 1) totalUserFriendsDao.update(userId, friendId, 2);
-            } else totalUserFriendsDao.insert(userId, friendId, 2);
+                if (userStatus.getStatusFriend() == StatusFriend.UNCONFIRMED) totalUserFriendsDao.update(userId, friendId, StatusFriend.CONFIRMED);
+            } else totalUserFriendsDao.insert(userId, friendId, StatusFriend.CONFIRMED);
             Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findTotalUserFriend(friendId, userId);
-            if (optionalRowStatusFriend.isEmpty()) totalUserFriendsDao.insert(friendId, userId, 1);
+            if (optionalRowStatusFriend.isEmpty()) totalUserFriendsDao.insert(friendId, userId, StatusFriend.UNCONFIRMED);
         } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public void removeFriend(Long userId, Long friendId) {
         totalUserFriendsDao.delete(userId, friendId);
-        totalUserFriendsDao.update(friendId, userId, 1);
+        totalUserFriendsDao.update(friendId, userId, StatusFriend.UNCONFIRMED);
     }
 
     public void clearStorage() {

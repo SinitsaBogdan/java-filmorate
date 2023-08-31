@@ -46,7 +46,7 @@ class TotalFilmLikeDaoImplTest {
 
         filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);
         filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.of(2004, 1, 1), 110);
-        filmDao.insert(3L, 3, "Фильм 3", "", LocalDate.of(2003, 1, 1), 130);
+//        filmDao.insert(3L, 3, "Фильм 3", "", LocalDate.of(2003, 1, 1), 130);
 
         totalFilmLikeDao.insert(1L, 1L);
         totalFilmLikeDao.insert(1L, 2L);
