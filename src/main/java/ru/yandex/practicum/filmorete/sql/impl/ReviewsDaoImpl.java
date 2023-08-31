@@ -29,11 +29,35 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
+    public List<Review> findReviewIsUserId(Long rowId) {
+        List<Review> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM REVIEWS " +
+                        "WHERE user_id = ?;",
+                rowId
+        );
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
+    }
+
+    @Override
+    public List<Review> findIsFilmId(Long rowId) {
+        List<Review> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM REVIEWS " +
+                        "WHERE film_id = ?;",
+                rowId
+        );
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
+    }
+
+    @Override
     public Optional<Review> findById(Long rowId) {
         Map<Long, Review> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS " +
-                    "WHERE id = ?;",
+                        "WHERE id = ?;",
                 rowId
         );
         while (rows.next()) {
@@ -47,7 +71,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     public void insert(Long id, String content, Boolean is_positive, Long userId, Long filmId) {
         jdbcTemplate.update(
                 "INSERT INTO REVIEWS (id, content, is_positive, user_id, film_id) " +
-                    "VALUES (?, ?, ?, ?, ?);",
+                        "VALUES (?, ?, ?, ?, ?);",
                 id, content, is_positive, userId, filmId
         );
     }
@@ -65,12 +89,12 @@ public class ReviewsDaoImpl implements ReviewDao {
     public void update(Long id, String content, Boolean is_positive, Long userId, Long filmId) {
         jdbcTemplate.update(
                 "UPDATE REVIEWS " +
-                    "SET " +
+                        "SET " +
                         "content = ?, " +
                         "status = ?, " +
                         "userId = ?, " +
                         "filmId = ? " +
-                    "WHERE user_id = ?;",
+                        "WHERE user_id = ?;",
                 content, is_positive, userId, filmId, id
         );
     }
@@ -94,7 +118,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     public void deleteAllIsPositive(Boolean isPositive) {
         jdbcTemplate.update(
                 "DELETE FROM REVIEWS " +
-                "WHERE isPositive = ?;",
+                        "WHERE isPositive = ?;",
                 isPositive
         );
     }

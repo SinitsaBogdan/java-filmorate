@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorete.sql.dao.ReviewDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalLikeReviewDao;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ServiceReview {
@@ -25,24 +26,26 @@ public class ServiceReview {
      * NEW!!!
      * Запрос всех отзывов [ REVIEWS ].
      */
-    public ArrayList<Review> getAllReview() {
-        return new ArrayList<>();
+    public List<Review> getAllReview() {
+        return reviewDao.findAll();
     }
 
     /**
      * NEW!!!
      * Запрос всех отзывов по ID пользователя [ REVIEWS ].
      */
-    public ArrayList<Review> getAllReviewIsUserId(Long userId) {
-        return new ArrayList<>();
+    public List<Review> getAllReviewIsUserId(Long userId) {
+        return reviewDao.findReviewIsUserId(userId);
+
     }
 
     /**
      * NEW!!!
      * Запрос всех отзывов по ID фильма [ REVIEWS ].
      */
-    public ArrayList<Review> getAllReviewIsFilmId(Long filmId) {
-        return new ArrayList<>();
+    public List<Review> getAllReviewIsFilmId(Long filmId) {
+        return reviewDao.findIsFilmId(filmId);
+
     }
 
     /**

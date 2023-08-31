@@ -134,7 +134,7 @@ public class UserController {
      * Возвращает ленту событий пользователя.
      */
     @GetMapping("{id}/feed")
-    public ResponseEntity<List<Event>> getEvents(@PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(serviceEvent.getAllEventByUserId(id));
+    public List<Event> getEvents(@PathVariable("id") Long id) {
+        return serviceEvent.getAllEventByUserId(id);
     }
 }

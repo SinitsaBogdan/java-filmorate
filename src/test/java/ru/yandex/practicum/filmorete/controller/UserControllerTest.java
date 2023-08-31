@@ -8,7 +8,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorete.enums.EventOperation;
+import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.model.User;
+import ru.yandex.practicum.filmorete.sql.impl.EventsDaoImpl;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 import ru.yandex.practicum.filmorete.sql.impl.UserDaoImpl;
@@ -34,6 +37,9 @@ public class UserControllerTest {
     private UserDaoImpl userDao;
 
     @Autowired
+    private EventsDaoImpl eventsDao;
+
+    @Autowired
     private FilmDao filmDao;
 
     @Autowired
@@ -47,6 +53,7 @@ public class UserControllerTest {
         userDao.insert(101L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
         userDao.insert(102L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
         userDao.insert(103L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
+        eventsDao.insert(1L, EventType.REVIEW, EventOperation.UPDATE, 103L, 23L);
     }
 
     @Nested
@@ -153,6 +160,19 @@ public class UserControllerTest {
         @Test
         @DisplayName("Запрос ленты событий пользователя")
         public void methodGet_FeedByUserIdTest() throws Exception {
+            mockMvc.perform(get("/users/103/feed"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1));
+
+        }
+
+        @Test
+        @DisplayName("Запрос ленты событий пользователя: ID 9999")
+        public void methodGet_FeedByUserId9999Test() throws Exception {
+            mockMvc.perform(get("/users/9999/feed"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0));
+
         }
     }
 

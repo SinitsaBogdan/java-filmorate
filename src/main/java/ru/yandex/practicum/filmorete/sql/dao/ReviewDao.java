@@ -9,6 +9,10 @@ public interface ReviewDao {
 
     List<Review> findAll();
 
+    List<Review> findReviewIsUserId(Long rowId);
+
+    List<Review> findIsFilmId(Long rowId);
+
     Optional<Review> findById(Long rowId);
 
     void insert(Long id, String content, Boolean isPositive, Long userId, Long filmId);
