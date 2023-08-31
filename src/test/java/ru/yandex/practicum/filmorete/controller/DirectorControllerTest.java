@@ -9,9 +9,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
 @SpringBootTest
@@ -27,14 +38,18 @@ class DirectorControllerTest {
     @Autowired
     private DirectorDao directorDao;
 
-    private final Director duplicate = Director.builder().id(1L).name("director-1").build();
+    private final Director duplicate = Director.builder().name("director-1").id(1L).build();
+
+    List<Director> listDirector = Arrays.asList(
+            Director.builder().name("director-1").build(),
+            Director.builder().name("director-2").build()
+    );
 
     @BeforeEach
     public void beforeEach() {
         directorDao.delete();
-        directorDao.insert("director-1");
-        directorDao.insert("director-2");
-        directorDao.insert("director-3");
+        directorDao.insert(1L, listDirector.get(0).getName());
+        directorDao.insert(2L, listDirector.get(1).getName());
     }
 
     @Nested
@@ -43,24 +58,39 @@ class DirectorControllerTest {
 
         @Test
         @DisplayName("Получение режиссёра: ID 1")
-        void methodGet_DirectorId1Test() {
+        void methodGet_DirectorId1Test() throws Exception {
+            mockMvc.perform(get("/directors/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.name").value("director-1"))
+            ;
         }
 
         @Test
         @DisplayName("Запрос режиссёра: ID 9999")
         public void methodGet_DirectorId9999Test() throws Exception {
-
+            mockMvc.perform(get("/directors/9999"))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Запрос режиссёра: ID -1")
         public void methodGet_DirectorIdMinus1Test() throws Exception {
+            mockMvc.perform(get("/directors/-1"))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
-
 
         @Test
         @DisplayName("Получение всех режиссёров")
-        void methodGet_AllDirectors() {
+        void methodGet_AllDirectors() throws Exception {
+            mockMvc.perform(get("/directors"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2))
+                    .andExpect(jsonPath("$.[0].id").value(1))
+                    .andExpect(jsonPath("$.[1].name").value("director-2"))
+            ;
         }
     }
 
@@ -71,6 +101,9 @@ class DirectorControllerTest {
         @Test
         @DisplayName("Проверка добавления дубликата режиссёра")
         void methodPost_NewDirectorValidTrue_AndDoubleFalseTest() throws Exception {
+            mockMvc.perform(post("/directors").content(objectMapper.writeValueAsString(duplicate)))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
@@ -80,6 +113,8 @@ class DirectorControllerTest {
                     .id(99L)
                     .name(null)
                     .build();
+            mockMvc.perform(post("/directors").content(objectMapper.writeValueAsString(director)))
+                    .andExpect(status().is4xxClientError());
         }
     }
 
@@ -90,6 +125,15 @@ class DirectorControllerTest {
         @Test
         @DisplayName("Обновление режиссёра")
         void methodPut_DirectorValidTrueTest() throws Exception {
+            Director director = Director.builder()
+                    .id(1L)
+                    .name("UPDATE director-1")
+                    .build();
+            mockMvc.perform(put("/directors").content(objectMapper.writeValueAsString(director))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("id").value(1L))
+                    .andExpect(jsonPath("name").value("UPDATE director-1"));
         }
 
         @Test
@@ -99,6 +143,10 @@ class DirectorControllerTest {
                     .id(null)
                     .name("update")
                     .build();
+            mockMvc.perform(put("/directors").content(objectMapper.writeValueAsString(director))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
@@ -108,6 +156,10 @@ class DirectorControllerTest {
                     .id(99L)
                     .name("update")
                     .build();
+            mockMvc.perform(put("/directors").content(objectMapper.writeValueAsString(director))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
@@ -117,6 +169,10 @@ class DirectorControllerTest {
                     .id(1L)
                     .name("")
                     .build();
+            mockMvc.perform(put("/directors").content(objectMapper.writeValueAsString(director))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
@@ -126,6 +182,10 @@ class DirectorControllerTest {
                     .id(1L)
                     .name(null)
                     .build();
+            mockMvc.perform(put("/directors").content(objectMapper.writeValueAsString(director))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
     }
 
@@ -135,17 +195,39 @@ class DirectorControllerTest {
 
         @Test
         @DisplayName("Удаление всех режиссёров")
-        void methodDelete_DeleteAllDirectorTest() {
+        void methodDelete_DeleteAllDirectorTest() throws Exception {
+            mockMvc.perform(delete("/directors"))
+                    .andExpect(status().isOk());
+            mockMvc.perform(get("/directors"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0))
+            ;
         }
 
         @Test
         @DisplayName("Удаление режиссёра по ID")
-        void methodDelete_DeleteDirectorByIdTest() {
+        void methodDelete_DeleteDirectorByIdTest() throws Exception {
+            mockMvc.perform(delete("/directors/1"))
+                    .andExpect(status().isOk());
+            mockMvc.perform(get("/directors"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+                    .andExpect(jsonPath("$.[0].id").value(2))
+                    .andExpect(jsonPath("$.[0].name").value("director-2"))
+            ;
         }
 
         @Test
         @DisplayName("Удаление режиссёра по NAME")
-        void methodDelete_DeleteDirectorByNameTest() {
+        void methodDelete_DeleteDirectorByNameTest() throws Exception {
+            mockMvc.perform(delete("/directors/name/director-1"))
+                    .andExpect(status().isOk());
+            mockMvc.perform(get("/directors"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+                    .andExpect(jsonPath("$.[0].id").value(2))
+                    .andExpect(jsonPath("$.[0].name").value("director-2"))
+            ;
         }
     }
 }

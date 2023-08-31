@@ -73,6 +73,13 @@ public class ServiceDirector {
     }
 
     /**
+     * Удаление режиссёра по имени [ DIRECTORS ].
+     */
+    public void deleteSearchName(String directorName) {
+        directorDao.delete(directorName);
+    }
+
+    /**
      * NEW!!!
      * Запрос всех режиссёров по ID фильма [ TOTAL_FILM_DIRECTOR ].
      */
