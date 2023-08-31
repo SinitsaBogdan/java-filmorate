@@ -125,7 +125,8 @@ public class UserController {
      * Возвращает рекомендации по фильмам для просмотра.
      */
     @GetMapping("/{userId}/recommendations")
-    public void getRecommendedFilms(@PathVariable Long userId) {
+    public List<Film> getRecommendedFilms(@PathVariable Long userId) {
+        return serviceUser.getRecommendation(userId);
     }
 
     /**
