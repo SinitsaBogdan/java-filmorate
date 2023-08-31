@@ -130,8 +130,8 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
-    public List<TotalFilmLike> findAllTotalFilmLike() {
-        List<TotalFilmLike> result = new ArrayList<>();
+    public List<TotalLikeFilm> findAllTotalFilmLike() {
+        List<TotalLikeFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE;"
         );
@@ -140,8 +140,8 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
-    public List<TotalFilmLike> findAllTotalFilmLikeByFilmId(Long filmId) {
-        List<TotalFilmLike> result = new ArrayList<>();
+    public List<TotalLikeFilm> findAllTotalFilmLikeByFilmId(Long filmId) {
+        List<TotalLikeFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE WHERE film_id = ?;",
                 filmId
@@ -151,8 +151,8 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
-    public List<TotalFilmLike> findAllTotalFilmLikeByUserId(Long userId) {
-        List<TotalFilmLike> result = new ArrayList<>();
+    public List<TotalLikeFilm> findAllTotalFilmLikeByUserId(Long userId) {
+        List<TotalLikeFilm> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE WHERE user_id = ?;",
                 userId
@@ -248,8 +248,8 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         );
     }
 
-    protected TotalFilmLike buildModel(@NotNull SqlRowSet row) {
-        return TotalFilmLike.builder()
+    protected TotalLikeFilm buildModel(@NotNull SqlRowSet row) {
+        return TotalLikeFilm.builder()
                 .filmId(row.getLong("film_id"))
                 .userId(row.getLong("user_id"))
                 .build();

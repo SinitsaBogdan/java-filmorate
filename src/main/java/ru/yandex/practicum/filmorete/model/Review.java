@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.model;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
@@ -12,26 +13,22 @@ import lombok.Data;
 public class Review {
     
     @Positive
-    private Long id;
+    private Long reviewId;
 
     @NotBlank
     @Size(max = 200)
     private String content;
 
-    private boolean isPositive;
+    @NotNull
+    @Builder.Default
+    private Boolean isPositive = true;
 
-    @Positive
+    @NotNull
     private Long userId;
 
-    @Positive
+    @NotNull
     private Long filmId;
 
-    @Positive
-    private Long typeId;
-
-    @Positive
-    private Long evaluationId;
-
-    @Positive
-    private Integer useful;
+    @Builder.Default
+    private Integer useful = 0;
 }

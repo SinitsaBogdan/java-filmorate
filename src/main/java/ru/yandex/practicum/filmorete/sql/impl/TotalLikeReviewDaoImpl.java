@@ -33,14 +33,39 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     }
 
     @Override
-    public Optional<TotalLikeReview> findById(Long rowId) {
+    public List<TotalLikeReview> findAllByReviewId(Long reviewId) {
+        List<TotalLikeReview> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_LIKE_REVIEWS " +
                     "WHERE review_id = ?;",
-                rowId
+                reviewId
         );
-        if (row.next()) return Optional.of(buildModel(row));
-        else return Optional.empty();
+        while (row.next()) result.add(buildModel(row));
+        return result;
+    }
+
+    @Override
+    public List<TotalLikeReview> findAllByUserId(Long userId) {
+        List<TotalLikeReview> result = new ArrayList<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM TOTAL_LIKE_REVIEWS " +
+                        "WHERE user_id = ?;",
+                userId
+        );
+        while (row.next()) result.add(buildModel(row));
+        return result;
+    }
+
+    @Override
+    public List<TotalLikeReview> findAllByIsPositive(Boolean isPositive) {
+        List<TotalLikeReview> result = new ArrayList<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM TOTAL_LIKE_REVIEWS " +
+                        "WHERE is_positive = ?;",
+                isPositive
+        );
+        while (row.next()) result.add(buildModel(row));
+        return result;
     }
 
     @Override
@@ -55,9 +80,9 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     @Override
     public void update(Long reviewId, Long userId, Boolean type) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_LIKE_REVIEWS SET review_id = ? " +
+                "UPDATE TOTAL_LIKE_REVIEWS SET review_id = ?, is_positive = ? " +
                     "WHERE user_id = ?;",
-                reviewId, userId
+                reviewId, type, userId
         );
     }
 
@@ -65,6 +90,15 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     public void delete() {
         jdbcTemplate.update(
                 "DELETE FROM TOTAL_LIKE_REVIEWS;"
+        );
+    }
+
+    @Override
+    public void delete(Long reviewId, Long userId) {
+        jdbcTemplate.update(
+                "DELETE FROM TOTAL_LIKE_REVIEWS " +
+                    "WHERE review_id = ? AND user_id = ?;",
+                reviewId, userId
         );
     }
 

@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.dao;
 
 import ru.yandex.practicum.filmorete.model.Film;
-import ru.yandex.practicum.filmorete.model.TotalFilmLike;
+import ru.yandex.practicum.filmorete.model.TotalLikeFilm;
 import ru.yandex.practicum.filmorete.model.User;
 import java.util.List;
 
@@ -13,11 +13,11 @@ public interface TotalFilmLikeDao {
 
     List<Film> findFilmToLikeUser(Long userId);
 
-    List<TotalFilmLike> findAllTotalFilmLike();
+    List<TotalLikeFilm> findAllTotalFilmLike();
 
-    List<TotalFilmLike> findAllTotalFilmLikeByFilmId(Long filmId);
+    List<TotalLikeFilm> findAllTotalFilmLikeByFilmId(Long filmId);
 
-    List<TotalFilmLike> findAllTotalFilmLikeByUserId(Long userId);
+    List<TotalLikeFilm> findAllTotalFilmLikeByUserId(Long userId);
 
     List<Film> findCommonFilms(Long firstId, Long secondId);
 
