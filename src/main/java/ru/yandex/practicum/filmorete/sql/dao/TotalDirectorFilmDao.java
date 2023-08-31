@@ -11,9 +11,9 @@ public interface TotalDirectorFilmDao {
 
     Optional<TotalDirectorFilm> findById(Long rowId);
 
-    void insert(TotalDirectorFilm totalDirectorFilm);
+    void insert(Long filmId, Long directorId);
 
-    void update(TotalDirectorFilm totalDirectorFilm);
+    void update(Long filmId, Long directorId);
 
     void deleteById(Long rowId);
 }

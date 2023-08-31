@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.sql.dao;
 
+import ru.yandex.practicum.filmorete.enums.StatusFriend;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
 import ru.yandex.practicum.filmorete.model.User;
 import java.util.List;
@@ -17,13 +18,13 @@ public interface TotalUserFriendsDao {
 
     List<TotalUserFriends> findAllTotalUserByFriendId(Long friendId);
 
-    List<TotalUserFriends> findAllTotalByStatusId(Integer statusId);
+    List<TotalUserFriends> findAllTotalByStatusId(StatusFriend statusFriend);
 
     Optional<TotalUserFriends> findTotalUserFriend(Long userId, Long friendId);
 
-    void insert(Long userId, Long friendId, Integer statusId);
+    void insert(Long userId, Long friendId, StatusFriend status);
 
-    void update(Long searchUserId, Long searchFriendId, Integer statusId);
+    void update(Long searchUserId, Long searchFriendId, StatusFriend status);
 
     void delete();
 
@@ -33,5 +34,5 @@ public interface TotalUserFriendsDao {
 
     void deleteAllFriendId(Long friendId);
 
-    void deleteAllStatusId(Integer statusId);
+    void deleteAllStatusId(StatusFriend status);
 }

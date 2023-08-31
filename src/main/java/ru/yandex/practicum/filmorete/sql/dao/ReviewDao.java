@@ -11,9 +11,10 @@ public interface ReviewDao {
 
     Optional<Review> findById(Long rowId);
 
-    void insert(Long id, String content, Boolean status, Long userId, Long filmId, Integer typeId, Integer evaluationId);
+    void insert(Long id, String content, Boolean isPositive, Long userId, Long filmId);
+    void insert(String content, Boolean isPositive, Long userId, Long filmId);
 
-    void update(Long id, String content, Boolean status, Long userId, Long filmId, Integer typeId, Integer evaluationId);
+    void update(Long id, String content, Boolean isPositive, Long userId, Long filmId);
 
     void delete();
 

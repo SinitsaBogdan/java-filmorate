@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.enums.EventOperation;
+import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 
@@ -19,93 +21,103 @@ public class EventsDaoImpl implements EventsDao {
 
     @Override
     public List<Event> findAll() {
-
-        Map<Long, Event> result = new HashMap<>();
+        List<Event> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "e.id AS id, " +
-                        "e.user_id AS userId, " +
-                        "e.type_id AS typeId, " +
-                        "e.timestamp AS releaseDate, " +
-                        "e.entity_id AS entityId, " +
-                    "FROM EVENTS AS e " +
-                    "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.id = re.id " +
-                    "ORDER BY e.id;"
+                "SELECT * FROM EVENTS;"
         );
-        while (rows.next()) {
-            Long eventId = rows.getLong("ID");
-            if (!result.containsKey(eventId)) {
-                Event event = buildModel(rows);
-                result.put(eventId, event);
-            }
-        }
-        if (result.values().isEmpty()) return new ArrayList<>();
-        else return new ArrayList<>(result.values());
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
-    public Optional<Event> findById(Long rowId) {
-        Map<Long, Event> result = new HashMap<>();
+    public List<Event> findAllByUserId(Long userId) {
+        List<Event> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "e.id AS id, " +
-                        "e.user_id AS userId, " +
-                        "e.type_id AS typeId, " +
-                        "e.timestamp AS releaseDate, " +
-                        "e.entity_id AS entityId, " +
-                    "FROM EVENTS AS e " +
-                    "RIGHT JOIN ROSTER_EVENT_TYPE AS re ON e.id = re.id " +
-                    "ORDER BY e.id;",
-                rowId
+                "SELECT * FROM EVENTS WHERE userId = ?;"
         );
-        while (rows.next()) {
-            Long eventId = rows.getLong("ID");
-            if (!result.containsKey(eventId)) {
-                Event event = buildModel(rows);
-                result.put(rowId, event);
-            }
-        }
-        return Optional.ofNullable(result.get(rowId));
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
-    public void insert(Event event) {
+    public Optional<Event> findByEventId(Long eventId) {
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM EVENTS WHERE eventId = ?;",
+                eventId
+        );
+        if (rows.next()) return Optional.of(buildModel(rows));
+        else return Optional.empty();
+    }
+
+    @Override
+    public void insert(EventType eventType, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
-                "INSERT INTO EVENTS (id, user_id, type_id, timestamp, entity_id) " +
-                        "VALUES (?, ?, ?, ?, ?);",
-                event.getId(), event.getUserId(), event.getTypeId(), event.getReleaseDate(), event.getEntityId()
+                "INSERT INTO EVENTS (userId, eventType, operation, entityId) " +
+                "VALUES (?, ?, ?, ?);",
+                eventType, operation, userId, entityId
         );
     }
 
     @Override
-    public void update(Event event) {
+    public void update(Long eventId, EventType eventType, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
                 "UPDATE EVENTS " +
-                        "SET " +
-                        "id = ?, " +
-                        "user_id = ?, " +
-                        "type_id = ?, " +
-                        "timestamp = ?, " +
-                        "entity_id = ?, " +
-                        "WHERE id = ?;",
-                event.getId(), event.getUserId(), event.getTypeId(), event.getReleaseDate(), event.getEntityId()
+                    "SET " +
+                        "eventType = ?, " +
+                        "operation = ?, " +
+                        "userId = ?, " +
+                        "entityId = ? " +
+                    "WHERE eventId = ?;",
+                eventType, operation, userId, entityId, eventId
         );
     }
 
     @Override
-    public void deleteById(Long rowId) {
+    public void delete() {
         jdbcTemplate.update(
-                "DELETE FROM EVENTS WHERE id = ?;",
-                rowId
+                "DELETE FROM EVENTS;"
+        );
+    }
+
+    @Override
+    public void deleteByEventId(Long eventId) {
+        jdbcTemplate.update(
+                "DELETE FROM EVENTS WHERE event_id = ?;",
+                eventId
+        );
+    }
+
+    @Override
+    public void deleteAll(EventType eventType) {
+        jdbcTemplate.update(
+                "DELETE FROM EVENTS WHERE type = ?;",
+                eventType
+        );
+    }
+
+    @Override
+    public void deleteAll(EventOperation operation) {
+        jdbcTemplate.update(
+                "DELETE FROM EVENTS WHERE operation = ?;",
+                operation
+        );
+    }
+
+    @Override
+    public void deleteAll(Long userId) {
+        jdbcTemplate.update(
+                "DELETE FROM EVENTS WHERE user_id = ?;",
+                userId
         );
     }
 
     protected Event buildModel(@NotNull SqlRowSet row) {
         return Event.builder()
-                .id(row.getLong("ID"))
+                .eventId(row.getLong("ID"))
+                .timestamp(row.getLong("TIMESTAMP"))
                 .userId(row.getLong("USER_ID"))
-                .typeId(row.getLong("TYPE_ID"))
-                .releaseDate(Objects.requireNonNull(row.getDate("TIMESTAMP")).toLocalDate())
+                .eventType(EventType.valueOf(row.getString("TYPE")))
+                .operation(EventOperation.valueOf(row.getString("OPERATION")))
                 .entityId(row.getLong("ENTITY_ID"))
                 .build();
     }
