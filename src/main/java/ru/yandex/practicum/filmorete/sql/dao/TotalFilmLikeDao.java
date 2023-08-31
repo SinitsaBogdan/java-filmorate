@@ -21,6 +21,8 @@ public interface TotalFilmLikeDao {
 
     List<Film> findCommonFilms(Long firstId, Long secondId);
 
+    List<Film> getRecommendationForUser(Long userId);
+
     void insert(Long filmId, Long userId);
 
     void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId);
