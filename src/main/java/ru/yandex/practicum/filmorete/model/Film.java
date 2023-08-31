@@ -40,9 +40,13 @@ public class Film {
     private Mpa mpa;
 
     @Builder.Default
-    private List<Director> director = new ArrayList<>();
+    private List<Director> directors = new ArrayList<>();
 
     public void addGenre(Genre genre) {
         genres.add(genre);
+    }
+
+    public void addDirector(Director director) {
+        this.directors.add(director);
     }
 }

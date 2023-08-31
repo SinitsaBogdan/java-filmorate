@@ -10,4 +10,9 @@ public class ExceptionNotFoundFilmStorage extends AbstractCustomException {
         super(error.name, error.description, error.httpStatusCode);
         log.debug(this.getMessage());
     }
+
+    public ExceptionNotFoundFilmStorage(@NotNull MessageErrorServiceFilm error) {
+        super(error.name, error.description, error.httpStatusCode);
+        log.debug(this.getMessage());
+    }
 }

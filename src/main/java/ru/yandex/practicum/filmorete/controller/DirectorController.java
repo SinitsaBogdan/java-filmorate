@@ -3,51 +3,59 @@ package ru.yandex.practicum.filmorete.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorete.model.Director;
+import ru.yandex.practicum.filmorete.service.ServiceDirector;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RequestMapping("/directors")
 @RestController
 public class DirectorController {
 
+    private final ServiceDirector serviceDirector;
+
+    private DirectorController(ServiceDirector serviceDirector) {
+        this.serviceDirector = serviceDirector;
+    }
+
     /**
-     * NEW!!!
-     * Получение режиссёра по идентификатору.
+     * Запрос режиссёра по идентификатору.
      */
     @GetMapping("/{directorId}")
-    public void getSearchId(@PathVariable Long directorId) {
+    public Director getSearchId(@PathVariable Long directorId) {
+        return serviceDirector.getDirectorSearchId(directorId);
     }
 
     /**
-     * NEW!!!
-     * Получение всех режиссёров.
+     * Запрос всех режиссёров.
      */
     @GetMapping()
-    public void getAllDirectors() {
+    public List<Director> getAllDirectors() {
+        return serviceDirector.getAllDirector();
     }
 
     /**
-     * NEW!!!
      * Добавление нового режиссёра.
      */
     @PostMapping
-    public void create(@Valid @RequestBody Director director) {
+    public Director create(@Valid @RequestBody Director director) {
+        return serviceDirector.add(director);
     }
 
     /**
-     * NEW!!!
+     * Обновление параметров режиссёра.
+     */
+    @PutMapping()
+    public Director update(@Valid @RequestBody Director director) {
+        return serviceDirector.update(director);
+    }
+
+    /**
      * Удаление режиссёра по идентификатору.
      */
     @DeleteMapping("/{directorId}")
     public void removeSearchId(@PathVariable Long directorId) {
-    }
-
-    /**
-     * NEW!!!
-     * Изменение параметров режиссёра.
-     */
-    @PutMapping()
-    public void update(@Valid @RequestBody Director director) {
+        serviceDirector.deleteSearchId(directorId);
     }
 }

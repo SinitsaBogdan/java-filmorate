@@ -1,67 +1,75 @@
 package ru.yandex.practicum.filmorete.service;
 
+import java.util.List;
+import java.util.Optional;
+import javax.validation.constraints.NotBlank;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundDirectorStorage;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalDirectorFilmDao;
 
-import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceDirector.SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS;
 
 @Service
-public class ServiceDirectors {
+public class ServiceDirector {
 
-    private final DirectorDao directorsDao;
-    private final TotalDirectorFilmDao totalFilmDirectorDao;
+     private final DirectorDao directorDao;
 
-    private ServiceDirectors(DirectorDao directorsDao, TotalDirectorFilmDao totalFilmDirectorDao) {
-        this.directorsDao = directorsDao;
-        this.totalFilmDirectorDao = totalFilmDirectorDao;
-    }
+     private ServiceDirector(DirectorDao directorsDao, TotalDirectorFilmDao totalFilmDirectorDao) {
+         this.directorDao = directorsDao;
+     }
 
     /**
-     * NEW!!!
      * Запрос режиссёра из таблицы DIRECTORS по ID [ DIRECTORS ].
      */
     public Director getDirectorSearchId(Long directorId) {
-        return Director.builder().build();
+        Optional<Director> result = directorDao.findById(directorId);
+        if (result.isPresent()) return result.get();
+        else throw new ExceptionNotFoundDirectorStorage(SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS);
     }
 
     /**
-     * NEW!!!
-     * Запрос всех режиссёров из таблицы DIRECTORS по ID [ DIRECTORS ].
+     * Запрос всех режиссёров из таблицы DIRECTORS [ DIRECTORS ].
      */
-    public ArrayList<Director> getAllDirector() {
-        return new ArrayList<>();
+    public List<Director> getAllDirector() {
+        return directorDao.findAll();
     }
 
     /**
-     * NEW!!!
      * Добавление нового режиссёра [ DIRECTORS ].
      */
-    public void add(@NotNull Director director) {
+    public Director add(@NotNull Director director) {
+        Long id = directorDao.insert(director.getName());
+        Optional<Director> result = directorDao.findById(id);
+        return result.orElse(null);
     }
 
     /**
-     * NEW!!!
      * Обновление существующего режиссёра [ DIRECTORS ].
      */
-    public void update(@NotNull Director director) {
+    public Director update(@NotNull Director director) {
+        Optional<Director> optionalDirector = directorDao.findById(director.getId());
+        if (optionalDirector.isPresent()) {
+            directorDao.update(director.getId(), director.getName());
+            Optional<Director> result = directorDao.findById(director.getId());
+            return result.orElse(null);
+        } else throw new ExceptionNotFoundDirectorStorage(SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS);
     }
 
     /**
-     * NEW!!!
      * Удаление всех режиссёров [ DIRECTORS ].
      */
     public void deleteAll() {
+        directorDao.delete();
     }
 
     /**
-     * NEW!!!
      * Удаление режиссёра по ID [ DIRECTORS ].
      */
     public void deleteSearchId(Long directorId) {
+        directorDao.delete(directorId);
     }
 
     /**
@@ -113,5 +121,4 @@ public class ServiceDirectors {
      */
     public void deleteDirectorToFilm(@NotBlank Integer directorId, @NotNull Long filmId) {
     }
-
 }

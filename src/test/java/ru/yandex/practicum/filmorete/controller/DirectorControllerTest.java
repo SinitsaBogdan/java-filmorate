@@ -32,9 +32,9 @@ class DirectorControllerTest {
     @BeforeEach
     public void beforeEach() {
         directorDao.delete();
-        directorDao.insert(1L,"director-1");
-        directorDao.insert(2L,"director-2");
-        directorDao.insert(3L,"director-3");
+        directorDao.insert("director-1");
+        directorDao.insert("director-2");
+        directorDao.insert("director-3");
     }
 
     @Nested
