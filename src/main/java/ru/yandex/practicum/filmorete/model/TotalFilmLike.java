@@ -14,4 +14,8 @@ public class TotalFilmLike {
 
     @Positive
     private Long userId;
+
+    @Positive
+    @Builder.Default
+    private Integer estimation = 0;
 }
