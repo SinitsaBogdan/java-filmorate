@@ -85,8 +85,6 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         return result;
     }
 
-
-
     @Override
     public List<Film> findFilmToLikeUser(Long userId) {
         Map<Long, Film> result = new HashMap<>();
@@ -223,17 +221,17 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         }
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT f.id AS film_id, " +
-                        "       f.NAME AS film_name, " +
-                        "       f.description AS film_description, " +
-                        "       f.release_date AS film_release_date, " +
-                        "       f.duration AS film_duration, " +
-                        "       r.id AS mpa_id, " +
-                        "       r.name AS mpa_name, " +
-                        "       g.id AS genre_id, " +
-                        "       g.name AS genre_name, " +
-                        "       d.id AS director_id, " +
-                        "       d.name AS director_name " +
+                    "SELECT f.id AS film_id, " +
+                            "f.NAME AS film_name, " +
+                            "f.description AS film_description, " +
+                            "f.release_date AS film_release_date, " +
+                            "f.duration AS film_duration, " +
+                            "r.id AS mpa_id, " +
+                            "r.name AS mpa_name, " +
+                            "g.id AS genre_id, " +
+                            "g.name AS genre_name, " +
+                            "d.id AS director_id, " +
+                            "d.name AS director_name " +
                         "FROM FILMS AS f " +
                         "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
                         "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
@@ -241,14 +239,14 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
                         "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
                         "WHERE f.id IN ( " +
-                        "   SELECT tlf.film_id " +
-                        "   FROM TOTAL_FILM_LIKE AS tlf " +
-                        "   WHERE tlf.user_id = ? " +
+                            "SELECT tlf.film_id " +
+                            "FROM TOTAL_FILM_LIKE AS tlf " +
+                            "WHERE tlf.user_id = ? " +
                         ") " +
                         "AND NOT f.id IN ( " +
-                        "   SELECT tlf.film_id " +
-                        "   FROM TOTAL_FILM_LIKE AS tlf " +
-                        "   WHERE tlf.user_id = ? " +
+                            "SELECT tlf.film_id " +
+                            "FROM TOTAL_FILM_LIKE AS tlf " +
+                            "WHERE tlf.user_id = ? " +
                         ") " +
                         "ORDER BY f.id;",
                 friendByFilmsId.get(), userId
@@ -310,9 +308,6 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         }
         return entry.map(Map.Entry::getKey);
     }
-
-
-
 
     @Override
     public void insert(Long filmId, Long userId) {
