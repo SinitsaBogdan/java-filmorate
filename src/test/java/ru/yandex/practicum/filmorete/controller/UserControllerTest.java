@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorete.model.User;
+import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 import ru.yandex.practicum.filmorete.sql.impl.UserDaoImpl;
 
 import java.time.LocalDate;
@@ -30,6 +32,12 @@ public class UserControllerTest {
 
     @Autowired
     private UserDaoImpl userDao;
+
+    @Autowired
+    private FilmDao filmDao;
+
+    @Autowired
+    private TotalFilmLikeDao totalFilmLikeDao;
 
     private final User duplicate = User.builder().name("User-1").birthday(LocalDate.parse("2000-01-01")).login("user-1").email("user1@mail.ru").build();
 
@@ -102,8 +110,44 @@ public class UserControllerTest {
         }
 
         @Test
-        @DisplayName("Запрос списка рекомендации по фильмам")
+        @DisplayName("Запрос списка рекомендации по фильмам, когда лайков нет.")
+        public void methodGet_FilmRecommendationsByUserIdTestWhenNoLikes() throws Exception {
+            mockMvc.perform(get("/users/101/recommendations"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0))
+            ;
+        }
+
+        @Test
+        @DisplayName("Запрос списка рекомендации по фильмам, когда общих лайков нет.")
+        public void methodGet_FilmRecommendationsByUserIdTestWhenNoGeneralLikes() throws Exception {
+            filmDao.insert(101L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);
+            filmDao.insert(102L, 2, "Фильм 2", "", LocalDate.of(2004, 1, 1), 110);
+            totalFilmLikeDao.insert(101L, 101L);
+            totalFilmLikeDao.insert(102L, 102L);
+            mockMvc.perform(get("/users/101/recommendations"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0))
+            ;
+        }
+
+        @Test
+        @DisplayName("Запрос списка рекомендации по фильмам.")
         public void methodGet_FilmRecommendationsByUserIdTest() throws Exception {
+            filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);
+            filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.of(2004, 1, 1), 110);
+            filmDao.insert(3L, 3, "Фильм 3", "", LocalDate.of(2003, 1, 1), 130);
+            totalFilmLikeDao.insert(1L, 101L);
+            totalFilmLikeDao.insert(2L, 101L);
+            totalFilmLikeDao.insert(1L, 102L);
+            totalFilmLikeDao.insert(2L, 102L);
+            totalFilmLikeDao.insert(3L, 102L);
+            totalFilmLikeDao.insert(1L, 103L);
+
+            mockMvc.perform(get("/users/101/recommendations"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+            ;
         }
 
         @Test
