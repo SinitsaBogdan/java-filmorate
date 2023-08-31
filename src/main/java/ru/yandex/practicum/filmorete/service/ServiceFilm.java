@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorete.sql.dao.*;
 import java.util.List;
 import java.util.Optional;
 
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceFilm.SERVICE_ERROR_COLLECTIONS_IN_NULL;
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidFilm;
