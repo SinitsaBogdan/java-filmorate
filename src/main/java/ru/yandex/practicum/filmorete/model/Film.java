@@ -34,7 +34,9 @@ public class Film {
     @NotNull
     private final Integer duration;
 
-    private final Integer rate;
+    @Positive
+    @Builder.Default
+    private Double rate = 0.0;
 
     @NotNull
     private Mpa mpa;
