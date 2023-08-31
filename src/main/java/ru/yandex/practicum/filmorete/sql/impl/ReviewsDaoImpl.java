@@ -39,26 +39,28 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
-    public List<Review> findAll(Long filmId, Integer count) {
+    public List<Review> findAllIsCount(Integer count) {
         List<Review> result = new ArrayList<>();
-        String sql = "SELECT * FROM REVIEWS ";
-        SqlRowSet rows;
-
-        if (count == null || count == 0) {
-            sql += "WHERE film_id = ?;";
-            rows = jdbcTemplate.queryForRowSet(
-                    sql, filmId
-            );
-        }
-        else {
-            sql += "WHERE film_id = ? LIMIT ?;";
-            rows = jdbcTemplate.queryForRowSet(
-                    sql, filmId, count
-            );
-        }
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM REVIEWS ORDER BY useful DESC LIMIT ?;",
+                count
+        );
         while (rows.next()) result.add(buildModel(rows));
         return result;
     }
+
+    @Override
+    public List<Review> findAllFilmIdAndIsCount(Long filmId, Integer count) {
+        List<Review> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM REVIEWS WHERE film_id = ? ORDER BY useful DESC LIMIT ?;",
+                filmId, count
+        );
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
+    }
+
+
 
     @Override
     public List<Review> findAll(Boolean isPositive) {
@@ -71,7 +73,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
-    public List<Review> findByUseful(Integer useful) {
+    public List<Review> findAll(Integer useful) {
         List<Review> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS WHERE useful = ?;", useful
@@ -81,7 +83,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
-    public Optional<Review> findById(Long reviewId) {
+    public Optional<Review> findByReviewId(Long reviewId) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS " +
                     "WHERE id = ?;",
@@ -92,20 +94,20 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
-    public void insert(Long id, String content, Boolean is_positive, Long userId, Long filmId) {
+    public void insert(Long id, String content, Boolean isPositive, Long userId, Long filmId) {
         jdbcTemplate.update(
                 "INSERT INTO REVIEWS (id, content, is_positive, user_id, film_id) " +
                     "VALUES (?, ?, ?, ?, ?);",
-                id, content, is_positive, userId, filmId
+                id, content, isPositive, userId, filmId
         );
     }
 
     @Override
-    public Long insert(String content, Boolean is_positive, Long userId, Long filmId) {
+    public Long insert(String content, Boolean isPositive, Long userId, Long filmId) {
         jdbcTemplate.update(
                 "INSERT INTO REVIEWS (content, is_positive, user_id, film_id) " +
                     "VALUES (?, ?, ?, ?);",
-                content, is_positive, userId, filmId
+                content, isPositive, userId, filmId
         );
         return jdbcTemplate.queryForObject("SELECT MAX(id) FROM REVIEWS", Long.class);
     }
@@ -117,35 +119,24 @@ public class ReviewsDaoImpl implements ReviewDao {
                     "SET " +
                         "content = ?, " +
                         "is_positive = ? " +
-                    "WHERE user_id = ?;",
+                    "WHERE id = ?;",
                 content, isPositive, id
         );
     }
 
     @Override
-    public void updateUseful(Long id) {
+    public void recalculationPositive(Long id) {
         jdbcTemplate.update(
-                "UPDATE REVIEWS " +
-                        "SET " +
-                        "useful = (" +
-                            "SELECT COUNT(*) " +
-                            "FROM TOTAL_LIKE_REVIEWS " +
-                            "WHERE review_id = ? AND isPositive = TRUE" +
-                        ") - (" +
-                            "SELECT COUNT(*) " +
-                            "FROM TOTAL_LIKE_REVIEWS " +
-                            "WHERE review_id = ? AND isPositive = FALSE" +
-                        ") " +
-                        "WHERE id = ?;",
-                id, id, id
+                "UPDATE REVIEWS SET useful = (" +
+                        "(SELECT COUNT(*) FROM TOTAL_LIKE_REVIEWS WHERE review_id = ? AND is_positive = TRUE)" +
+                        " - " +
+                        "(SELECT COUNT(*) FROM TOTAL_LIKE_REVIEWS WHERE review_id = ? AND is_positive = FALSE)" +
+                    ") WHERE id = ?;", id, id, id
         );
-        Integer useful = jdbcTemplate.queryForObject("SELECT useful FROM REVIEWS WHERE id = ?;", Integer.class, id);
-        if (useful >= 0) jdbcTemplate.update("UPDATE REVIEWS SET is_positive = TRUE WHERE id = ?;", id);
-        else jdbcTemplate.update("UPDATE REVIEWS SET is_positive = FALSE WHERE id = ?;", id);
     }
 
     @Override
-    public void delete() {
+    public void deleteAll() {
         jdbcTemplate.update(
                 "DELETE FROM REVIEWS;"
         );
@@ -156,15 +147,6 @@ public class ReviewsDaoImpl implements ReviewDao {
         jdbcTemplate.update(
                 "DELETE FROM REVIEWS WHERE id = ?;",
                 rowId
-        );
-    }
-
-    @Override
-    public void deleteAllIsPositive(Boolean isPositive) {
-        jdbcTemplate.update(
-                "DELETE FROM REVIEWS " +
-                "WHERE isPositive = ?;",
-                isPositive
         );
     }
 
@@ -183,33 +165,6 @@ public class ReviewsDaoImpl implements ReviewDao {
                 "DELETE FROM REVIEWS " +
                         "WHERE film_id = ?;",
                 filmId
-        );
-    }
-
-    @Override
-    public void deleteAllTypeId(Integer typeId) {
-        jdbcTemplate.update(
-                "DELETE FROM REVIEWS " +
-                        "WHERE type_id = ?;",
-                typeId
-        );
-    }
-
-    @Override
-    public void deleteAllEvaluationId(Integer evaluationId) {
-        jdbcTemplate.update(
-                "DELETE FROM REVIEWS " +
-                        "WHERE evaluation_id = ?;",
-                evaluationId
-        );
-    }
-
-    @Override
-    public void deleteAllUseful(Integer useful) {
-        jdbcTemplate.update(
-                "DELETE FROM REVIEWS " +
-                        "WHERE useful = ?;",
-                useful
         );
     }
 

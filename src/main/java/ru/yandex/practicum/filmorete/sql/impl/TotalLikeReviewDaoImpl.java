@@ -33,45 +33,9 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     }
 
     @Override
-    public List<TotalLikeReview> findAllByReviewId(Long reviewId) {
-        List<TotalLikeReview> result = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_LIKE_REVIEWS " +
-                    "WHERE review_id = ?;",
-                reviewId
-        );
-        while (row.next()) result.add(buildModel(row));
-        return result;
-    }
-
-    @Override
-    public List<TotalLikeReview> findAllByUserId(Long userId) {
-        List<TotalLikeReview> result = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_LIKE_REVIEWS " +
-                        "WHERE user_id = ?;",
-                userId
-        );
-        while (row.next()) result.add(buildModel(row));
-        return result;
-    }
-
-    @Override
-    public List<TotalLikeReview> findAllByIsPositive(Boolean isPositive) {
-        List<TotalLikeReview> result = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_LIKE_REVIEWS " +
-                        "WHERE is_positive = ?;",
-                isPositive
-        );
-        while (row.next()) result.add(buildModel(row));
-        return result;
-    }
-
-    @Override
     public void insert(Long reviewId, Long userId, Boolean type) {
         jdbcTemplate.update(
-                "INSERT INTO TOTAL_LIKE_REVIEWS (review_id, user_id, isPositive) " +
+                "INSERT INTO TOTAL_LIKE_REVIEWS (review_id, user_id, is_positive) " +
                     "VALUES (?, ?, ?);",
                 reviewId, userId, type
         );
@@ -99,33 +63,6 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
                 "DELETE FROM TOTAL_LIKE_REVIEWS " +
                     "WHERE review_id = ? AND user_id = ?;",
                 reviewId, userId
-        );
-    }
-
-    @Override
-    public void deleteAllReviewId(Long reviewId) {
-        jdbcTemplate.update(
-                "DELETE FROM TOTAL_LIKE_REVIEWS " +
-                    "WHERE review_id = ?;",
-                reviewId
-        );
-    }
-
-    @Override
-    public void deleteAllUserId(Long userId) {
-        jdbcTemplate.update(
-                "DELETE FROM TOTAL_LIKE_REVIEWS " +
-                    "WHERE user_id = ?;",
-                userId
-        );
-    }
-
-    @Override
-    public void deleteAllTypeLike(Boolean type) {
-        jdbcTemplate.update(
-                "DELETE FROM TOTAL_LIKE_REVIEWS " +
-                "WHERE isPositive = ?;",
-                type
         );
     }
 

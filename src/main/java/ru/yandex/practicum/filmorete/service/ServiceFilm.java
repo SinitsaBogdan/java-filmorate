@@ -145,7 +145,7 @@ public class ServiceFilm {
         totalFilmLikeDao.insert(filmId, userId);
     }
 
-    public List<Film> getFilmsToDirector(Long directorId, String sorted) {
+    public List<Film> getFilmsToDirector(Long directorId, @NotNull String sorted) {
         List<Film> result;
         if (sorted.equals("year")) result = totalDirectorFilmDao.findFilmsByDirectorSortedByYear(directorId);
         else result = totalDirectorFilmDao.findPopularFilmsByDirector(directorId);

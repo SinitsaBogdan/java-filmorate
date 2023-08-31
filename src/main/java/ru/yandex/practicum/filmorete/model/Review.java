@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @Builder
 public class Review {
-    
+
     @Positive
     private Long reviewId;
 
@@ -20,8 +20,7 @@ public class Review {
     private String content;
 
     @NotNull
-    @Builder.Default
-    private Boolean isPositive = true;
+    private Boolean isPositive;
 
     @NotNull
     private Long userId;

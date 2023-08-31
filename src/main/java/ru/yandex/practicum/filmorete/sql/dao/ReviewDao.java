@@ -13,11 +13,13 @@ public interface ReviewDao {
 
     List<Review> findAll(Boolean isPositive);
 
-    List<Review> findAll(Long filmId, Integer count);
+    List<Review> findAllIsCount(Integer count);
 
-    List<Review> findByUseful(Integer useful);
+    List<Review> findAllFilmIdAndIsCount(Long filmId, Integer count);
 
-    Optional<Review> findById(Long reviewId);
+    List<Review> findAll(Integer useful);
+
+    Optional<Review> findByReviewId(Long reviewId);
 
     void insert(Long id, String content, Boolean isPositive, Long userId, Long filmId);
 
@@ -25,21 +27,13 @@ public interface ReviewDao {
 
     void update(Long id, String content, Boolean isPositive);
 
-    void updateUseful(Long id);
-
-    void delete();
+    void recalculationPositive(Long id);
 
     void delete(Long reviewId);
 
-    void deleteAllIsPositive(Boolean isPositive);
+    void deleteAll();
 
     void deleteAllUserId(Long userId);
 
     void deleteAllFilmId(Long filmId);
-
-    void deleteAllTypeId(Integer typeId);
-
-    void deleteAllEvaluationId(Integer evaluationId);
-
-    void deleteAllUseful(Integer useful);
 }

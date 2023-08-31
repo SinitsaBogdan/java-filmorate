@@ -23,10 +23,11 @@ public class ReviewController {
     /**
      * Получение всех отзывов по идентификатору фильма.
      * */
-    @GetMapping()
+    @GetMapping
     public List<Review> getAllReviewsFilm(@RequestParam(defaultValue = "") Long filmId, @RequestParam(defaultValue = "10") Integer count) {
-        if (filmId != null) return serviceReview.getAllReviewIsFilmId(filmId, count);
-        else return serviceReview.getAllReview();
+        if (filmId == null && count == 10) return serviceReview.getAllReview(10);
+        else if (filmId == null) return serviceReview.getAllReview(count);
+        else return serviceReview.getAllReviewIsFilmId(filmId, count);
     }
 
     /**
@@ -83,11 +84,10 @@ public class ReviewController {
     @PutMapping("/{reviewId}/dislike/{userId}")
     public void addDislikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
         serviceReview.add(TotalLikeReview.builder().reviewId(reviewId).typeLike(false).userId(userId).build());
-        // TODO Система изменения рейтинга у отзыва
     }
 
     /**
-     * Пользователь удаляет оценку у отзыва.
+     * Пользователь удаляет лайк у отзыва.
      * */
     @DeleteMapping("/{reviewId}/like/{userId}")
     public void deleteLikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
@@ -95,7 +95,7 @@ public class ReviewController {
     }
 
     /**
-     * Пользователь удаляет дизлайк отзыву.
+     * Пользователь удаляет дизлайк у отзыва.
      * */
     @DeleteMapping("/{reviewId}/dislike/{userId}")
     public void deleteDislikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
