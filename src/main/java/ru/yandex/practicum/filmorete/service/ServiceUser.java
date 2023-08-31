@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.enums.StatusFriend;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
+import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
@@ -76,6 +77,10 @@ public class ServiceUser {
 
     public List<User> getFriendsCommon(Long userId, Long friendId) {
         return totalUserFriendsDao.findFriendsCommon(userId, friendId);
+    }
+
+    public List<Film> getRecommendation(Long userId) {
+        return totalFilmLikeDao.getRecommendationForUser(userId);
     }
 
     public void removeUser(Long userId) {
