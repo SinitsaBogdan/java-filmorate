@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 
 import java.util.*;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -85,6 +84,8 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         while (rows.next()) result.add(userDao.buildModel(rows));
         return result;
     }
+
+
 
     @Override
     public List<Film> findFilmToLikeUser(Long userId) {
@@ -213,6 +214,50 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
     }
+
+    @Override
+    public List<Film> getRecommendationForUser(Long userId) {
+        Optional<Long> friendByFilmsId = findFriendByFilmsId(userId);
+        if (friendByFilmsId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return null;
+    }
+
+    private Optional<Long> findFriendByFilmsId(Long userId) {
+        Map<Long, Set<Long>> userLikeToFilm = new HashMap<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet("SELECT user_id, film_id FROM TOTAL_FILM_LIKE");
+        while(rows.next()) {
+            Long userLikeId = rows.getLong("user_id");
+            Long filmId = rows.getLong("film_id");
+            if (!userLikeToFilm.containsKey(userLikeId)) {
+                Set<Long> idLikedFilms = new HashSet<>();
+                idLikedFilms.add(filmId);
+                userLikeToFilm.put(userLikeId, idLikedFilms);
+            }
+            else {
+                Set<Long> idLikedFilms = userLikeToFilm.get(userLikeId);
+                idLikedFilms.add(filmId);
+            }
+        }
+        if (!userLikeToFilm.containsKey(userId)) {
+            return Optional.empty();
+        }
+        Map<Long, Integer> userPoints = new HashMap<>();
+        Set<Long> userIdFilms = userLikeToFilm.get(userId);
+        for (Long id : userLikeToFilm.keySet()) {
+            Set<Long> filmsIds = userLikeToFilm.get(id);
+            filmsIds.retainAll(userIdFilms);
+            userPoints.put(id, filmsIds.size());
+        }
+        Optional<Map.Entry<Long, Integer>> entry = userPoints.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue());
+        return entry.map(Map.Entry::getKey);
+    }
+
+
+
 
     @Override
     public void insert(Long filmId, Long userId) {
