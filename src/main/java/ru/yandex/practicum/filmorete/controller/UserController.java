@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.service.ServiceEvent;
 import ru.yandex.practicum.filmorete.service.ServiceFilm;
+import ru.yandex.practicum.filmorete.service.ServiceRecommendation;
 import ru.yandex.practicum.filmorete.service.ServiceUser;
 
 import javax.validation.Valid;
@@ -26,10 +27,17 @@ public class UserController {
 
     private final ServiceEvent serviceEvent;
 
-    public UserController(ServiceUser serviceUser, ServiceFilm serviceFilm, ServiceEvent serviceEvent) {
+    private final ServiceRecommendation serviceRecommendation;
+
+    public UserController(
+            ServiceUser serviceUser,
+            ServiceFilm serviceFilm,
+            ServiceEvent serviceEvent,
+            ServiceRecommendation serviceRecommendation) {
         this.serviceUser = serviceUser;
         this.serviceFilm = serviceFilm;
         this.serviceEvent = serviceEvent;
+        this.serviceRecommendation = serviceRecommendation;
     }
 
     /**
@@ -125,7 +133,8 @@ public class UserController {
      * Возвращает рекомендации по фильмам для просмотра.
      */
     @GetMapping("/{userId}/recommendations")
-    public void getRecommendedFilms(@PathVariable Long userId) {
+    public List<Film> getRecommendedFilms(@PathVariable Long userId) {
+        return serviceRecommendation.getRecommendation(userId);
     }
 
     /**

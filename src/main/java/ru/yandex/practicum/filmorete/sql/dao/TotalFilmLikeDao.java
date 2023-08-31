@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.TotalFilmLike;
 import ru.yandex.practicum.filmorete.model.User;
 import java.util.List;
+import java.util.Map;
 
 public interface TotalFilmLikeDao {
 
@@ -20,6 +21,8 @@ public interface TotalFilmLikeDao {
     List<TotalFilmLike> findAllTotalFilmLikeByUserId(Long userId);
 
     List<Film> findCommonFilms(Long firstId, Long secondId);
+
+    List<Film> getRecommendationForUser(Long userId);
 
     void insert(Long filmId, Long userId);
 
