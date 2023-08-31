@@ -44,27 +44,34 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
-    public void insert(Long id, String content, Boolean status, Long userId, Long filmId, Integer typeId, Integer evaluationId) {
+    public void insert(Long id, String content, Boolean is_positive, Long userId, Long filmId) {
         jdbcTemplate.update(
-                "INSERT INTO REVIEWS (id, content, user_id, film_id, type_id, evaluation_id, useful) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?);",
-                id, content, status, userId, filmId, typeId, evaluationId
+                "INSERT INTO REVIEWS (id, content, is_positive, user_id, film_id) " +
+                    "VALUES (?, ?, ?, ?, ?);",
+                id, content, is_positive, userId, filmId
         );
     }
 
     @Override
-    public void update(Long id, String content, Boolean status, Long userId, Long filmId, Integer typeId, Integer evaluationId) {
+    public void insert(String content, Boolean is_positive, Long userId, Long filmId) {
+        jdbcTemplate.update(
+                "INSERT INTO REVIEWS (content, is_positive, user_id, film_id) " +
+                        "VALUES (?, ?, ?, ?);",
+                content, is_positive, userId, filmId
+        );
+    }
+
+    @Override
+    public void update(Long id, String content, Boolean is_positive, Long userId, Long filmId) {
         jdbcTemplate.update(
                 "UPDATE REVIEWS " +
                     "SET " +
                         "content = ?, " +
                         "status = ?, " +
                         "userId = ?, " +
-                        "filmId = ?, " +
-                        "typeId = ?, " +
-                        "evaluationId = ? " +
+                        "filmId = ? " +
                     "WHERE user_id = ?;",
-                content, status, userId, filmId, typeId, evaluationId, id
+                content, is_positive, userId, filmId, id
         );
     }
 
