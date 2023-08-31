@@ -121,7 +121,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
 
     @Override
     public List<Film> findFilmsByDirectorSortedByYear(Long directorId) { // метод падает в постмане,
-        Map<Long, Film> result = new HashMap<>();
+            Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
                         "f.id AS film_id, " +
