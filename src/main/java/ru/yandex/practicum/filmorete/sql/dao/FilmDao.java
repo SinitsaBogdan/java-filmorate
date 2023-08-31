@@ -12,8 +12,6 @@ public interface FilmDao {
 
     Optional<Film> findFilm(Long rowId);
 
-    Optional<Film> findFilm(String filmName);
-
     Long insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
 
     Long insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);

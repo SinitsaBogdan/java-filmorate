@@ -4,6 +4,7 @@ import javax.validation.constraints.Positive;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.yandex.practicum.filmorete.enums.StatusFriend;
 
 @Data
 @Builder
@@ -16,5 +17,5 @@ public class TotalUserFriends {
     private Long friendId;
 
     @Positive
-    private Long statusId;
+    private StatusFriend statusFriend;
 }

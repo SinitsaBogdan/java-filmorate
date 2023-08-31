@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TotalLikeReviewDao {
+
     List<TotalLikeReview> findAll();
 
     Optional<TotalLikeReview> findById(Long rowId);
@@ -16,7 +17,7 @@ public interface TotalLikeReviewDao {
 
     void delete();
 
-    void deleteAllTypeLike(Boolean typeLike);
+    void deleteAllTypeLike(Boolean type);
 
     void deleteAllReviewId(Long reviewId);
 

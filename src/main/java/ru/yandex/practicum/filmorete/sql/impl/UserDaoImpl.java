@@ -23,7 +23,6 @@ public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-
     public Optional<Long> findLastIdUser() {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT MAX(id) AS last_id FROM USERS;"

@@ -20,67 +20,44 @@ public class DirectorDaoImpl implements DirectorDao {
 
     @Override
     public List<Director> findAll() {
-        Map<Long, Director> result = new HashMap<>();
+        List<Director> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "d.id AS id, " +
-                        "d.NAME AS name, " +
-                        "FROM DIRECTORS AS d " +
-                        "LEFT JOIN TOTAL_FILM_DIRECTOR AS tf ON d.id = tf.director_id " +
-                        "ORDER BY d.id;"
+                "SELECT * FROM DIRECTORS;"
         );
-        while (rows.next()) {
-            Long directorId = rows.getLong("ID");
-            if (!result.containsKey(directorId)) {
-                Director director = buildModel(rows);
-                result.put(directorId, director);
-            }
-        }
-        if (result.values().isEmpty()) return new ArrayList<>();
-        else return new ArrayList<>(result.values());
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
     public Optional<Director> findById(Long rowId) {
-        Map<Long, Director> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "d.id AS id, " +
-                        "d.NAME AS name, " +
-                        "FROM DIRECTORS AS d " +
-                        "LEFT JOIN TOTAL_FILM_DIRECTOR AS tf ON d.id = tf.director_id " +
-                        "ORDER BY d.id;",
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM DIRECTORS " +
+                    "WHERE id = ?;",
                 rowId
         );
-        while (rows.next()) {
-            Long directorId = rows.getLong("ID");
-            if (!result.containsKey(directorId)) {
-                Director director = buildModel(rows);
-                result.put(rowId, director);
-            }
-        }
-        return Optional.ofNullable(result.get(rowId));
+        if (row.next()) return Optional.of(buildModel(row));
+        else return Optional.empty();
     }
 
     @Override
-    public void insert(Long id, String name) {
+    public Long insert(String name) {
         jdbcTemplate.update(
-                "INSERT INTO DIRECTORS (id, name) " +
-                    "VALUES (?, ?);",
-                id, name
+                "INSERT INTO DIRECTORS (name) " +
+                    "VALUES(?);",
+                name
         );
-
+        return jdbcTemplate.queryForObject(
+                "SELECT MAX(id) FROM DIRECTORS;", Long.class
+        );
     }
 
     @Override
     public void update(Long id, String name) {
         jdbcTemplate.update(
                 "UPDATE DIRECTORS " +
-                    "SET " +
-                        "id = ?, " +
-                        "name = ? " +
+                    "SET name = ? " +
                     "WHERE id = ?;",
-                id, name
+                name, id
         );
     }
 

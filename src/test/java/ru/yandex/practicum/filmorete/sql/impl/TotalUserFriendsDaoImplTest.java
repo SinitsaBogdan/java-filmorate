@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorete.enums.StatusFriend;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
@@ -39,12 +40,12 @@ class TotalUserFriendsDaoImplTest {
         userDao.insert(
                 102L, "Ольга", LocalDate.of(1995, 6, 17), "Olga", "olga@email.ru"
         );
-        totalUserFriendsDao.insert(100L, 101L, 2);
-        totalUserFriendsDao.insert(100L, 102L, 2);
-        totalUserFriendsDao.insert(102L, 101L, 2);
-        totalUserFriendsDao.insert(102L, 100L, 2);
-        totalUserFriendsDao.insert(101L, 100L, 2);
-        totalUserFriendsDao.insert(101L, 102L, 2);
+        totalUserFriendsDao.insert(100L, 101L, StatusFriend.CONFIRMED);
+        totalUserFriendsDao.insert(100L, 102L, StatusFriend.CONFIRMED);
+        totalUserFriendsDao.insert(102L, 101L, StatusFriend.CONFIRMED);
+        totalUserFriendsDao.insert(102L, 100L, StatusFriend.CONFIRMED);
+        totalUserFriendsDao.insert(101L, 100L, StatusFriend.CONFIRMED);
+        totalUserFriendsDao.insert(101L, 102L, StatusFriend.CONFIRMED);
     }
 
     @Test
@@ -85,8 +86,8 @@ class TotalUserFriendsDaoImplTest {
     @Test
     @DisplayName("findRowsByStatusId(statusId)")
     void testFindAllRowsSearchStatusId() {
-        List<TotalUserFriends> result = totalUserFriendsDao.findAllTotalByStatusId(2);
-        assertEquals(result.size(), 6);
+        List<TotalUserFriends> result = totalUserFriendsDao.findAllTotalByStatusId(StatusFriend.UNCONFIRMED);
+        assertEquals(result.size(), 0);
     }
 
     @Test
@@ -96,7 +97,7 @@ class TotalUserFriendsDaoImplTest {
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getUserId(), 100L);
         assertEquals(optional.get().getFriendId(), 101L);
-        assertEquals(optional.get().getStatusId(), 2L);
+        assertEquals(optional.get().getStatusFriend(), StatusFriend.CONFIRMED);
     }
 
     @Test
@@ -105,7 +106,7 @@ class TotalUserFriendsDaoImplTest {
         userDao.insert(
                 103L, "Евгения", LocalDate.of(1995, 6, 17), "Евгения", "евгения@email.ru"
         );
-        totalUserFriendsDao.insert(100L, 103L, 1);
+        totalUserFriendsDao.insert(100L, 103L, StatusFriend.UNCONFIRMED);
         List<TotalUserFriends> result = totalUserFriendsDao.findAllTotalUserFriend();
         assertEquals(result.size(), 7);
     }
@@ -113,10 +114,10 @@ class TotalUserFriendsDaoImplTest {
     @Test
     @DisplayName("update(searchUserId, searchFriendId, statusId)")
     void testUpdateRowSearchUserIdFriendIdByStatusId() {
-        totalUserFriendsDao.update(100L, 101L, 2);
+        totalUserFriendsDao.update(100L, 101L, StatusFriend.CONFIRMED);
         Optional<TotalUserFriends> optional = totalUserFriendsDao.findTotalUserFriend(100L, 101L);
         assertTrue(optional.isPresent());
-        assertEquals(optional.get().getStatusId(), 2);
+        assertEquals(optional.get().getStatusFriend(), StatusFriend.CONFIRMED);
     }
 
     @Test
@@ -154,7 +155,7 @@ class TotalUserFriendsDaoImplTest {
     @Test
     @DisplayName("deleteAllStatusId(statusId)")
     void testDeleteAllRowsSearchStatusId() {
-        totalUserFriendsDao.deleteAllStatusId(1);
+        totalUserFriendsDao.deleteAllStatusId(StatusFriend.UNCONFIRMED);
         List<TotalUserFriends> result = totalUserFriendsDao.findAllTotalUserFriend();
         assertEquals(result.size(), 6);
     }
