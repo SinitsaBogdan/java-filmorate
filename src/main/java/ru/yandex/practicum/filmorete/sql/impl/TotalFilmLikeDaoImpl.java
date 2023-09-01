@@ -16,6 +16,11 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
+    // TODO
+    //  + Переименовать методы
+    //  по примеру -> findFilmToEstimationUser()
+    //  Like заменить на Estimation
+
     private final JdbcTemplate jdbcTemplate;
 
     private final FilmDaoImpl filmDao;
@@ -24,6 +29,9 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     @Override
     public List<Film> findPopularFilms(Integer limit) {
+        // TODO
+        //  Сортировку по количеству лайков
+        //  заменить на сортировку по рейтингу
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -87,6 +95,10 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     @Override
     public List<Film> findFilmToLikeUser(Long userId) {
+        // TODO
+        //  Сортировку по количеству лайков
+        //  заменить на сортировку по рейтингу
+        //  везде где есть List<Film> с сортировкой
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -309,7 +321,9 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         return entry.map(Map.Entry::getKey);
     }
 
-    // insert(Long filmId, Long userId, Double estimation)
+    // TODO
+    //  Добавить параметр в метод
+    //  insert(Long filmId, Long userId, Integer estimation)
     @Override
     public void insert(Long filmId, Long userId) {
         jdbcTemplate.update(
@@ -320,7 +334,9 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
-    // update(Long searchFilmId, Long searchUserId, Long filmId, Long userId, Double estimation)
+    // TODO
+    //  Добавить параметр в метод
+    //  Integer estimation
     public void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId) {
         jdbcTemplate.update(
                 "UPDATE TOTAL_FILM_LIKE SET film_id = ?, user_id = ? " +

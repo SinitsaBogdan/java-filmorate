@@ -76,6 +76,10 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
 
     @Override
     public List<Film> findPopularFilmsByDirector(Long directorId) {
+        // TODO
+        //  Метод перенести в FilmDaoImpl
+        //  + Говорил же что переделать нужно generateSqlRequest()
+
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(generateSqlRequest() + "WHERE f.id IN ( SELECT film_id FROM " +
                 "TOTAL_FILM_DIRECTOR WHERE director_id = ?) " +
@@ -105,6 +109,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
 
     @Override
     public List<Film> findFilmsByDirectorSortedByYear(Long directorId) {
+        // TODO Метод перенести в FilmDaoImpl
         List<Film> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +

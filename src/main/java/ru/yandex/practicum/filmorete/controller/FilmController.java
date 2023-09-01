@@ -80,8 +80,10 @@ public class FilmController {
      * */
     @PutMapping("/{filmId}/like/{userId}")
     public void addLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
-        // Тут вместо лайка ставим оценку ( Добавить дробный параметр оценки estimation )
-        // serviceFilms.addEstimation(filmId, userId, estimation)
+        // TODO
+        //  Тут вместо лайка ставим оценку
+        //  ( Добавить целочисленный параметр оценки estimation )
+        //  serviceFilms.addEstimation(filmId, userId, estimation)
         serviceFilms.addLike(filmId, userId);
     }
 
@@ -90,8 +92,8 @@ public class FilmController {
      * */
     @DeleteMapping("/{filmId}/like/{userId}")
     public void removeLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
-        // Тут удаляем оценку
-        // serviceFilms.removeEstimation(filmId, userId)
+        // TODO Тут удаляем оценку
+        // TODO serviceFilms.removeEstimation(filmId, userId)
         serviceFilms.removeLike(filmId, userId);
     }
 

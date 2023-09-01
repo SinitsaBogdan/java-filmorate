@@ -127,6 +127,8 @@ public class ServiceFilm {
         filmDao.delete(filmId);
     }
 
+    // TODO Изменить название
+    //  removeEstimation(Long filmId, Long userId)
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         Optional<User> optionalUser = userDao.findUser(userId);
@@ -134,17 +136,26 @@ public class ServiceFilm {
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalFilmLikeDao.delete(filmId, userId);
+        // TODO Вызов метода
+        //  recalculationPositive(Long filmId)
+        //  для пересчета среднего рейтинга у фильма
     }
 
-    // addLike(Long filmId, Long userId, Double estimation)
+    // TODO
+    //  Добавить параметр в метод
+    //  addEstimation(Long filmId, Long userId, Double estimation)
     public void addLike(Long filmId, Long userId) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         Optional<User> optionalUser = userDao.findUser(userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        // totalFilmLikeDao.insert(filmId, userId, estimation)
+        // TODO
+        //  Добавить параметр в метод
+        //  totalFilmLikeDao.insert(filmId, userId, estimation)
         totalFilmLikeDao.insert(filmId, userId);
+        // TODO Новый метод
+        //  на пересчет среднего рейтинга у фильма
     }
 
     public List<Film> getFilmsToDirector(Long directorId, @NotNull String sorted) {
