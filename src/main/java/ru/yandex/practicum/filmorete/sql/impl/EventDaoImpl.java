@@ -2,12 +2,12 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.enums.EventOperation;
 import ru.yandex.practicum.filmorete.enums.EventType;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 
@@ -23,30 +23,30 @@ public class EventDaoImpl implements EventsDao {
     @Override
     public List<Event> findAll() {
         List<Event> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM EVENTS;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildEvent(row));
         return result;
     }
 
     @Override
     public List<Event> findAllByUserId(Long userId) {
         List<Event> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM EVENTS WHERE userId = ?;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildEvent(row));
         return result;
     }
 
     @Override
     public Optional<Event> findByEventId(Long eventId) {
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM EVENTS WHERE eventId = ?;",
                 eventId
         );
-        if (rows.next()) return Optional.of(buildModel(rows));
+        if (row.next()) return Optional.of(FactoryModel.buildEvent(row));
         else return Optional.empty();
     }
 
@@ -110,16 +110,5 @@ public class EventDaoImpl implements EventsDao {
                 "DELETE FROM EVENTS WHERE user_id = ?;",
                 userId
         );
-    }
-
-    protected Event buildModel(@NotNull SqlRowSet row) {
-        return Event.builder()
-                .eventId(row.getLong("ID"))
-                .timestamp(row.getLong("TIMESTAMP"))
-                .userId(row.getLong("USER_ID"))
-                .eventType(EventType.valueOf(row.getString("TYPE")))
-                .operation(EventOperation.valueOf(row.getString("OPERATION")))
-                .entityId(row.getLong("ENTITY_ID"))
-                .build();
     }
 }
