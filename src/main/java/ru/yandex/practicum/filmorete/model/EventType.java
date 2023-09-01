@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @Builder
 public class EventType {
-    
+
     @Positive
     private Long id;
 

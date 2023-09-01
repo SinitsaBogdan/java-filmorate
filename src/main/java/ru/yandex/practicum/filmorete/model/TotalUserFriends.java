@@ -1,10 +1,10 @@
 package ru.yandex.practicum.filmorete.model;
 
-import javax.validation.constraints.Positive;
-
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorete.enums.StatusFriend;
+
+import javax.validation.constraints.Positive;
 
 @Data
 @Builder

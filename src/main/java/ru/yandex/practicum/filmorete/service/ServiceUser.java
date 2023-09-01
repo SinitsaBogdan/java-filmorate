@@ -2,13 +2,11 @@ package ru.yandex.practicum.filmorete.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.enums.EventOperation;
 import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.enums.StatusFriend;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
-import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
 import ru.yandex.practicum.filmorete.model.User;
@@ -16,7 +14,6 @@ import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
-import ru.yandex.practicum.filmorete.sql.impl.EventsDaoImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +93,7 @@ public class ServiceUser {
                 TotalUserFriends userStatus = optionalRowStatusUser.get();
                 if (userStatus.getStatusFriend() == StatusFriend.UNCONFIRMED)
                     totalUserFriendsDao.update(userId, friendId, StatusFriend.CONFIRMED);
-                    eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
+                eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
             } else totalUserFriendsDao.insert(userId, friendId, StatusFriend.CONFIRMED);
             Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findTotalUserFriend(friendId, userId);
             eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);

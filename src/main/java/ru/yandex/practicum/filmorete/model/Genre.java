@@ -1,10 +1,10 @@
 package ru.yandex.practicum.filmorete.model;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
-
 import lombok.Builder;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 @Data
 @Builder

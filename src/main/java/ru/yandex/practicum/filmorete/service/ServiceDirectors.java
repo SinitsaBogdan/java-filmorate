@@ -1,16 +1,11 @@
 package ru.yandex.practicum.filmorete.service;
 
-import java.util.ArrayList;
-
-import javax.validation.constraints.NotBlank;
-
-import org.hibernate.mapping.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-
 import ru.yandex.practicum.filmorete.model.Director;
-import ru.yandex.practicum.filmorete.model.Genre;
-import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
+
+import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 
 @Service
 public class ServiceDirectors {
