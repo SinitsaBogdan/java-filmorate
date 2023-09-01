@@ -99,11 +99,9 @@ public class ServiceReview {
      * Удаление отзыва по ID [ REVIEWS ].
      */
     public void delete(Long reviewId) {
-        Optional<Event> event = eventsDao.findByEventTypeAndEntityId(EventType.REVIEW, reviewId);
-        if (event.isPresent()) {
-            reviewDao.delete(reviewId);
-            eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, event.get().getUserId(), reviewId);
-        }
+        Optional<Review> byReviewId = reviewDao.findByReviewId(reviewId);
+        reviewDao.delete(reviewId);
+        byReviewId.ifPresent(value -> eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, value.getUserId(), reviewId));
     }
 
     /**
