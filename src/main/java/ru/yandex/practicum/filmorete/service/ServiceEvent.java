@@ -21,6 +21,7 @@ public class ServiceEvent {
     private final UserDao userDao;
 
     /**
+     * Алина молодец, мучаемся дальше
      * Запрос всех событий из таблицы EVENTS по USER_ID [ EVENTS ].
      */
     public List<Event> getAllEventByUserId(Long userId) {
