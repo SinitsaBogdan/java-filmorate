@@ -77,6 +77,7 @@ public class FilmController {
 
     /**
      * Пользователь ставит лайк фильму по id.
+     * TODO Тут вместо лайка ставим оценку
      * */
     @PutMapping("/{filmId}/like/{userId}")
     public void addLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
@@ -85,6 +86,7 @@ public class FilmController {
 
     /**
      * Пользователь удаляет лайк фильму по id.
+     * TODO Тут вместо лайка ставим оценку
      * */
     @DeleteMapping("/{filmId}/like/{userId}")
     public void removeLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
