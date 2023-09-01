@@ -30,7 +30,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
                 "SELECT " +
                         "t.film_id AS filmId, " +
                         "t.director_id AS directorId " +
-                    "FROM TOTAL_FILM_DIRECTOR AS t;"
+                        "FROM TOTAL_FILM_DIRECTOR AS t;"
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;
@@ -51,7 +51,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     public void insert(Long filmId, Long directorId) {
         jdbcTemplate.update(
                 "INSERT INTO TOTAL_FILM_DIRECTOR (film_id, director_id) " +
-                    "VALUES (?, ?);",
+                        "VALUES (?, ?);",
                 filmId, directorId
         );
     }
@@ -77,16 +77,36 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     @Override
     public void delete() {
         jdbcTemplate.update(
-            "DELETE FROM TOTAL_FILM_DIRECTOR;"
+                "DELETE FROM TOTAL_FILM_DIRECTOR;"
         );
     }
 
     @Override
     public List<Film> findPopularFilmsByDirector(Long directorId) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(generateSqlRequest() + "WHERE f.id IN ( SELECT film_id FROM " +
-                "TOTAL_FILM_DIRECTOR WHERE director_id = ?) " +
-                "ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) DESC;", directorId);
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT " +
+                        "f.id AS film_id, " +
+                        "f.name AS film_name, " +
+                        "f.description AS film_description, " +
+                        "f.release_date AS film_release_date, " +
+                        "f.duration AS film_duration, " +
+                        "r.id AS mpa_id, " +
+                        "r.name AS mpa_name, " +
+                        "g.id AS genre_id, " +
+                        "g.name AS genre_name, " +
+                        "d.id AS director_id, " +
+                        "d.name AS director_name, " +
+                        "EXTRACT(YEAR FROM f.release_date) AS release_year, " +
+                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
+                        "FROM FILMS AS f " +
+                        "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                        "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
+                        "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " + "WHERE f.id IN ( SELECT film_id FROM " +
+                        "TOTAL_FILM_DIRECTOR WHERE director_id = ?) " +
+                        "ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) DESC;", directorId);
         while (rows.next()) {
             Long filmId = rows.getLong("FILM_ID");
             Integer genreId = rows.getInt("GENRE_ID");
@@ -156,29 +176,6 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
             result.add(film);
         }
         return result;
-    }
-
-    private String generateSqlRequest() {
-        return "SELECT " +
-                "f.id AS film_id, " +
-                "f.name AS film_name, " +
-                "f.description AS film_description, " +
-                "f.release_date AS film_release_date, " +
-                "f.duration AS film_duration, " +
-                "r.id AS mpa_id, " +
-                "r.name AS mpa_name, " +
-                "g.id AS genre_id, " +
-                "g.name AS genre_name, " +
-                "d.id AS director_id, " +
-                "d.name AS director_name, " +
-                "EXTRACT(YEAR FROM f.release_date) AS release_year, " +
-                "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
-                "FROM FILMS AS f " +
-                "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
-                "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id ";
     }
 
     public TotalDirectorFilm buildModel(@NotNull SqlRowSet row) {
