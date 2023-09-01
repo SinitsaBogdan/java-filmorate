@@ -1,8 +1,13 @@
 package ru.yandex.practicum.filmorete.exeptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
-@ResponseStatus(code = HttpStatus.NOT_FOUND)
-public class ExceptionNotFoundEventStorage extends RuntimeException {
+@Slf4j
+public class ExceptionNotFoundEventStorage extends AbstractCustomException {
+
+    public ExceptionNotFoundEventStorage(@NotNull MessageErrorServiceEvent error) {
+        super(error.name, error.description, error.httpStatusCode);
+        log.debug(this.getMessage());
+    }
 }
