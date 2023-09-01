@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorete.model.Mpa;
 import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,8 @@ class FilmDaoImplTest {
     private final RosterMpaDao enumMpaDao;
     private final UserDao userDao;
     private final RosterGenreDao enumGenreDao;
+    private final TotalDirectorFilmDao daoTotalDirectorFilm;
+    private final DirectorDao directorDao;
 
     @BeforeEach
     public void beforeEach() {
@@ -38,6 +41,8 @@ class FilmDaoImplTest {
         daoTotalGenreFilm.delete();
         userDao.delete();
         daoTotalFilmLike.delete();
+        directorDao.delete();
+        daoTotalDirectorFilm.delete();
 
         enumMpaDao.insert(1, "P", "Описание");
         enumMpaDao.insert(2, "G", "Описание 2");
@@ -56,13 +61,13 @@ class FilmDaoImplTest {
         daoTotalGenreFilm.insert(3L, 3);
 
         userDao.insert(
-                1L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
+            1L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
         );
         userDao.insert(
-                2L, "Иван", LocalDate.of(1974, 7, 15), "Ivan", "ivan@mail.ru"
+            2L, "Иван", LocalDate.of(1974, 7, 15), "Ivan", "ivan@mail.ru"
         );
         userDao.insert(
-                3L, "Ольга", LocalDate.of(1995, 6, 17), "Olga", "olga@email.ru"
+            3L, "Ольга", LocalDate.of(1995, 6, 17), "Olga", "olga@email.ru"
         );
 
         daoTotalFilmLike.insert(1L, 1L);
@@ -95,7 +100,7 @@ class FilmDaoImplTest {
     @DisplayName("insert(ratingName, name, description, releaseDate, durationMinute)")
     public void testInsertRowRatingDescriptionReleaseDuration() {
         daoFilm.insert(
-                100L, 1, "Новый", "Новое", LocalDate.of(1990, 1, 1), 50
+            100L, 1, "Новый", "Новое", LocalDate.of(1990, 1, 1), 50
         );
         List<Film> result = daoFilm.findAllFilms();
         assertEquals(result.size(), 4);
@@ -149,5 +154,44 @@ class FilmDaoImplTest {
         daoFilm.deleteByRating(1);
         List<Film> result = daoFilm.findAllFilms();
         assertEquals(result.size(), 2);
+    }
+
+    @Test
+    @DisplayName("getFilmsBySearchParam(query,title)")
+    public void testGetFilmsBySearchParamTitle() {
+        List<Film> searchParam = daoFilm.getFilmsBySearchParam("Фильм 1", Collections.singletonList("title"));
+        Optional<Film> optional = daoFilm.findFilm(1L);
+        assertTrue(optional.isPresent());
+        assertEquals(optional.get().getName(), searchParam.get(0).getName());
+        assertEquals(optional.get().getMpa(), searchParam.get(0).getMpa());
+        assertEquals(optional.get().getDescription(), searchParam.get(0).getDescription());
+        assertEquals(optional.get().getReleaseDate(), searchParam.get(0).getReleaseDate());
+        assertEquals(optional.get().getDuration(), searchParam.get(0).getDuration());
+    }
+
+    @Test
+    @DisplayName("getFilmsBySearchParam(query,director)")
+    public void testGetFilmsBySearchParamDirector() {
+        directorDao.insert("Director-1");
+        daoTotalDirectorFilm.insert(1L, 2L);
+
+        List<Film> searchParam = daoFilm.getFilmsBySearchParam("Director", Collections.singletonList("director"));
+        Optional<Film> optional = daoFilm.findFilm(1L);
+        assertTrue(optional.isPresent());
+        assertEquals(optional.get().getName(), searchParam.get(0).getName());
+        assertEquals(optional.get().getMpa(), searchParam.get(0).getMpa());
+        assertEquals(optional.get().getDescription(), searchParam.get(0).getDescription());
+        assertEquals(optional.get().getReleaseDate(), searchParam.get(0).getReleaseDate());
+        assertEquals(optional.get().getDuration(), searchParam.get(0).getDuration());
+    }
+
+    @Test
+    @DisplayName("getFilmsBySearchParam(query,title&director)")
+    public void testGetFilmsBySearchParamTitleAndDirector() {
+        directorDao.insert("Director-1");
+        daoTotalDirectorFilm.insert(2L, 1L);
+
+        List<Film> searchParam = daoFilm.getFilmsBySearchParam("1", List.of("title", "director"));
+        assertEquals(2, searchParam.size());
     }
 }

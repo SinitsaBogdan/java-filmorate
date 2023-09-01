@@ -87,6 +87,13 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     }
 
     @Override
+    public void delete() {
+        jdbcTemplate.update(
+            "DELETE FROM TOTAL_FILM_DIRECTOR;"
+        );
+    }
+
+    @Override
     public List<Film> findPopularFilmsByDirector(Long directorId) {
         Set<Long> filmsId = new HashSet<>();
         List<Film> result = new ArrayList<>();

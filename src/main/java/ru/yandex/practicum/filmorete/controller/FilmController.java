@@ -26,7 +26,7 @@ public class FilmController {
 
     /**
      * Запрос всех фильмов.
-     * */
+     */
     @GetMapping
     public List<Film> findAll() {
         return serviceFilms.getAllFilms();
@@ -35,17 +35,17 @@ public class FilmController {
     /**
      * NEW!!!
      * Запрос всех популярных фильмов с возможностью фильтрации по году и жанру.
-     * */
+     */
     @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
                                       @RequestParam(defaultValue = "") Integer genreId,
                                       @RequestParam(defaultValue = "") Integer year) {
-        return serviceFilms.getPopularFilms(count);
+        return serviceFilms.getPopularFilms(count, genreId, year);
     }
 
     /**
      * Запрос фильма по id.
-     * */
+     */
     @GetMapping("/{filmId}")
     public Film getToId(@PathVariable Long filmId) {
         return serviceFilms.getFilm(filmId);
@@ -53,7 +53,7 @@ public class FilmController {
 
     /**
      * Запрос списка пользователей которые поставили лайк.
-     * */
+     */
     @GetMapping("/{filmId}/to-like")
     public List<User> getUsersToLikeFilm(@PathVariable Long filmId) {
         return serviceUsers.getUsersToLikeFilm(filmId);
@@ -61,7 +61,7 @@ public class FilmController {
 
     /**
      * Добавление нового фильма.
-     * */
+     */
     @PostMapping
     public Film create(@Valid @RequestBody Film film) throws ExceptionValidationFilm {
         return serviceFilms.createFilm(film);
@@ -69,7 +69,7 @@ public class FilmController {
 
     /**
      * Обновление существующего фильма.
-     * */
+     */
     @PutMapping
     public Film update(@Valid @RequestBody Film film) throws ExceptionValidationFilm {
         return serviceFilms.updateFilm(film);
@@ -77,7 +77,7 @@ public class FilmController {
 
     /**
      * Пользователь ставит лайк фильму по id.
-     * */
+     */
     @PutMapping("/{filmId}/like/{userId}")
     public void addLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
         serviceFilms.addLike(filmId, userId);
@@ -85,7 +85,7 @@ public class FilmController {
 
     /**
      * Удаление всех фильмов.
-     * */
+     */
     @DeleteMapping
     public void clear() {
         serviceFilms.clearStorage();
@@ -93,7 +93,7 @@ public class FilmController {
 
     /**
      * Пользователь удаляет лайк фильму по id.
-     * */
+     */
     @DeleteMapping("/{filmId}/like/{userId}")
     public void removeLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
         serviceFilms.removeLike(filmId, userId);
@@ -102,7 +102,7 @@ public class FilmController {
     /**
      * NEW!!!
      * Удалить фильм по идентификатору.
-     * */
+     */
     @DeleteMapping("/{filmId}")
     public void removeToId(@PathVariable Long filmId) {
         serviceFilms.removeFilmSearchId(filmId);
@@ -110,7 +110,7 @@ public class FilmController {
 
     /**
      * Получить общие фильмы друзей, отсортированные по популярности.
-     * */
+     */
     @GetMapping("/common")
     public List<Film> getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
         return serviceFilms.getCommonFilms(userId, friendId);
@@ -120,7 +120,7 @@ public class FilmController {
      * NEW!!!
      * Получить список фильмов режиссера,
      * отсортированных по количеству лайков или году выпуска.
-     * */
+     */
     @GetMapping("/director/{directorId}")
     public List<Film> getFilmsByDirectorSortedByParam(@PathVariable Long directorId, @RequestParam(defaultValue = "likes") String sortBy) {
         return serviceFilms.getFilmsToDirector(directorId, sortBy);
@@ -129,8 +129,9 @@ public class FilmController {
     /**
      * NEW!!!
      * Поиск фильмов по режиссеру и/или названию.
-     * */
+     */
     @GetMapping("/search")
-    public void getFilmsBySearchParam(@RequestParam String query, @RequestParam List<String> by) {
+    public List<Film> getFilmsBySearchParam(@RequestParam String query, @RequestParam List<String> by) {
+        return serviceFilms.getFilmsBySearchParam(query, by);
     }
 }

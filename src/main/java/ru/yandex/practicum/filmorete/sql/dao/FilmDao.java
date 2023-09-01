@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.dao;
 
 import ru.yandex.practicum.filmorete.model.Film;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -30,4 +31,6 @@ public interface FilmDao {
     void delete(Integer duration);
 
     void deleteByRating(Integer mpaId);
+
+    List<Film> getFilmsBySearchParam(String query, List<String> by);
 }
