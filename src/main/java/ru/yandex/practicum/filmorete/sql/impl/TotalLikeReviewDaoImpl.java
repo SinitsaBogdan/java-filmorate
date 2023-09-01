@@ -33,20 +33,9 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     }
 
     @Override
-    public Optional<TotalLikeReview> findById(Long rowId) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_LIKE_REVIEWS " +
-                    "WHERE review_id = ?;",
-                rowId
-        );
-        if (row.next()) return Optional.of(buildModel(row));
-        else return Optional.empty();
-    }
-
-    @Override
     public void insert(Long reviewId, Long userId, Boolean type) {
         jdbcTemplate.update(
-                "INSERT INTO TOTAL_LIKE_REVIEWS (review_id, user_id, isPositive) " +
+                "INSERT INTO TOTAL_LIKE_REVIEWS (review_id, user_id, is_positive) " +
                     "VALUES (?, ?, ?);",
                 reviewId, userId, type
         );
@@ -55,9 +44,9 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     @Override
     public void update(Long reviewId, Long userId, Boolean type) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_LIKE_REVIEWS SET review_id = ? " +
+                "UPDATE TOTAL_LIKE_REVIEWS SET review_id = ?, is_positive = ? " +
                     "WHERE user_id = ?;",
-                reviewId, userId
+                reviewId, type, userId
         );
     }
 
@@ -69,29 +58,11 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     }
 
     @Override
-    public void deleteAllReviewId(Long reviewId) {
+    public void delete(Long reviewId, Long userId) {
         jdbcTemplate.update(
                 "DELETE FROM TOTAL_LIKE_REVIEWS " +
-                    "WHERE review_id = ?;",
-                reviewId
-        );
-    }
-
-    @Override
-    public void deleteAllUserId(Long userId) {
-        jdbcTemplate.update(
-                "DELETE FROM TOTAL_LIKE_REVIEWS " +
-                    "WHERE user_id = ?;",
-                userId
-        );
-    }
-
-    @Override
-    public void deleteAllTypeLike(Boolean type) {
-        jdbcTemplate.update(
-                "DELETE FROM TOTAL_LIKE_REVIEWS " +
-                "WHERE isPositive = ?;",
-                type
+                    "WHERE review_id = ? AND user_id = ?;",
+                reviewId, userId
         );
     }
 

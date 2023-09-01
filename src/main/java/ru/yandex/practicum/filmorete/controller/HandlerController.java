@@ -51,4 +51,10 @@ public class HandlerController {
         ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
         return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
     }
+
+    @ExceptionHandler(ExceptionNotFoundReviewStorage.class)
+    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundReviewStorage exception) {
+        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
+    }
 }
