@@ -102,9 +102,9 @@ public class ServiceUser {
             Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.findTotalUserFriend(userId, friendId);
             if (optionalRowStatusUser.isPresent()) {
                 TotalUserFriends userStatus = optionalRowStatusUser.get();
-                if (userStatus.getStatusFriend() == StatusFriend.UNCONFIRMED) {
+                if (userStatus.getStatusFriend().equals(StatusFriend.UNCONFIRMED)) {
                     totalUserFriendsDao.update(userId, friendId, StatusFriend.CONFIRMED);
-                    eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
+                    eventsDao.insert(EventType.FRIEND, EventOperation.UPDATE, userId, friendId);
                 }
             } else {
                 totalUserFriendsDao.insert(userId, friendId, StatusFriend.CONFIRMED);
@@ -113,7 +113,6 @@ public class ServiceUser {
             Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findTotalUserFriend(friendId, userId);
             if (optionalRowStatusFriend.isEmpty()) {
                 totalUserFriendsDao.insert(friendId, userId, StatusFriend.UNCONFIRMED);
-                eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
             }
         } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
