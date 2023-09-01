@@ -134,5 +134,4 @@ public class EventsDaoImplTest {
         assertEquals(result.size(), 4);
         assertTrue(eventsDao.findAllByUserId(2L).isEmpty());
     }
-
 }

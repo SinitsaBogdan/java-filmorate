@@ -61,7 +61,8 @@ public class ReviewsDaoImpl implements ReviewDao {
     public List<Review> findAll(Long userId) {
         List<Review> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM REVIEWS WHERE user_id = ?;", userId
+                "SELECT * FROM REVIEWS WHERE user_id = ?;",
+                userId
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;
@@ -90,7 +91,6 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
 
-
     @Override
     public List<Review> findAll(Boolean isPositive) {
         List<Review> result = new ArrayList<>();
@@ -115,7 +115,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     public Optional<Review> findByReviewId(Long reviewId) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS " +
-                    "WHERE id = ?;",
+                        "WHERE id = ?;",
                 reviewId
         );
         if (rows.next()) return Optional.of(buildModel(rows));
@@ -126,7 +126,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     public void insert(Long id, String content, Boolean isPositive, Long userId, Long filmId) {
         jdbcTemplate.update(
                 "INSERT INTO REVIEWS (id, content, is_positive, user_id, film_id) " +
-                    "VALUES (?, ?, ?, ?, ?);",
+                        "VALUES (?, ?, ?, ?, ?);",
                 id, content, isPositive, userId, filmId
         );
     }
@@ -135,7 +135,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     public Long insert(String content, Boolean isPositive, Long userId, Long filmId) {
         jdbcTemplate.update(
                 "INSERT INTO REVIEWS (content, is_positive, user_id, film_id) " +
-                    "VALUES (?, ?, ?, ?);",
+                        "VALUES (?, ?, ?, ?);",
                 content, isPositive, userId, filmId
         );
         return jdbcTemplate.queryForObject("SELECT MAX(id) FROM REVIEWS", Long.class);
@@ -145,10 +145,10 @@ public class ReviewsDaoImpl implements ReviewDao {
     public void update(Long id, String content, Boolean isPositive) {
         jdbcTemplate.update(
                 "UPDATE REVIEWS " +
-                    "SET " +
+                        "SET " +
                         "content = ?, " +
                         "is_positive = ? " +
-                    "WHERE id = ?;",
+                        "WHERE id = ?;",
                 content, isPositive, id
         );
     }
@@ -160,7 +160,7 @@ public class ReviewsDaoImpl implements ReviewDao {
                         "(SELECT COUNT(*) FROM TOTAL_LIKE_REVIEWS WHERE review_id = ? AND is_positive = TRUE)" +
                         " - " +
                         "(SELECT COUNT(*) FROM TOTAL_LIKE_REVIEWS WHERE review_id = ? AND is_positive = FALSE)" +
-                    ") WHERE id = ?;", id, id, id
+                        ") WHERE id = ?;", id, id, id
         );
     }
 

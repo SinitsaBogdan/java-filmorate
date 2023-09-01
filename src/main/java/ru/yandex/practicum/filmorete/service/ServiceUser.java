@@ -88,7 +88,6 @@ public class ServiceUser {
     }
 
     public void addFriend(Long friendId, Long userId) {
-        eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
         Optional<User> optionalUser = userDao.findUser(userId);
         Optional<User> optionalFriend = userDao.findUser(friendId);
         if (optionalUser.isPresent() && optionalFriend.isPresent()) {
@@ -97,17 +96,19 @@ public class ServiceUser {
                 TotalUserFriends userStatus = optionalRowStatusUser.get();
                 if (userStatus.getStatusFriend() == StatusFriend.UNCONFIRMED)
                     totalUserFriendsDao.update(userId, friendId, StatusFriend.CONFIRMED);
+                    eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
             } else totalUserFriendsDao.insert(userId, friendId, StatusFriend.CONFIRMED);
             Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findTotalUserFriend(friendId, userId);
+            eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
             if (optionalRowStatusFriend.isEmpty())
                 totalUserFriendsDao.insert(friendId, userId, StatusFriend.UNCONFIRMED);
         } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public void removeFriend(Long userId, Long friendId) {
-        eventsDao.insert(EventType.FRIEND, EventOperation.REMOVE, userId, friendId);
         totalUserFriendsDao.delete(userId, friendId);
         totalUserFriendsDao.update(friendId, userId, StatusFriend.UNCONFIRMED);
+        eventsDao.insert(EventType.FRIEND, EventOperation.REMOVE, userId, friendId);
     }
 
     public void clearStorage() {

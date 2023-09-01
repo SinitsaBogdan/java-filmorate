@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -33,7 +34,8 @@ public class EventsDaoImpl implements EventsDao {
     public List<Event> findAllByUserId(Long userId) {
         List<Event> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM EVENTS WHERE user_id = ?;", userId
+                "SELECT * FROM EVENTS WHERE user_id = ?;",
+                userId
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;
@@ -52,7 +54,7 @@ public class EventsDaoImpl implements EventsDao {
     @Override
     public Optional<Event> findByEventTypeAndEntityId(EventType eventType, Long eventId) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM EVENTS WHERE id = ? and type = ?;",
+                "SELECT * FROM EVENTS WHERE id = ? AND type = ?;",
                 eventId, eventType.name()
         );
         if (rows.next()) return Optional.of(buildModel(rows));
@@ -62,18 +64,18 @@ public class EventsDaoImpl implements EventsDao {
     @Override
     public void insert(EventType eventType, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
-                "INSERT INTO EVENTS (user_id, type, operation, entity_id) " +
+                "INSERT INTO EVENTS (user_id, type, operation, entity_id, timestamp) " +
                         "VALUES (?, ?, ?, ?, ?);",
-                userId, eventType.name(), operation.name(), entityId
+                userId, eventType.name(), operation.name(), entityId, LocalDateTime.now()
         );
     }
 
     @Override
     public void insert(Long id, EventType type, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
-                "INSERT INTO EVENTS (id, user_id, type, operation, entity_id) " +
-                "VALUES (?, ?, ?, ?, ?);",
-                id, userId, type.name(), operation.name(), entityId
+                "INSERT INTO EVENTS (id, user_id, type, operation, entity_id, timestamp) " +
+                        "VALUES (?, ?, ?, ?, ?);",
+                id, userId, type.name(), operation.name(), entityId, LocalDateTime.now()
         );
     }
 
@@ -81,12 +83,12 @@ public class EventsDaoImpl implements EventsDao {
     public void update(Long id, EventType type, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
                 "UPDATE EVENTS " +
-                    "SET " +
+                        "SET " +
                         "type = ?, " +
                         "operation = ?, " +
                         "user_id = ?, " +
                         "entity_id = ? " +
-                    "WHERE id = ?;",
+                        "WHERE id = ?;",
                 type.name(), operation.name(), userId, entityId, id
         );
     }
@@ -133,7 +135,7 @@ public class EventsDaoImpl implements EventsDao {
     protected Event buildModel(@NotNull SqlRowSet row) {
         return Event.builder()
                 .eventId(row.getLong("ID"))
-                .timestamp(row.getLong("TIMESTAMP"))
+                .timestamp(Objects.requireNonNull(row.getTimestamp("TIMESTAMP")).getTime())
                 .userId(row.getLong("USER_ID"))
                 .eventType(EventType.valueOf(row.getString("TYPE")))
                 .operation(EventOperation.valueOf(row.getString("OPERATION")))
