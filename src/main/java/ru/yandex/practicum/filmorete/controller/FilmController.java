@@ -22,6 +22,7 @@ public class FilmController {
     private FilmController(ServiceFilm serviceFilms, ServiceUser serviceUsers) {
         this.serviceFilms = serviceFilms;
         this.serviceUsers = serviceUsers;
+        System.out.println("hello World");
     }
 
     /**
