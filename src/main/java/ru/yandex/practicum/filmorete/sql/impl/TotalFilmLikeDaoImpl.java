@@ -24,6 +24,9 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     @Override
     public List<Film> findPopularFilms(Integer limit) {
+        // TODO
+        //  Сортировку по количеству лайков заменить на сортировку по рейтингу
+        //
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -309,7 +312,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         return entry.map(Map.Entry::getKey);
     }
 
-    // insert(Long filmId, Long userId, Double estimation)
+    // TODO insert(Long filmId, Long userId, Double estimation)
     @Override
     public void insert(Long filmId, Long userId) {
         jdbcTemplate.update(
