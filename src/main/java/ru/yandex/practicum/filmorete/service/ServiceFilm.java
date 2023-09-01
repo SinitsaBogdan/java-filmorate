@@ -60,7 +60,16 @@ public class ServiceFilm {
         return totalFilmLikeDao.findCommonFilms(firstId, secondId);
     }
 
-    public List<Film> getPopularFilms(Integer count) {
+    public List<Film> getPopularFilms(Integer count, Integer genreId, Integer year) {
+        if (genreId != null && year == null) {
+            return totalFilmLikeDao.findPopularFilms(count, genreId);
+        }
+        if (genreId == null && year != null) {
+            return totalFilmLikeDao.findPopularFilmsSortByYear(count, year);
+        }
+        if (genreId != null) {
+            return totalFilmLikeDao.findPopularFilms(count, genreId, year);
+        }
         return totalFilmLikeDao.findPopularFilms(count);
     }
 

@@ -40,7 +40,7 @@ public class FilmController {
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count,
                                       @RequestParam(defaultValue = "") Integer genreId,
                                       @RequestParam(defaultValue = "") Integer year) {
-        return serviceFilms.getPopularFilms(count);
+        return serviceFilms.getPopularFilms(count, genreId, year);
     }
 
     /**

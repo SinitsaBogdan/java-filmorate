@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorete.model.TotalLikeFilm;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TotalFilmLikeDaoImplTest {
 
     private final TotalFilmLikeDao totalFilmLikeDao;
+    private final TotalGenreFilmDao genreFilmDao;
     private final FilmDao filmDao;
     private final UserDao userDao;
 
@@ -33,6 +35,7 @@ class TotalFilmLikeDaoImplTest {
         totalFilmLikeDao.delete();
         filmDao.delete();
         userDao.delete();
+        genreFilmDao.delete();
 
         userDao.insert(
                 1L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
@@ -46,7 +49,7 @@ class TotalFilmLikeDaoImplTest {
 
         filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);
         filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.of(2004, 1, 1), 110);
-//        filmDao.insert(3L, 3, "Фильм 3", "", LocalDate.of(2003, 1, 1), 130);
+        filmDao.insert(3L, 3, "Фильм 3", "", LocalDate.of(2005, 1, 1), 130);
 
         totalFilmLikeDao.insert(1L, 1L);
         totalFilmLikeDao.insert(1L, 2L);
@@ -58,6 +61,45 @@ class TotalFilmLikeDaoImplTest {
     public void testFindLimitPopularFilms() {
         List<Film> result = totalFilmLikeDao.findPopularFilms(2);
         assertEquals(result.size(), 2);
+    }
+
+    @Test
+    @DisplayName("findPopularFilms(Integer limit, Integer searchGenreId)")
+    public void testFindLimitPopularFilmsByGenre() {
+        genreFilmDao.insert(1L, 4);
+        genreFilmDao.insert(2L, 5);
+        genreFilmDao.insert(3L, 5);
+        List<Film> result = totalFilmLikeDao.findPopularFilms(10, 5);
+        assertEquals(result.size(), 2);
+        assertEquals(result.get(0).getName(), "Фильм 2");
+    }
+
+    @Test
+    @DisplayName("findPopularFilmsSortByYear(Integer limit, Integer searchYear)")
+    public void testFindLimitPopularFilmsByYear() {
+        List<Film> result = totalFilmLikeDao.findPopularFilmsSortByYear(5, 2005);
+        assertEquals(result.size(), 2);
+        assertEquals(result.get(0).getName(), "Фильм 1");
+        assertEquals(result.get(1).getName(), "Фильм 3");
+    }
+
+    @Test
+    @DisplayName("findPopularFilms(Integer limit, Integer searchGenreId, Integer searchYear)")
+    public void testFindLimitPopularFilmsSortByYearAndGenreId() {
+        genreFilmDao.insert(1L, 5);
+        genreFilmDao.insert(2L, 5);
+        genreFilmDao.insert(3L, 5);
+        List<Film> result = totalFilmLikeDao.findPopularFilms(3, 5, 2005);
+        assertEquals(result.size(), 2);
+        assertEquals(result.get(0).getName(), "Фильм 1");
+        assertEquals(result.get(1).getName(), "Фильм 3");
+    }
+
+    @Test
+    @DisplayName("findPopularFilms(Integer limit, Integer searchGenreId, Integer searchYear)")
+    public void testFindLimitPopularFilmsSortByIncorrectData() {
+        List<Film> result = totalFilmLikeDao.findPopularFilms(10, 999, 999);
+        assertTrue(result.isEmpty());
     }
 
     @Test
