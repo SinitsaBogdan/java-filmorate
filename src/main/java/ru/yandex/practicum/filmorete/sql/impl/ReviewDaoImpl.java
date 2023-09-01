@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Review;
 import ru.yandex.practicum.filmorete.sql.dao.ReviewDao;
 
@@ -21,42 +21,42 @@ public class ReviewDaoImpl implements ReviewDao {
     @Override
     public List<Review> findAll() {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public List<Review> findAll(Long userId) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS WHERE user_id = ?;", userId
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public List<Review> findAllIsCount(Integer count) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS ORDER BY useful DESC LIMIT ?;",
                 count
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public List<Review> findAllFilmIdAndIsCount(Long filmId, Integer count) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS WHERE film_id = ? ORDER BY useful DESC LIMIT ?;",
                 filmId, count
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
@@ -65,31 +65,31 @@ public class ReviewDaoImpl implements ReviewDao {
     @Override
     public List<Review> findAll(Boolean isPositive) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS WHERE is_positive = ?;", isPositive
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public List<Review> findAll(Integer useful) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS WHERE useful = ?;", useful
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public Optional<Review> findByReviewId(Long reviewId) {
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM REVIEWS " +
                     "WHERE id = ?;",
                 reviewId
         );
-        if (rows.next()) return Optional.of(buildModel(rows));
+        if (row.next()) return Optional.of(FactoryModel.buildReview(row));
         return Optional.empty();
     }
 
@@ -166,16 +166,5 @@ public class ReviewDaoImpl implements ReviewDao {
                         "WHERE film_id = ?;",
                 filmId
         );
-    }
-
-    protected Review buildModel(@NotNull SqlRowSet row) {
-        return Review.builder()
-                .reviewId(row.getLong("ID"))
-                .content(row.getString("CONTENT"))
-                .isPositive(row.getBoolean("IS_POSITIVE"))
-                .userId(row.getLong("USER_ID"))
-                .filmId(row.getLong("FILM_ID"))
-                .useful(row.getInt("USEFUL"))
-                .build();
     }
 }
