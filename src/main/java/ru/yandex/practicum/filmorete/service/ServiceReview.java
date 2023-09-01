@@ -96,7 +96,7 @@ public class ServiceReview {
      * Добавление нового лайка отзыва [ TOTAL_LIKE_REVIEWS ].
      */
     public void add(@NotNull TotalLikeReview reviewLike) {
-        totalReviewLikeDao.insert(reviewLike.getReviewId(), reviewLike.getUserId(), reviewLike.isTypeLike());
+        totalReviewLikeDao.insert(reviewLike.getReviewId(), reviewLike.getUserId(), reviewLike.getTypeLike());
         reviewDao.recalculationPositive(reviewLike.getReviewId());
     }
 
