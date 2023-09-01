@@ -11,6 +11,9 @@ import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 
 import java.util.*;
 
+// TODO Нужно будет переименовать класс
+//  на TotalFilmEstimationDaoImpl
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
