@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -40,6 +41,16 @@ public class EventsDaoImpl implements EventsDao {
     }
 
     @Override
+    public Optional<Event> findByEventTypeAndEntityId(EventType eventType, Long eventId) {
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM EVENTS WHERE id = ? AND type = ?;",
+                eventId, eventType.name()
+        );
+        if (rows.next()) return Optional.of(buildModel(rows));
+        else return Optional.empty();
+    }
+
+    @Override
     public Optional<Event> findByEventId(Long eventId) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM EVENTS WHERE eventId = ?;",
@@ -55,6 +66,15 @@ public class EventsDaoImpl implements EventsDao {
                 "INSERT INTO EVENTS (userId, eventType, operation, entityId) " +
                 "VALUES (?, ?, ?, ?);",
                 eventType, operation, userId, entityId
+        );
+    }
+
+    @Override
+    public void insert(Long id, EventType type, EventOperation operation, Long userId, Long entityId) {
+        jdbcTemplate.update(
+                "INSERT INTO EVENTS (id, user_id, type, operation, entity_id, timestamp) " +
+                        "VALUES (?, ?, ?, ?, ?);",
+                id, userId, type.name(), operation.name(), entityId, LocalDateTime.now()
         );
     }
 

@@ -3,11 +3,14 @@ package ru.yandex.practicum.filmorete.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorete.enums.EventOperation;
+import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.enums.StatusFriend;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
 import ru.yandex.practicum.filmorete.model.User;
+import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
@@ -29,11 +32,14 @@ public class ServiceUser {
 
     private final TotalFilmLikeDao totalFilmLikeDao;
 
+    private final EventsDao eventsDao;
+
     @Autowired
-    private ServiceUser(UserDao userDao, TotalUserFriendsDao totalUserFriendsDao, TotalFilmLikeDao totalFilmLikeDao) {
+    private ServiceUser(UserDao userDao, TotalUserFriendsDao totalUserFriendsDao, TotalFilmLikeDao totalFilmLikeDao, EventsDao eventsDao) {
         this.userDao = userDao;
         this.totalUserFriendsDao = totalUserFriendsDao;
         this.totalFilmLikeDao = totalFilmLikeDao;
+        this.eventsDao = eventsDao;
     }
 
     public User getUser(Long userId) {
@@ -96,16 +102,21 @@ public class ServiceUser {
             Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.findTotalUserFriend(userId, friendId);
             if (optionalRowStatusUser.isPresent()) {
                 TotalUserFriends userStatus = optionalRowStatusUser.get();
-                if (userStatus.getStatusFriend() == StatusFriend.UNCONFIRMED) totalUserFriendsDao.update(userId, friendId, StatusFriend.CONFIRMED);
+                if (userStatus.getStatusFriend() == StatusFriend.UNCONFIRMED)
+                    totalUserFriendsDao.update(userId, friendId, StatusFriend.CONFIRMED);
+                eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
             } else totalUserFriendsDao.insert(userId, friendId, StatusFriend.CONFIRMED);
             Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findTotalUserFriend(friendId, userId);
-            if (optionalRowStatusFriend.isEmpty()) totalUserFriendsDao.insert(friendId, userId, StatusFriend.UNCONFIRMED);
+            eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
+            if (optionalRowStatusFriend.isEmpty())
+                totalUserFriendsDao.insert(friendId, userId, StatusFriend.UNCONFIRMED);
         } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public void removeFriend(Long userId, Long friendId) {
         totalUserFriendsDao.delete(userId, friendId);
         totalUserFriendsDao.update(friendId, userId, StatusFriend.UNCONFIRMED);
+        eventsDao.insert(EventType.FRIEND, EventOperation.REMOVE, userId, friendId);
     }
 
     public void clearStorage() {
