@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundDirectorStorage;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalDirectorFilmDao;
 
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceDirector.SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS;
 
@@ -17,10 +16,6 @@ import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceDirecto
 public class ServiceDirector {
 
      private final DirectorDao directorDao;
-
-    private ServiceDirector(DirectorDao directorsDao, TotalDirectorFilmDao totalFilmDirectorDao) {
-        this.directorDao = directorsDao;
-    }
 
      private ServiceDirector(DirectorDao directorsDao) {
          this.directorDao = directorsDao;
