@@ -150,9 +150,23 @@ public class UserControllerTest {
             ;
         }
 
+
         @Test
         @DisplayName("Запрос ленты событий пользователя")
         public void methodGet_FeedByUserIdTest() throws Exception {
+            mockMvc.perform(get("/users/103/feed"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1));
+
+        }
+
+        @Test
+        @DisplayName("Запрос ленты событий пользователя: ID 9999")
+        public void methodGet_FeedByUserId9999Test() throws Exception {
+            mockMvc.perform(get("/users/9999/feed"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0));
+
         }
     }
 

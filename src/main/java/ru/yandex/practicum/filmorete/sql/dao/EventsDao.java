@@ -17,6 +17,8 @@ public interface EventsDao {
 
     void insert(EventType eventType, EventOperation operation, Long userId, Long entityId);
 
+    void insert(Long id, EventType eventType, EventOperation operation, Long userId, Long entityId);
+
     void update(Long id, EventType eventType, EventOperation operation, Long userId, Long entityId);
 
     void delete();
@@ -28,4 +30,6 @@ public interface EventsDao {
     void deleteAll(EventOperation operation);
 
     void deleteAll(Long userId);
+
+    Optional<Event> findByEventTypeAndEntityId(EventType review, Long reviewId);
 }
