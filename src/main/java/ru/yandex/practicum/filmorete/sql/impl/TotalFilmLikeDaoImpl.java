@@ -309,6 +309,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         return entry.map(Map.Entry::getKey);
     }
 
+    // insert(Long filmId, Long userId, Double estimation)
     @Override
     public void insert(Long filmId, Long userId) {
         jdbcTemplate.update(
@@ -319,6 +320,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
+    // update(Long searchFilmId, Long searchUserId, Long filmId, Long userId, Double estimation)
     public void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId) {
         jdbcTemplate.update(
                 "UPDATE TOTAL_FILM_LIKE SET film_id = ?, user_id = ? " +

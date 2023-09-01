@@ -136,12 +136,14 @@ public class ServiceFilm {
         totalFilmLikeDao.delete(filmId, userId);
     }
 
+    // addLike(Long filmId, Long userId, Double estimation)
     public void addLike(Long filmId, Long userId) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         Optional<User> optionalUser = userDao.findUser(userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        // totalFilmLikeDao.insert(filmId, userId, estimation)
         totalFilmLikeDao.insert(filmId, userId);
     }
 

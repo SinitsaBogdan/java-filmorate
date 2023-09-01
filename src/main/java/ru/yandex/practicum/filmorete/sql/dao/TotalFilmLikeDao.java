@@ -23,6 +23,7 @@ public interface TotalFilmLikeDao {
 
     List<Film> getRecommendationForUser(Long userId);
 
+    // insert(Long filmId, Long userId, Double estimation)
     void insert(Long filmId, Long userId);
 
     void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId);
