@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
 
@@ -21,10 +21,10 @@ public class DirectorDaoImpl implements DirectorDao {
     @Override
     public List<Director> findAll() {
         List<Director> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM DIRECTORS;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildDirector(row));
         return result;
     }
 
@@ -35,7 +35,7 @@ public class DirectorDaoImpl implements DirectorDao {
                     "WHERE id = ?;",
                 rowId
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildDirector(row));
         else return Optional.empty();
     }
 
@@ -82,12 +82,5 @@ public class DirectorDaoImpl implements DirectorDao {
                 "DELETE FROM DIRECTORS WHERE name = ?;",
                 name
         );
-    }
-
-    protected Director buildModel(@NotNull SqlRowSet row) {
-        return Director.builder()
-                .id(row.getLong("ID"))
-                .name(row.getString("NAME"))
-                .build();
     }
 }
