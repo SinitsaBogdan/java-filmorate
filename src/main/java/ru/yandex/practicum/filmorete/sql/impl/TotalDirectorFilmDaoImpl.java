@@ -48,22 +48,10 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     }
 
     @Override
-    public List<TotalDirectorFilm> findById(Long directorId) {
-        List<TotalDirectorFilm> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_FILM_DIRECTOR " +
-                        "WHERE director_id = ?;",
-                directorId
-        );
-        while (rows.next()) result.add(buildModel(rows));
-        return result;
-    }
-
-    @Override
     public void insert(Long filmId, Long directorId) {
         jdbcTemplate.update(
                 "INSERT INTO TOTAL_FILM_DIRECTOR (film_id, director_id) " +
-                        "VALUES (?, ?);",
+                    "VALUES (?, ?);",
                 filmId, directorId
         );
     }
@@ -83,6 +71,13 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
         jdbcTemplate.update(
                 "DELETE FROM TOTAL_FILM_DIRECTOR WHERE film_id = ?;",
                 filmId
+        );
+    }
+
+    @Override
+    public void delete() {
+        jdbcTemplate.update(
+            "DELETE FROM TOTAL_FILM_DIRECTOR;"
         );
     }
 
