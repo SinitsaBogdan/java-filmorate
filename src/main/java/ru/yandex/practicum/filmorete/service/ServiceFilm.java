@@ -9,8 +9,10 @@ import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
 import ru.yandex.practicum.filmorete.model.*;
 import ru.yandex.practicum.filmorete.sql.dao.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceFilm.SERVICE_ERROR_COLLECTIONS_IN_NULL;
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
@@ -34,10 +36,10 @@ public class ServiceFilm {
 
     @Autowired
     public ServiceFilm(
-            FilmDao filmDao, UserDao userDao,
-            TotalDirectorFilmDao totalDirectorFilmDao,
-            TotalFilmLikeDao totalFilmLikeDao,
-            TotalGenreFilmDao totalGenreFilmDao
+        FilmDao filmDao, UserDao userDao,
+        TotalDirectorFilmDao totalDirectorFilmDao,
+        TotalFilmLikeDao totalFilmLikeDao,
+        TotalGenreFilmDao totalGenreFilmDao
     ) {
         this.filmDao = filmDao;
         this.userDao = userDao;
@@ -71,8 +73,8 @@ public class ServiceFilm {
     public Film createFilm(Film film) {
         checkValidFilm(film);
         Long filmId = filmDao.insert(
-                film.getMpa().getId(), film.getName(), film.getDescription(),
-                film.getReleaseDate(), film.getDuration()
+            film.getMpa().getId(), film.getName(), film.getDescription(),
+            film.getReleaseDate(), film.getDuration()
         );
 
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
@@ -95,9 +97,9 @@ public class ServiceFilm {
         Optional<Film> optionalFilm = filmDao.findFilm(film.getId());
         if (optionalFilm.isPresent()) {
             filmDao.update(
-                    film.getId(), film.getMpa().getId(),
-                    film.getName(), film.getDescription(),
-                    film.getReleaseDate(), film.getDuration()
+                film.getId(), film.getMpa().getId(),
+                film.getName(), film.getDescription(),
+                film.getReleaseDate(), film.getDuration()
             );
 
             List<TotalDirectorFilm> totalDirectorFilms = totalDirectorFilmDao.findAllTotalDirectorFilm(film.getId());
@@ -114,7 +116,8 @@ public class ServiceFilm {
         if (!totalGenreFilms.isEmpty()) totalGenreFilmDao.deleteAllFilmId(film.getId());
         if (film.getGenres() != null) {
             for (Genre genreFilm : film.getGenres()) {
-                Optional<TotalGenreFilm> totalGenreFilm = totalGenreFilmDao.findTotalGenreFilm(film.getId(), genreFilm.getId());
+                Optional<TotalGenreFilm> totalGenreFilm =
+                    totalGenreFilmDao.findTotalGenreFilm(film.getId(), genreFilm.getId());
                 if (totalGenreFilm.isEmpty()) totalGenreFilmDao.insert(film.getId(), genreFilm.getId());
             }
         }
@@ -155,5 +158,14 @@ public class ServiceFilm {
 
     public void clearStorage() {
         filmDao.delete();
+    }
+
+    public List<Film> getFilmsBySearchParam(String query, List<String> by) {
+        List<Film> films = filmDao.getFilmsBySearchParam(query, by);
+
+        return films.stream()
+            .sorted(Comparator.comparing((Film film) -> film.getDirectors().isEmpty())
+                .thenComparing(Film::getName))
+            .collect(Collectors.toList());
     }
 }
