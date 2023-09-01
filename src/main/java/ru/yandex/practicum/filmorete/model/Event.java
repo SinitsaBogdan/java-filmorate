@@ -30,4 +30,13 @@ public class Event {
 
     @Positive
     private Long entityId;
+
+    public Event(Long eventId, Long timestamp, Long userId, EventType eventType, EventOperation operation, Long entityId) {
+        this.eventId = eventId;
+        this.timestamp = timestamp;
+        this.userId = userId;
+        this.eventType = eventType;
+        this.operation = operation;
+        this.entityId = entityId;
+    }
 }

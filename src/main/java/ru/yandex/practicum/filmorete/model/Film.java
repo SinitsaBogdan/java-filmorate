@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class Film {
 
     @Positive
@@ -41,6 +43,16 @@ public class Film {
 
     @Builder.Default
     private List<Director> directors = new ArrayList<>();
+
+    public Film(Long id, String name, String description, LocalDate releaseDate, Integer duration, Integer rate, Mpa mpa) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.rate = rate;
+        this.mpa = mpa;
+    }
 
     public void addGenre(Genre genre) {
         genres.add(genre);

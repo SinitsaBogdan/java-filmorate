@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 @Jacksonized
+@AllArgsConstructor
 public class User {
 
     @Positive

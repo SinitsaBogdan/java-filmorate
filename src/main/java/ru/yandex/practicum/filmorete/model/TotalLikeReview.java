@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import javax.validation.constraints.Positive;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class TotalLikeReview {
 
     @Positive
@@ -17,5 +19,5 @@ public class TotalLikeReview {
     private Long userId;
 
     @NotNull
-    private boolean typeLike;
+    private Boolean typeLike;
 }
