@@ -1,10 +1,10 @@
 package ru.yandex.practicum.filmorete.exeptions;
 
-public enum MessageErrorServiceReview {
+public enum MessageErrorServiceEvent {
 
-    SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS(
-            "Отзывов не найдено!",
-            "Отсутствуют результаты поиска!",
+    SERVICE_ERROR_EVENT_COLLECTIONS_IS_NULL(
+            "Пустая коллекция событий",
+            "Нет записей о событиях!",
             404
     );
 
@@ -14,7 +14,7 @@ public enum MessageErrorServiceReview {
 
     public final int httpStatusCode;
 
-    MessageErrorServiceReview(String name, String description, int httpStatusCode) {
+    MessageErrorServiceEvent(String name, String description, int httpStatusCode) {
         this.name = name;
         this.description = description;
         this.httpStatusCode = httpStatusCode;

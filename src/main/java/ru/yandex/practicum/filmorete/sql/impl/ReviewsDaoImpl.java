@@ -29,10 +29,40 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
+    public Optional<Review> findById(Long rowId) {
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM REVIEWS;"
+        );
+        if (rows.next()) return Optional.of(buildModel(rows));
+        else return Optional.empty();
+    }
+
+    @Override
+    public List<Review> findAll(Boolean isPositive) {
+        List<Review> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM REVIEWS WHERE is_positive = ?;", isPositive
+        );
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
+    }
+
+    @Override
+    public List<Review> findAll(Integer useful) {
+        List<Review> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM REVIEWS WHERE useful = ?;", useful
+        );
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
+    }
+
+    @Override
     public List<Review> findAll(Long userId) {
         List<Review> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM REVIEWS WHERE user_id = ?;", userId
+                "SELECT * FROM REVIEWS WHERE user_id = ?;",
+                userId
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;
@@ -60,32 +90,10 @@ public class ReviewsDaoImpl implements ReviewDao {
         return result;
     }
 
-
-
-    @Override
-    public List<Review> findAll(Boolean isPositive) {
-        List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM REVIEWS WHERE is_positive = ?;", isPositive
-        );
-        while (rows.next()) result.add(buildModel(rows));
-        return result;
-    }
-
-    @Override
-    public List<Review> findAll(Integer useful) {
-        List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM REVIEWS WHERE useful = ?;", useful
-        );
-        while (rows.next()) result.add(buildModel(rows));
-        return result;
-    }
-
     @Override
     public Optional<Review> findByReviewId(Long reviewId) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM REVIEWS " +
+                    "SELECT * FROM REVIEWS " +
                     "WHERE id = ?;",
                 reviewId
         );
@@ -116,7 +124,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     public void update(Long id, String content, Boolean isPositive) {
         jdbcTemplate.update(
                 "UPDATE REVIEWS " +
-                    "SET " +
+                        "SET " +
                         "content = ?, " +
                         "is_positive = ? " +
                     "WHERE id = ?;",

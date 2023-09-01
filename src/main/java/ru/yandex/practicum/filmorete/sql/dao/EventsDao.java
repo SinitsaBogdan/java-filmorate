@@ -15,7 +15,11 @@ public interface EventsDao {
 
     Optional<Event> findByEventId(Long eventId);
 
+    Optional<Event> findByEventTypeAndEntityId(EventType eventType, Long eventId);
+
     void insert(EventType eventType, EventOperation operation, Long userId, Long entityId);
+
+    void insert(Long id, EventType eventType, EventOperation operation, Long userId, Long entityId);
 
     void update(Long id, EventType eventType, EventOperation operation, Long userId, Long entityId);
 

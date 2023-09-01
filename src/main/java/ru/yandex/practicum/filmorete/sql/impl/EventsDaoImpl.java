@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -33,7 +34,8 @@ public class EventsDaoImpl implements EventsDao {
     public List<Event> findAllByUserId(Long userId) {
         List<Event> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM EVENTS WHERE userId = ?;"
+                "SELECT * FROM EVENTS WHERE user_id = ?;",
+                userId
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;
@@ -42,8 +44,18 @@ public class EventsDaoImpl implements EventsDao {
     @Override
     public Optional<Event> findByEventId(Long eventId) {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM EVENTS WHERE eventId = ?;",
+                "SELECT * FROM EVENTS WHERE id = ?;",
                 eventId
+        );
+        if (rows.next()) return Optional.of(buildModel(rows));
+        else return Optional.empty();
+    }
+
+    @Override
+    public Optional<Event> findByEventTypeAndEntityId(EventType eventType, Long eventId) {
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM EVENTS WHERE id = ? AND type = ?;",
+                eventId, eventType.name()
         );
         if (rows.next()) return Optional.of(buildModel(rows));
         else return Optional.empty();
@@ -52,23 +64,32 @@ public class EventsDaoImpl implements EventsDao {
     @Override
     public void insert(EventType eventType, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
-                "INSERT INTO EVENTS (userId, eventType, operation, entityId) " +
-                "VALUES (?, ?, ?, ?);",
-                eventType, operation, userId, entityId
+                "INSERT INTO EVENTS (user_id, type, operation, entity_id, timestamp) " +
+                        "VALUES (?, ?, ?, ?, ?);",
+                userId, eventType.name(), operation.name(), entityId, LocalDateTime.now()
         );
     }
 
     @Override
-    public void update(Long eventId, EventType eventType, EventOperation operation, Long userId, Long entityId) {
+    public void insert(Long id, EventType type, EventOperation operation, Long userId, Long entityId) {
+        jdbcTemplate.update(
+                "INSERT INTO EVENTS (id, user_id, type, operation, entity_id, timestamp) " +
+                        "VALUES (?, ?, ?, ?, ?);",
+                id, userId, type.name(), operation.name(), entityId, LocalDateTime.now()
+        );
+    }
+
+    @Override
+    public void update(Long id, EventType type, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
                 "UPDATE EVENTS " +
-                    "SET " +
-                        "eventType = ?, " +
+                        "SET " +
+                        "type = ?, " +
                         "operation = ?, " +
-                        "userId = ?, " +
-                        "entityId = ? " +
-                    "WHERE eventId = ?;",
-                eventType, operation, userId, entityId, eventId
+                        "user_id = ?, " +
+                        "entity_id = ? " +
+                        "WHERE id = ?;",
+                type.name(), operation.name(), userId, entityId, id
         );
     }
 
@@ -80,10 +101,10 @@ public class EventsDaoImpl implements EventsDao {
     }
 
     @Override
-    public void deleteByEventId(Long eventId) {
+    public void deleteByEventId(Long id) {
         jdbcTemplate.update(
-                "DELETE FROM EVENTS WHERE event_id = ?;",
-                eventId
+                "DELETE FROM EVENTS WHERE id = ?;",
+                id
         );
     }
 
@@ -91,7 +112,7 @@ public class EventsDaoImpl implements EventsDao {
     public void deleteAll(EventType eventType) {
         jdbcTemplate.update(
                 "DELETE FROM EVENTS WHERE type = ?;",
-                eventType
+                eventType.name()
         );
     }
 
@@ -99,7 +120,7 @@ public class EventsDaoImpl implements EventsDao {
     public void deleteAll(EventOperation operation) {
         jdbcTemplate.update(
                 "DELETE FROM EVENTS WHERE operation = ?;",
-                operation
+                operation.name()
         );
     }
 
@@ -114,7 +135,7 @@ public class EventsDaoImpl implements EventsDao {
     protected Event buildModel(@NotNull SqlRowSet row) {
         return Event.builder()
                 .eventId(row.getLong("ID"))
-                .timestamp(row.getLong("TIMESTAMP"))
+                .timestamp(Objects.requireNonNull(row.getTimestamp("TIMESTAMP")).getTime())
                 .userId(row.getLong("USER_ID"))
                 .eventType(EventType.valueOf(row.getString("TYPE")))
                 .operation(EventOperation.valueOf(row.getString("OPERATION")))

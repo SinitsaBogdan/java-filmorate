@@ -5,12 +5,16 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundReviewStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
+import ru.yandex.practicum.filmorete.enums.EventOperation;
+import ru.yandex.practicum.filmorete.enums.EventType;
+import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.model.Review;
 import ru.yandex.practicum.filmorete.model.TotalLikeReview;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.ReviewDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalLikeReviewDao;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
+import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +34,14 @@ public class ServiceReview {
 
     private final TotalLikeReviewDao totalReviewLikeDao;
 
-    private ServiceReview(ReviewDao reviewDao, UserDao userDao, FilmDao filmDao, TotalLikeReviewDao totalReviewLikeDao) {
+    private final EventsDao eventsDao;
+
+    private ServiceReview(ReviewDao reviewDao, UserDao userDao, FilmDao filmDao, TotalLikeReviewDao totalReviewLikeDao, EventsDao eventsDao) {
         this.reviewDao = reviewDao;
         this.userDao = userDao;
         this.filmDao = filmDao;
         this.totalReviewLikeDao = totalReviewLikeDao;
+        this.eventsDao = eventsDao;
     }
 
     /**
@@ -61,9 +68,12 @@ public class ServiceReview {
      * Добавление нового отзыва [ REVIEWS ].
      */
     public Review add(@NotNull Review review) {
-        if (userDao.findUser(review.getUserId()).isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        if (filmDao.findFilm(review.getFilmId()).isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        if (userDao.findUser(review.getUserId()).isEmpty())
+            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (filmDao.findFilm(review.getFilmId()).isEmpty())
+            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         Long reviewId = reviewDao.insert(review.getContent(), review.getIsPositive(), review.getUserId(), review.getFilmId());
+        eventsDao.insert(EventType.REVIEW, EventOperation.ADD, review.getUserId(), reviewId);
         return reviewDao.findByReviewId(reviewId).get();
     }
 
@@ -71,10 +81,14 @@ public class ServiceReview {
      * Обновление существующего отзыва [ REVIEWS ].
      */
     public Review update(@NotNull Review review) {
-        if (userDao.findUser(review.getUserId()).isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        if (filmDao.findFilm(review.getFilmId()).isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        if (reviewDao.findByReviewId(review.getReviewId()).isEmpty()) throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
+        if (userDao.findUser(review.getUserId()).isEmpty())
+            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (filmDao.findFilm(review.getFilmId()).isEmpty())
+            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        if (reviewDao.findByReviewId(review.getReviewId()).isEmpty())
+            throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
         reviewDao.update(review.getReviewId(), review.getContent(), review.getIsPositive());
+        eventsDao.insert(EventType.REVIEW, EventOperation.UPDATE, review.getUserId(), review.getReviewId());
         return reviewDao.findByReviewId(review.getReviewId()).get();
     }
 
@@ -89,7 +103,11 @@ public class ServiceReview {
      * Удаление отзыва по ID [ REVIEWS ].
      */
     public void delete(Long reviewId) {
-        reviewDao.delete(reviewId);
+        Optional<Event> event = eventsDao.findByEventTypeAndEntityId(EventType.REVIEW, reviewId);
+        if (event.isPresent()) {
+            reviewDao.delete(reviewId);
+            eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, event.get().getUserId(), reviewId);
+        }
     }
 
     /**
@@ -106,5 +124,6 @@ public class ServiceReview {
     public void deleteReviewLike(Long reviewLikeId, Long userId) {
         totalReviewLikeDao.delete(reviewLikeId, userId);
         reviewDao.recalculationPositive(reviewLikeId);
+        eventsDao.insert(EventType.LIKE, EventOperation.ADD, userId, reviewLikeId);
     }
 }

@@ -9,6 +9,8 @@ public interface ReviewDao {
 
     List<Review> findAll();
 
+    Optional<Review> findById(Long rowId);
+
     List<Review> findAll(Long userId);
 
     List<Review> findAll(Boolean isPositive);
