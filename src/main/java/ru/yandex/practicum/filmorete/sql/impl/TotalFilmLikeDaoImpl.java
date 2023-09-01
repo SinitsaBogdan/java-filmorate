@@ -18,10 +18,6 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final FilmDaoImpl filmDao;
-
-    private final UserDaoImpl userDao;
-
     @Override
     public List<Film> findPopularFilms(Integer limit) {
         Map<Long, Film> result = new HashMap<>();
@@ -387,22 +383,23 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                     "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
                     "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
                     "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                    "WHERE f.id IN (" +
-                        "SELECT f.id FROM FILMS AS f " +
-                        "ORDER BY (" +
-                            "SELECT COUNT(*) " +
-                            "FROM TOTAL_FILM_LIKE AS l " +
-                        "WHERE l.film_id = f.id" +
-                        ") DESC" +
+                    "WHERE " +
+                        "f.id IN (" +
+                            "SELECT f.id FROM FILMS AS f " +
+                            "ORDER BY (" +
+                                "SELECT COUNT(*) " +
+                                "FROM TOTAL_FILM_LIKE AS l " +
+                                "WHERE l.film_id = f.id" +
+                            ") DESC" +
                         ")" +
                         "AND f.id IN ( " +
-                        "SELECT film_id " +
-                        "FROM total_film_like " +
-                        "WHERE user_id = ? AND film_id IN ( " +
-                        "SELECT film_id " +
-                        "FROM total_film_like " +
-                        "WHERE user_id = ? " +
-                        ")" +
+                            "SELECT film_id " +
+                            "FROM total_film_like " +
+                            "WHERE user_id = ? AND film_id IN ( " +
+                                "SELECT film_id " +
+                                "FROM total_film_like " +
+                                "WHERE user_id = ? " +
+                            ")" +
                         ")",
                 firstUserId, secondUserId
         );
@@ -442,21 +439,22 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "g.name AS genre_name, " +
                         "d.id AS director_id, " +
                         "d.name AS director_name " +
-                        "FROM FILMS AS f " +
-                        "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                        "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                        "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                        "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
-                        "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
-                        "WHERE f.id IN ( " +
-                        "SELECT tlf.film_id " +
-                        "FROM TOTAL_FILM_LIKE AS tlf " +
-                        "WHERE tlf.user_id = ? " +
+                    "FROM FILMS AS f " +
+                    "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
+                    "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
+                    "WHERE " +
+                        "f.id IN ( " +
+                            "SELECT tlf.film_id " +
+                            "FROM TOTAL_FILM_LIKE AS tlf " +
+                            "WHERE tlf.user_id = ? " +
                         ") " +
                         "AND NOT f.id IN ( " +
-                        "SELECT tlf.film_id " +
-                        "FROM TOTAL_FILM_LIKE AS tlf " +
-                        "WHERE tlf.user_id = ? " +
+                            "SELECT tlf.film_id " +
+                            "FROM TOTAL_FILM_LIKE AS tlf " +
+                            "WHERE tlf.user_id = ? " +
                         ") " +
                         "ORDER BY f.id;",
                 friendByFilmsId.get(), userId
@@ -523,7 +521,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public void insert(Long filmId, Long userId) {
         jdbcTemplate.update(
                 "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id) " +
-                        "VALUES(?, ?);",
+                    "VALUES(?, ?);",
                 filmId, userId
         );
     }
@@ -532,7 +530,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId) {
         jdbcTemplate.update(
                 "UPDATE TOTAL_FILM_LIKE SET film_id = ?, user_id = ? " +
-                        "WHERE film_id = ? AND user_id = ?;",
+                    "WHERE film_id = ? AND user_id = ?;",
                 filmId, userId, searchFilmId, searchUserId
         );
     }
@@ -548,7 +546,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public void delete(Long filmId, Long userId) {
         jdbcTemplate.update(
                 "DELETE FROM TOTAL_FILM_LIKE " +
-                        "WHERE film_id = ? AND user_id = ?;",
+                    "WHERE film_id = ? AND user_id = ?;",
                 filmId, userId
         );
     }
