@@ -9,7 +9,13 @@ public interface TotalFilmLikeDao {
 
     List<Film> findPopularFilms(Integer limit);
 
+    List<Film> findPopularFilms(Integer limit, Integer genreId);
+
+    List<Film> findPopularFilmsSortByYear(Integer limit, Integer year);
+
     List<User> findUserToLikeFilm(Long filmId);
+
+    List<Film> findPopularFilms(Integer limit, Integer searchGenreId, Integer year);
 
     List<Film> findFilmToLikeUser(Long userId);
 
