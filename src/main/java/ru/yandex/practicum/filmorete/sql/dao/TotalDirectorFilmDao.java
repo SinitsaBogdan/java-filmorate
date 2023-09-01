@@ -10,7 +10,7 @@ public interface TotalDirectorFilmDao {
 
     List<TotalDirectorFilm> findAll();
 
-    Optional<TotalDirectorFilm> findById(Long rowId);
+    List<TotalDirectorFilm> findById(Long directorId);
 
     List<TotalDirectorFilm> findAllTotalDirectorFilm(Long filmId);
 
@@ -21,6 +21,8 @@ public interface TotalDirectorFilmDao {
     void deleteAllByFilmId(Long filmId);
 
     List<Film> findPopularFilmsByDirector(Long directorId);
+
+    void delete();
 
     List<Film> findFilmsByDirectorSortedByYear(Long directorId);
 }

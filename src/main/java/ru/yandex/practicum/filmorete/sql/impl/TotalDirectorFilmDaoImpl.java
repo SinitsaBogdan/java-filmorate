@@ -48,14 +48,15 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     }
 
     @Override
-    public Optional<TotalDirectorFilm> findById(Long rowId) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
+    public List<TotalDirectorFilm> findById(Long directorId) {
+        List<TotalDirectorFilm> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_DIRECTOR " +
                 "WHERE director_id = ?;",
-                rowId
+                directorId
         );
-        if (row.next()) return Optional.of(buildModel(row));
-        else return Optional.empty();
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
@@ -87,35 +88,37 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
 
     @Override
     public List<Film> findPopularFilmsByDirector(Long directorId) {
-        Map<Long, Film> result = new HashMap<>();
+        Set<Long> filmsId = new HashSet<>();
+        List<Film> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(generateSqlRequest() + "WHERE f.id IN ( SELECT film_id FROM " +
                 "TOTAL_FILM_DIRECTOR WHERE director_id = ?) " +
                 "ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) DESC;", directorId);
         while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
             Integer genreId = rows.getInt("GENRE_ID");
             String genreName = rows.getString("GENRE_NAME");
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
-            if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
-                result.put(filmId, film);
+            Film film = filmDao.buildModel(rows);
+            if (filmsId.contains(film.getId())) {
+                continue;
             }
             if (genreName != null) {
                 Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
+                film.addGenre(genre);
             }
             if (dirName != null) {
                 Director director = Director.builder().id(dirId).name(dirName).build();
-                result.get(filmId).addDirector(director);
+                film.addDirector(director);
             }
+            result.add(film);
+            filmsId.add(film.getId());
         }
-        if (result.values().isEmpty()) return new ArrayList<>();
-        else return new ArrayList<>(result.values());
+        return result;
     }
 
     @Override
     public List<Film> findFilmsByDirectorSortedByYear(Long directorId) {
+        Set<Long> filmsId = new HashSet<>();
         List<Film> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT " +
@@ -149,15 +152,17 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
             Film film = filmDao.buildModel(rows);
+            if (filmsId.contains(film.getId())) {
+                continue;
+            }
             if (genreName != null) {
                 Genre genre = Genre.builder().id(genreId).name(genreName).build();
                 film.addGenre(genre);
             }
-            if (dirName != null) {
-                Director director = Director.builder().id(dirId).name(dirName).build();
-                film.addDirector(director);
-            }
+            Director director = Director.builder().id(dirId).name(dirName).build();
+            film.addDirector(director);
             result.add(film);
+            filmsId.add(film.getId());
         }
         return result;
     }
@@ -183,6 +188,13 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
                 "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
                 "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
                 "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id ";
+    }
+
+    @Override
+    public void delete() {
+        jdbcTemplate.update(
+                "DELETE FROM TOTAL_FILM_DIRECTOR;"
+        );
     }
 
     public TotalDirectorFilm buildModel(@NotNull SqlRowSet row) {
