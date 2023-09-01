@@ -33,13 +33,13 @@ public class EventsDaoImplTest {
         userDao.delete();
 
         userDao.insert(
-                1L, "Ã‡ÍÒËÏ", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
+                1L, "–ú–∞–∫—Å–∏–º", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
         );
         userDao.insert(
-                2L, "»‚‡Ì", LocalDate.of(1974, 7, 15), "Ivan", "ivan@mail.ru"
+                2L, "–ò–≤–∞–Ω", LocalDate.of(1974, 7, 15), "Ivan", "ivan@mail.ru"
         );
         userDao.insert(
-                3L, "ŒÎ¸„‡", LocalDate.of(1995, 6, 17), "Olga", "olga@email.ru"
+                3L, "–û–ª—å–≥–∞", LocalDate.of(1995, 6, 17), "Olga", "olga@email.ru"
         );
 
         eventsDao.insert(1L, EventType.REVIEW, EventOperation.UPDATE, 1L, 21L);
