@@ -2,14 +2,13 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
-import ru.yandex.practicum.filmorete.model.Mpa;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 
 import java.time.LocalDate;
@@ -24,10 +23,8 @@ public class FilmDaoImpl implements FilmDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Film> findAllFilms() {
-        Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-            "SELECT " +
+    public List<Film> getFilmsBySearchParam(String query, List<String> by) {
+        String sql = "SELECT " +
                 "f.id AS film_id, " +
                 "f.NAME AS film_name, " +
                 "f.description AS film_description, " +
@@ -44,17 +41,85 @@ public class FilmDaoImpl implements FilmDao {
                 "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
                 "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
                 "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
-                "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
-                "ORDER BY f.id;"
-        );
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long dirId = rows.getLong("DIRECTOR_ID");
-            String dirName = rows.getString("DIRECTOR_NAME");
+                "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id ";
+
+        StringBuilder sqlBuilder = new StringBuilder(sql);
+        sqlBuilder.append("WHERE ");
+        List<String> conditions = new ArrayList<>();
+
+        if (by.contains("director") && by.contains("title")) {
+            conditions.add("(f.name ILIKE '%" + query + "%' OR d.name ILIKE '%" + query + "%')");
+        } else if (by.contains("director")) {
+            conditions.add("d.name ILIKE '%" + query + "%'");
+        } else if (by.contains("title")) {
+            conditions.add("f.name ILIKE '%" + query + "%'");
+        }
+        if (!conditions.isEmpty()) {
+            sqlBuilder.append(String.join(" OR ", conditions));
+        } else {
+            return Collections.emptyList();
+        }
+
+        sqlBuilder.append(" ORDER BY f.id");
+        SqlRowSet row = jdbcTemplate.queryForRowSet(sqlBuilder.toString());
+
+        Map<Long, Film> result = new HashMap<>();
+        while (row.next()) {
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long directorId = row.getLong("DIRECTOR_ID");
+            String directorName = row.getString("DIRECTOR_NAME");
+
             if (!result.containsKey(filmId)) {
-                Film film = buildModel(rows);
+                Film film = FactoryModel.buildFilm(row);
+                result.put(filmId, film);
+            }
+            if (genreName != null) {
+                Genre genre = Genre.builder().id(genreId).name(genreName).build();
+                result.get(filmId).addGenre(genre);
+            }
+            if (directorName != null) {
+                Director director = Director.builder().id(directorId).name(directorName).build();
+                result.get(filmId).addDirector(director);
+            }
+        }
+
+        return new ArrayList<>(result.values());
+    }
+
+    @Override
+    public List<Film> findAllFilms() {
+        Map<Long, Film> result = new HashMap<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT " +
+                        "f.id AS film_id, " +
+                        "f.NAME AS film_name, " +
+                        "f.description AS film_description, " +
+                        "f.release_date AS film_release_date, " +
+                        "f.duration AS film_duration, " +
+                        "r.id AS mpa_id, " +
+                        "r.name AS mpa_name, " +
+                        "g.id AS genre_id, " +
+                        "g.name AS genre_name, " +
+                        "d.id AS director_id, " +
+                        "d.name AS director_name " +
+                    "FROM FILMS AS f " +
+                    "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
+                    "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
+                    "ORDER BY f.id;"
+        );
+        while (row.next()) {
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+            if (!result.containsKey(filmId)) {
+                Film film = FactoryModel.buildFilm(row);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -73,36 +138,36 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public Optional<Film> findFilm(Long rowId) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-            "SELECT " +
-                "f.id AS film_id, " +
-                "f.name AS film_name, " +
-                "f.description AS film_description, " +
-                "f.release_date AS film_release_date, " +
-                "f.duration AS film_duration, " +
-                "r.id AS mpa_id, " +
-                "r.name AS mpa_name, " +
-                "g.id AS genre_id, " +
-                "g.name AS genre_name, " +
-                "d.id AS director_id, " +
-                "d.name AS director_name " +
-                "FROM FILMS AS f " +
-                "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
-                "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
-                "WHERE f.id = ? " +
-                "ORDER BY f.id;",
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT " +
+                        "f.id AS film_id, " +
+                        "f.name AS film_name, " +
+                        "f.description AS film_description, " +
+                        "f.release_date AS film_release_date, " +
+                        "f.duration AS film_duration, " +
+                        "r.id AS mpa_id, " +
+                        "r.name AS mpa_name, " +
+                        "g.id AS genre_id, " +
+                        "g.name AS genre_name, " +
+                        "d.id AS director_id, " +
+                        "d.name AS director_name " +
+                    "FROM FILMS AS f " +
+                    "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
+                    "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
+                    "WHERE f.id = ? " +
+                    "ORDER BY f.id;",
             rowId
         );
-        while (rows.next()) {
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long dirId = rows.getLong("DIRECTOR_ID");
-            String dirName = rows.getString("DIRECTOR_NAME");
+        while (row.next()) {
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
             if (!result.containsKey(rowId)) {
-                Film film = buildModel(rows);
+                Film film = FactoryModel.buildFilm(row);
                 result.put(rowId, film);
             }
             if (genreName != null) {
@@ -146,14 +211,14 @@ public class FilmDaoImpl implements FilmDao {
     public void update(Long searchRowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate,
                        Integer duration) {
         jdbcTemplate.update(
-            "UPDATE FILMS " +
-                "SET " +
-                "mpa_id = ?, " +
-                "name = ?, " +
-                "description = ?, " +
-                "release_date = ?, " +
-                "duration = ? " +
-                "WHERE id = ?;",
+                "UPDATE FILMS " +
+                    "SET " +
+                        "mpa_id = ?, " +
+                        "name = ?, " +
+                        "description = ?, " +
+                        "release_date = ?, " +
+                        "duration = ? " +
+                    "WHERE id = ?;",
             mpaId, name, descriptions, releaseDate, duration, searchRowId
         );
     }
@@ -162,14 +227,14 @@ public class FilmDaoImpl implements FilmDao {
     public void update(String searchName, Integer mpaId, String name, String descriptions, LocalDate releaseDate,
                        Integer duration) {
         jdbcTemplate.update(
-            "UPDATE FILMS " +
-                "SET " +
-                "mpa_id = ?, " +
-                "name = ?, " +
-                "description = ?, " +
-                "release_date = ?, " +
-                "duration = ? " +
-                "WHERE name = ?;",
+                "UPDATE FILMS " +
+                    "SET " +
+                        "mpa_id = ?, " +
+                        "name = ?, " +
+                        "description = ?, " +
+                        "release_date = ?, " +
+                        "duration = ? " +
+                    "WHERE name = ?;",
             mpaId, name, descriptions, releaseDate, duration, searchName
         );
     }
@@ -217,87 +282,5 @@ public class FilmDaoImpl implements FilmDao {
             "DELETE FROM FILMS WHERE mpa_id = ?;",
             mpaId
         );
-    }
-
-    protected Film buildModel(@NotNull SqlRowSet row) {
-        Mpa mpa = Mpa.builder()
-            .id(row.getInt("MPA_ID"))
-            .name(row.getString("MPA_NAME"))
-            .build();
-
-        return Film.builder()
-            .id(row.getLong("FILM_ID"))
-            .mpa(mpa)
-            .name(row.getString("FILM_NAME"))
-            .description(Objects.requireNonNull(row.getString("FILM_DESCRIPTION")))
-            .releaseDate(Objects.requireNonNull(row.getDate("FILM_RELEASE_DATE")).toLocalDate())
-            .duration(row.getInt("FILM_DURATION"))
-            .build();
-    }
-
-    @Override
-    public List<Film> getFilmsBySearchParam(String query, List<String> by) {
-        String sql = "SELECT " +
-            "f.id AS film_id, " +
-            "f.NAME AS film_name, " +
-            "f.description AS film_description, " +
-            "f.release_date AS film_release_date, " +
-            "f.duration AS film_duration, " +
-            "r.id AS mpa_id, " +
-            "r.name AS mpa_name, " +
-            "g.id AS genre_id, " +
-            "g.name AS genre_name, " +
-            "d.id AS director_id, " +
-            "d.name AS director_name " +
-            "FROM FILMS AS f " +
-            "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-            "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-            "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-            "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
-            "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id ";
-
-        StringBuilder sqlBuilder = new StringBuilder(sql);
-        sqlBuilder.append("WHERE ");
-        List<String> conditions = new ArrayList<>();
-
-        if (by.contains("director") && by.contains("title")) {
-            conditions.add("(f.name ILIKE '%" + query + "%' OR d.name ILIKE '%" + query + "%')");
-        } else if (by.contains("director")) {
-            conditions.add("d.name ILIKE '%" + query + "%'");
-        } else if (by.contains("title")) {
-            conditions.add("f.name ILIKE '%" + query + "%'");
-        }
-        if (!conditions.isEmpty()) {
-            sqlBuilder.append(String.join(" OR ", conditions));
-        } else {
-            return Collections.emptyList();
-        }
-
-        sqlBuilder.append(" ORDER BY f.id");
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(sqlBuilder.toString());
-
-        Map<Long, Film> result = new HashMap<>();
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long directorId = rows.getLong("DIRECTOR_ID");
-            String directorName = rows.getString("DIRECTOR_NAME");
-
-            if (!result.containsKey(filmId)) {
-                Film film = buildModel(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
-            if (directorName != null) {
-                Director director = Director.builder().id(directorId).name(directorName).build();
-                result.get(filmId).addDirector(director);
-            }
-        }
-
-        return new ArrayList<>(result.values());
     }
 }
