@@ -2,17 +2,16 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -24,20 +23,20 @@ public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
 
     public Optional<Long> findLastIdUser() {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT MAX(id) AS last_id FROM USERS;"
+        Long result = jdbcTemplate.queryForObject(
+                "SELECT MAX(id) AS last_id FROM USERS;",
+                Long.class
         );
-        if (row.next()) return Optional.of(row.getLong("last_id"));
-        else return Optional.empty();
+        return Optional.ofNullable(result);
     }
 
     @Override
     public List<User> findAllUsers() {
         List<User> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM USERS;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildUser(row));
         return result;
     }
 
@@ -47,7 +46,7 @@ public class UserDaoImpl implements UserDao {
                 "SELECT * FROM USERS WHERE id = ?;",
                 userId
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildUser(row));
         else return Optional.empty();
     }
 
@@ -57,14 +56,15 @@ public class UserDaoImpl implements UserDao {
                 "SELECT * FROM USERS WHERE email = ?;",
                 email
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildUser(row));
         else return Optional.empty();
     }
 
     @Override
     public void insert(Long id, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                "INSERT INTO USERS (id, name, birthday, login, email) VALUES (?, ?, ?, ?, ?);",
+                "INSERT INTO USERS (id, name, birthday, login, email) " +
+                    "VALUES (?, ?, ?, ?, ?);",
                 id, name, birthday, login, email
         );
     }
@@ -72,7 +72,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                "INSERT INTO USERS (name, birthday, login, email) VALUES (?, ?, ?, ?);",
+                "INSERT INTO USERS (name, birthday, login, email) " +
+                    "VALUES (?, ?, ?, ?);",
                 name, birthday, login, email
         );
     }
@@ -80,7 +81,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(Long rowId, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                "UPDATE USERS SET name = ?, birthday = ?, login = ?, email = ? WHERE  id = ?;",
+                "UPDATE USERS SET name = ?, birthday = ?, login = ?, email = ? " +
+                    "WHERE  id = ?;",
                 name, birthday, login, email, rowId
         );
     }
@@ -106,15 +108,5 @@ public class UserDaoImpl implements UserDao {
                 "DELETE FROM USERS WHERE login = ?;",
                 login
         );
-    }
-
-    protected User buildModel(@NotNull SqlRowSet row) {
-        return User.builder()
-                .id(row.getLong("id"))
-                .name(row.getString("name"))
-                .birthday(Objects.requireNonNull(row.getDate("birthday")).toLocalDate())
-                .login(row.getString("login"))
-                .email(row.getString("email"))
-                .build();
     }
 }
