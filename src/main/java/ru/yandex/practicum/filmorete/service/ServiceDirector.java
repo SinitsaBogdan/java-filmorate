@@ -16,11 +16,14 @@ import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceDirecto
 @Service
 public class ServiceDirector {
 
-    private final DirectorDao directorDao;
+     private final DirectorDao directorDao;
 
     private ServiceDirector(DirectorDao directorsDao, TotalDirectorFilmDao totalFilmDirectorDao) {
         this.directorDao = directorsDao;
     }
+     private ServiceDirector(DirectorDao directorsDao) {
+         this.directorDao = directorsDao;
+     }
 
     /**
      * Запрос режиссёра из таблицы DIRECTORS по ID [ DIRECTORS ].
