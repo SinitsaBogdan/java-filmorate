@@ -58,4 +58,20 @@ public class DirectorController {
     public void removeSearchId(@PathVariable Long directorId) {
         serviceDirector.deleteSearchId(directorId);
     }
+
+    /**
+     * Удаление режиссёра по имени.
+     */
+    @DeleteMapping("/name/{directorName}")
+    public void removeSearchId(@PathVariable String directorName) {
+        serviceDirector.deleteSearchName(directorName);
+    }
+
+    /**
+     * Удаление всех режиссёров.
+     */
+    @DeleteMapping()
+    public void removeAll() {
+        serviceDirector.deleteAll();
+    }
 }
