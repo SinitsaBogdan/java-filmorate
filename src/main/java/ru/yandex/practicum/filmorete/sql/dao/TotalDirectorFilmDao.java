@@ -23,7 +23,5 @@ public interface TotalDirectorFilmDao {
 
     List<Film> findPopularFilmsByDirector(Long directorId);
 
-    void delete();
-
     List<Film> findFilmsByDirectorSortedByYear(Long directorId);
 }
