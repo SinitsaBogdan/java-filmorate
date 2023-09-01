@@ -45,7 +45,7 @@ class ReviewControllerTest {
         totalGenreFilmDao.delete();
         filmDao.delete();
         userDao.delete();
-        reviewDao.delete();
+        reviewDao.deleteAll();
 
         filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
         filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
@@ -56,7 +56,7 @@ class ReviewControllerTest {
         userDao.insert(1L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
         userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
 
-        reviewDao.insert(1L, "content-1", false, 1L, 1L);
+        reviewDao.insert(1L, "content-1", true, 1L, 1L);
         reviewDao.insert(2L, "content-2", true, 2L, 1L);
         reviewDao.insert(3L, "content-3", true, 2L, 2L);
 

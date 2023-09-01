@@ -9,10 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Mpa;
-import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
-import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
+import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,8 +25,8 @@ class FilmDaoImplTest {
     private final FilmDao daoFilm;
     private final TotalGenreFilmDao daoTotalGenreFilm;
     private final TotalFilmLikeDao daoTotalFilmLike;
-    private final RosterMpaDaoImpl enumMpaDao;
-    private final UserDaoImpl userDao;
+    private final RosterMpaDao enumMpaDao;
+    private final UserDao userDao;
     private final RosterGenreDao enumGenreDao;
 
     @BeforeEach

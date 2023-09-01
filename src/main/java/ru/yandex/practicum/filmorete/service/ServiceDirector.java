@@ -2,13 +2,11 @@ package ru.yandex.practicum.filmorete.service;
 
 import java.util.List;
 import java.util.Optional;
-import javax.validation.constraints.NotBlank;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundDirectorStorage;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalDirectorFilmDao;
 
 import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceDirector.SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS;
 
@@ -17,7 +15,7 @@ public class ServiceDirector {
 
      private final DirectorDao directorDao;
 
-     private ServiceDirector(DirectorDao directorsDao, TotalDirectorFilmDao totalFilmDirectorDao) {
+     private ServiceDirector(DirectorDao directorsDao) {
          this.directorDao = directorsDao;
      }
 
@@ -71,7 +69,7 @@ public class ServiceDirector {
     public void deleteSearchId(Long directorId) {
         directorDao.delete(directorId);
     }
-
+  
     /**
      * Удаление режиссёра по имени [ DIRECTORS ].
      */
