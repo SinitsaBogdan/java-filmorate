@@ -70,6 +70,64 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
+    public List<Film> findPopularFilms(Integer limit, Integer searchGenreId) {
+        Map<Long, Film> result = new HashMap<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT " +
+                        "f.id AS film_id, " +
+                        "f.name AS film_name, " +
+                        "f.description AS film_description, " +
+                        "f.release_date AS film_release_date, " +
+                        "f.duration AS film_duration, " +
+                        "r.id AS mpa_id, " +
+                        "r.name AS mpa_name, " +
+                        "g.id AS genre_id, " +
+                        "g.name AS genre_name, " +
+                        "(" +
+                            "SELECT COUNT(*) " +
+                            "FROM TOTAL_FILM_LIKE AS l " +
+                            "WHERE l.film_id = f.id" +
+                        ") AS size_like " +
+                    "FROM FILMS AS f " +
+                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                    "WHERE " +
+                        "f.id IN (" +
+                            "SELECT f.id " +
+                            "FROM FILMS AS f " +
+                            "ORDER BY (" +
+                                "SELECT COUNT(*) " +
+                                "FROM TOTAL_FILM_LIKE AS l " +
+                                "WHERE l.film_id = f.id" +
+                            ") DESC " +
+                            "LIMIT 10" +
+                        ") " +
+                    "AND f.id IN (" +
+                        "SELECT film_id " +
+                        "FROM TOTAL_GENRE_FILM " +
+                        "WHERE genre_id = ?" +
+                    ");",
+                limit, searchGenreId
+        );
+        while (rows.next()) {
+            Long filmId = rows.getLong("FILM_ID");
+            Integer genreId = rows.getInt("GENRE_ID");
+            String genreName = rows.getString("GENRE_NAME");
+            if (!result.containsKey(filmId)) {
+                Film film = filmDao.buildModel(rows);
+                result.put(filmId, film);
+            }
+            if (genreName != null) {
+                Genre genre = Genre.builder().id(genreId).name(genreName).build();
+                result.get(filmId).addGenre(genre);
+            }
+        }
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
+    }
+
+    @Override
     public List<User> findUserToLikeFilm(Long filmId) {
         List<User> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(

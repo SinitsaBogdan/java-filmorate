@@ -62,6 +62,10 @@ public class ServiceFilm {
         return totalFilmLikeDao.findPopularFilms(count);
     }
 
+    public List<Film> getPopularFilms(Integer count, Integer genreId) {
+        return totalFilmLikeDao.findPopularFilms(count, genreId);
+    }
+
     public Film getFilm(Long id) {
         Optional<Film> optional = filmDao.findFilm(id);
         if (optional.isPresent()) return optional.get();
