@@ -75,6 +75,13 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     }
 
     @Override
+    public void delete() {
+        jdbcTemplate.update(
+            "DELETE FROM TOTAL_FILM_DIRECTOR;"
+        );
+    }
+
+    @Override
     public List<Film> findPopularFilmsByDirector(Long directorId) {
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(generateSqlRequest() + "WHERE f.id IN ( SELECT film_id FROM " +
