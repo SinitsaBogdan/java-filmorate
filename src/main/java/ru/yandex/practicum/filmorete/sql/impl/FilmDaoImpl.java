@@ -2,14 +2,13 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
-import ru.yandex.practicum.filmorete.model.Mpa;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 
 import java.time.LocalDate;
@@ -33,6 +32,7 @@ public class FilmDaoImpl implements FilmDao {
                 "f.description AS film_description, " +
                 "f.release_date AS film_release_date, " +
                 "f.duration AS film_duration, " +
+                "f.rate AS film_rate, " +
                 "r.id AS mpa_id, " +
                 "r.name AS mpa_name, " +
                 "g.id AS genre_id, " +
@@ -54,7 +54,7 @@ public class FilmDaoImpl implements FilmDao {
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
             if (!result.containsKey(filmId)) {
-                Film film = buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -80,6 +80,7 @@ public class FilmDaoImpl implements FilmDao {
                 "f.description AS film_description, " +
                 "f.release_date AS film_release_date, " +
                 "f.duration AS film_duration, " +
+                "f.rate AS film_rate, " +
                 "r.id AS mpa_id, " +
                 "r.name AS mpa_name, " +
                 "g.id AS genre_id, " +
@@ -102,7 +103,7 @@ public class FilmDaoImpl implements FilmDao {
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
             if (!result.containsKey(rowId)) {
-                Film film = buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(rowId, film);
             }
             if (genreName != null) {
@@ -219,22 +220,6 @@ public class FilmDaoImpl implements FilmDao {
         );
     }
 
-    protected Film buildModel(@NotNull SqlRowSet row) {
-        Mpa mpa = Mpa.builder()
-            .id(row.getInt("MPA_ID"))
-            .name(row.getString("MPA_NAME"))
-            .build();
-
-        return Film.builder()
-            .id(row.getLong("FILM_ID"))
-            .mpa(mpa)
-            .name(row.getString("FILM_NAME"))
-            .description(Objects.requireNonNull(row.getString("FILM_DESCRIPTION")))
-            .releaseDate(Objects.requireNonNull(row.getDate("FILM_RELEASE_DATE")).toLocalDate())
-            .duration(row.getInt("FILM_DURATION"))
-            .build();
-    }
-
     @Override
     public List<Film> getFilmsBySearchParam(String query, List<String> by) {
         String sql = "SELECT " +
@@ -245,6 +230,7 @@ public class FilmDaoImpl implements FilmDao {
             "f.duration AS film_duration, " +
             "r.id AS mpa_id, " +
             "r.name AS mpa_name, " +
+            "f.rate AS film_rate, " +
             "g.id AS genre_id, " +
             "g.name AS genre_name, " +
             "d.id AS director_id, " +
@@ -285,7 +271,7 @@ public class FilmDaoImpl implements FilmDao {
             String directorName = rows.getString("DIRECTOR_NAME");
 
             if (!result.containsKey(filmId)) {
-                Film film = buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -297,7 +283,6 @@ public class FilmDaoImpl implements FilmDao {
                 result.get(filmId).addDirector(director);
             }
         }
-
         return new ArrayList<>(result.values());
     }
 }

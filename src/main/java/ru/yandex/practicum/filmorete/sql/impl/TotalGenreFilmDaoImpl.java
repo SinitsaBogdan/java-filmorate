@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.model.TotalGenreFilm;
 import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
@@ -21,8 +21,6 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final RosterGenreDaoImpl rosterGenreDao;
-
     @Override
     public Optional<TotalGenreFilm> findTotalGenreFilm(Long filmId, Integer genreId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
@@ -30,7 +28,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
                     "WHERE film_id = ? AND genre_id = ?;",
                 filmId, genreId
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildTotalGenreFilm(row));
         else return Optional.empty();
     }
 
@@ -47,7 +45,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
                     ");",
                 id
         );
-        while (rows.next()) result.add(rosterGenreDao.buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildGenre(rows));
         return result;
     }
 
@@ -57,7 +55,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_GENRE_FILM;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalGenreFilm(rows));
         return result;
     }
 
@@ -70,7 +68,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
                     "WHERE film_id = ?;",
                 filmId
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalGenreFilm(rows));
         return result;
     }
 
@@ -83,7 +81,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
                     "WHERE genre_id = ?;",
                 genreId
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalGenreFilm(rows));
         return result;
     }
 
@@ -128,12 +126,5 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
                     "WHERE genre_id = ?;",
                 genreId
         );
-    }
-
-    protected TotalGenreFilm buildModel(@NotNull SqlRowSet row) {
-        return TotalGenreFilm.builder()
-                .filmId(row.getLong("film_id"))
-                .genreId(row.getLong("genre_id"))
-                .build();
     }
 }
