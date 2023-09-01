@@ -20,16 +20,11 @@ public class ServiceEvent {
     private final EventsDao eventsDao;
     private final UserDao userDao;
 
-    /**
-     * Алина молодец, мучаемся дальше
-     * Запрос всех событий из таблицы EVENTS по USER_ID [ EVENTS ].
-     */
     public List<Event> getAllEventByUserId(Long userId) {
         Optional<User> user = userDao.findUser(userId);
         if (user.isEmpty()) {
             throw new ExceptionNotFoundUserStorage(MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         }
-        List<Event> allByUserId = eventsDao.findAllByUserId(userId);
-        return allByUserId;
+        return eventsDao.findAllByUserId(userId);
     }
 }
