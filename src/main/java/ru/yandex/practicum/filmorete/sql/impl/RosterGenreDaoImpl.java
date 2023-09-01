@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 
@@ -24,21 +24,21 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT name FROM ROSTER_GENRE;"
         );
-        while (rows.next()) result.add(rows.getString("name"));
+        while (row.next()) result.add(row.getString("name"));
         return result;
     }
 
     @Override
     public List<Genre> findAllGenre() {
         List<Genre> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_GENRE " +
                     "ORDER BY id ASC;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(FactoryModel.buildGenre(row));
         return result;
     }
 
@@ -49,7 +49,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                     "WHERE id = ?;",
                 rowId
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
     }
 
@@ -60,7 +60,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                     "WHERE name = ?;",
                 name
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
     }
 
@@ -115,12 +115,5 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                     "WHERE name = ?;",
                 name
         );
-    }
-
-    protected Genre buildModel(@NotNull SqlRowSet row) {
-        return Genre.builder()
-                .id(row.getInt("id"))
-                .name(row.getString("name"))
-                .build();
     }
 }
