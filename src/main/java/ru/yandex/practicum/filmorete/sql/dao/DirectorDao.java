@@ -13,6 +13,8 @@ public interface DirectorDao {
 
     Long insert(String name);
 
+    void insert(Long rowId, String name);
+
     void update(Long id, String name);
 
     void delete();

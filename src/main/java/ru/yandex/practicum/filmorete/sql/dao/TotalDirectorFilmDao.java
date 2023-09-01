@@ -9,6 +9,8 @@ public interface TotalDirectorFilmDao {
 
     List<TotalDirectorFilm> findAll();
 
+    List<TotalDirectorFilm> findById(Long directorId);
+
     List<TotalDirectorFilm> findAllTotalDirectorFilm(Long filmId);
 
     void insert(Long filmId, Long directorId);

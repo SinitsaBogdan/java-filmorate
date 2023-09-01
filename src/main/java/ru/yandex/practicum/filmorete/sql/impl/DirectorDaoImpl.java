@@ -52,6 +52,15 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
+    public void insert(Long rowId, String name) {
+        jdbcTemplate.update(
+                "INSERT INTO DIRECTORS (id, name) " +
+                        "VALUES(?, ?);",
+                rowId, name
+        );
+    }
+
+    @Override
     public void update(Long id, String name) {
         jdbcTemplate.update(
                 "UPDATE DIRECTORS " +
