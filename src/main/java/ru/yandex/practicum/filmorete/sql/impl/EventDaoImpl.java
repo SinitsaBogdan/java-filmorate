@@ -16,7 +16,8 @@ import java.util.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EventsDaoImpl implements EventsDao {
+public class EventDaoImpl implements EventsDao {
+
     private final JdbcTemplate jdbcTemplate;
 
     @Override

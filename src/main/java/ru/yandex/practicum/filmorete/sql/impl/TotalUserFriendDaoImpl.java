@@ -18,7 +18,7 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
+public class TotalUserFriendDaoImpl implements TotalUserFriendsDao {
 
     private final JdbcTemplate jdbcTemplate;
 

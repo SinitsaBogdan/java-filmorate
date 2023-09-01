@@ -14,7 +14,7 @@ import java.util.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ReviewsDaoImpl implements ReviewDao {
+public class ReviewDaoImpl implements ReviewDao {
 
     private final JdbcTemplate jdbcTemplate;
 

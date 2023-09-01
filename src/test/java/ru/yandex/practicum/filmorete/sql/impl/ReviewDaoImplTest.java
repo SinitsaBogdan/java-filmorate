@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class ReviewsDaoImplTest {
+class ReviewDaoImplTest {
 
     private final RosterMpaDao enumMpaDao;
     private final ReviewDao reviewDao;

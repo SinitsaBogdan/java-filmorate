@@ -21,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class TotalUserFriendsDaoImplTest {
+class TotalUserFriendDaoImplTest {
 
-    private final TotalUserFriendsDaoImpl totalUserFriendsDao;
+    private final TotalUserFriendDaoImpl totalUserFriendsDao;
 
     private final UserDao userDao;
 
