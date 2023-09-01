@@ -50,6 +50,25 @@ public class EventsDaoImpl implements EventsDao {
     }
 
     @Override
+    public Optional<Event> findByEventTypeAndEntityId(EventType eventType, Long eventId) {
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM EVENTS WHERE id = ? and type = ?;",
+                eventId, eventType.name()
+        );
+        if (rows.next()) return Optional.of(buildModel(rows));
+        else return Optional.empty();
+    }
+
+    @Override
+    public void insert(EventType eventType, EventOperation operation, Long userId, Long entityId) {
+        jdbcTemplate.update(
+                "INSERT INTO EVENTS (user_id, type, operation, entity_id) " +
+                        "VALUES (?, ?, ?, ?, ?);",
+                userId, eventType.name(), operation.name(), entityId
+        );
+    }
+
+    @Override
     public void insert(Long id, EventType type, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
                 "INSERT INTO EVENTS (id, user_id, type, operation, entity_id) " +

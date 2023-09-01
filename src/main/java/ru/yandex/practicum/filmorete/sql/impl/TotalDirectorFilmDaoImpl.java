@@ -48,17 +48,6 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
     }
 
     @Override
-    public Optional<TotalDirectorFilm> findById(Long rowId) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_FILM_DIRECTOR " +
-                "WHERE director_id = ?;",
-                rowId
-        );
-        if (row.next()) return Optional.of(buildModel(row));
-        else return Optional.empty();
-    }
-
-    @Override
     public void insert(Long filmId, Long directorId) {
         jdbcTemplate.update(
                 "INSERT INTO TOTAL_FILM_DIRECTOR (film_id, director_id) " +
