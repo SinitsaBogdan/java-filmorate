@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorete.model.Film;
-import ru.yandex.practicum.filmorete.model.TotalFilmLike;
+import ru.yandex.practicum.filmorete.model.TotalLikeFilm;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
@@ -77,21 +77,21 @@ class TotalFilmLikeDaoImplTest {
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        List<TotalFilmLike> result = totalFilmLikeDao.findAllTotalFilmLike();
+        List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLike();
         assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("findRowsByFilmId(filmId)")
     public void testFindAllRowsByFilmId() {
-        List<TotalFilmLike> result = totalFilmLikeDao.findAllTotalFilmLikeByFilmId(1L);
+        List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLikeByFilmId(1L);
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRowsByUserId(userId)")
     public void testFindAllRowsSearchUserId() {
-        List<TotalFilmLike> result = totalFilmLikeDao.findAllTotalFilmLikeByUserId(2L);
+        List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLikeByUserId(2L);
         assertEquals(result.size(), 2);
     }
 
@@ -100,7 +100,7 @@ class TotalFilmLikeDaoImplTest {
     public void testInsertRowByFilmIdUserId() {
         totalFilmLikeDao.delete(1L, 1L);
         totalFilmLikeDao.insert(1L, 1L);
-        List<TotalFilmLike> result = totalFilmLikeDao.findAllTotalFilmLike();
+        List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLike();
         assertEquals(result.size(), 3);
     }
 
@@ -108,7 +108,7 @@ class TotalFilmLikeDaoImplTest {
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         totalFilmLikeDao.delete();
-        List<TotalFilmLike> result = totalFilmLikeDao.findAllTotalFilmLike();
+        List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLike();
         assertEquals(result.size(), 0);
     }
 
@@ -116,7 +116,7 @@ class TotalFilmLikeDaoImplTest {
     @DisplayName("delete(filmId, userId)")
     public void testDeleteRowSearchFilmIdUserId() {
         totalFilmLikeDao.delete(1L, 2L);
-        List<TotalFilmLike> result = totalFilmLikeDao.findAllTotalFilmLike();
+        List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLike();
         assertEquals(result.size(), 2);
     }
 }
