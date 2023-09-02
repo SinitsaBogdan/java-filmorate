@@ -10,14 +10,8 @@ import ru.yandex.practicum.filmorete.exeptions.*;
 @ControllerAdvice
 public class HandlerController {
 
-    @ExceptionHandler(ExceptionValidationFilm.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionValidationFilm exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionValidationUser.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionValidationUser exception) {
+    @ExceptionHandler(ExceptionValidation.class)
+    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionValidation exception) {
         ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
         return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
     }

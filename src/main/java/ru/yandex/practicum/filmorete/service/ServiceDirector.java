@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundDirectorStorage;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
 
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceDirector.SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.DirectorErrorMessage.SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS;
 
 @Service
 public class ServiceDirector {

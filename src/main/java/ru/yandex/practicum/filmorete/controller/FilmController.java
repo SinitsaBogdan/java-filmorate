@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorete.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorete.exeptions.ExceptionValidationFilm;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionValidation;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.service.ServiceFilm;
@@ -36,7 +36,7 @@ public class FilmController {
      * Добавление нового фильма.
      */
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) throws ExceptionValidationFilm {
+    public Film create(@Valid @RequestBody Film film) throws ExceptionValidation {
         return serviceFilms.createFilm(film);
     }
 
@@ -44,7 +44,7 @@ public class FilmController {
      * Обновление существующего фильма.
      */
     @PutMapping
-    public Film update(@Valid @RequestBody Film film) throws ExceptionValidationFilm {
+    public Film update(@Valid @RequestBody Film film) throws ExceptionValidation {
         return serviceFilms.updateFilm(film);
     }
 

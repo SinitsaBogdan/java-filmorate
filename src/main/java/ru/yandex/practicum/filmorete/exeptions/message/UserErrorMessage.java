@@ -1,6 +1,6 @@
-package ru.yandex.practicum.filmorete.exeptions;
+package ru.yandex.practicum.filmorete.exeptions.message;
 
-public enum MessageErrorValidUser {
+public enum UserErrorMessage {
 
     VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS(
             "Ошибка обработки поля email",
@@ -29,7 +29,7 @@ public enum MessageErrorValidUser {
 
     public final int httpStatusCode;
 
-    MessageErrorValidUser(String name, String description, int httpStatusCode) {
+    UserErrorMessage(String name, String description, int httpStatusCode) {
         this.name = name;
         this.description = description;
         this.httpStatusCode = httpStatusCode;

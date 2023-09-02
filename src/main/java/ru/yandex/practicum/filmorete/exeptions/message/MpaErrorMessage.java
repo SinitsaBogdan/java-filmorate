@@ -1,7 +1,7 @@
-package ru.yandex.practicum.filmorete.exeptions;
+package ru.yandex.practicum.filmorete.exeptions.message;
 
 
-public enum MessageErrorServiceMpa {
+public enum MpaErrorMessage {
 
     SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS(
             "Рейтинг не найден.",
@@ -15,7 +15,7 @@ public enum MessageErrorServiceMpa {
 
     public final int httpStatusCode;
 
-    MessageErrorServiceMpa(String name, String description, int httpStatusCode) {
+    MpaErrorMessage(String name, String description, int httpStatusCode) {
         this.name = name;
         this.description = description;
         this.httpStatusCode = httpStatusCode;
