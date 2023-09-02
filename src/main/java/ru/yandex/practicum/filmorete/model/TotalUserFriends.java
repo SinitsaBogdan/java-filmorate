@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorete.enums.StatusFriend;
 @Data
 @Builder
 public class TotalUserFriends {
-
     @Positive
     private Long userId;
 

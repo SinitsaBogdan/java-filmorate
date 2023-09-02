@@ -9,7 +9,6 @@ import javax.validation.constraints.Positive;
 @Data
 @Builder
 public class TotalLikeReview {
-
     @Positive
     private Long reviewId;
 
