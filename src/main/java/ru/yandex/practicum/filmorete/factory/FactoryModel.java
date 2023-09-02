@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class FactoryModel {
 
-    public static @NotNull Director buildDirector (@NotNull SqlRowSet row) {
+    public static @NotNull Director buildDirector(@NotNull SqlRowSet row) {
         Long id = row.getLong("ID");
         String name = row.getString("NAME");
         return Director.builder().id(id).name(name).build();
