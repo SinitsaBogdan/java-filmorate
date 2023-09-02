@@ -67,15 +67,15 @@ public class ServiceFilm {
 
     public List<Film> getPopularFilms(Integer count, Integer genreId, Integer year) {
         if (genreId != null && year == null) {
-            return totalFilmLikeDao.findPopularFilms(count, genreId);
+            return totalFilmLikeDao.findPopularIsLimitAndGenre(count, genreId);
         }
         if (genreId == null && year != null) {
-            return totalFilmLikeDao.findPopularFilmsSortByYear(count, year);
+            return totalFilmLikeDao.findPopularIsLimitAndYear(count, year);
         }
         if (genreId != null) {
-            return totalFilmLikeDao.findPopularFilms(count, genreId, year);
+            return totalFilmLikeDao.findPopularIsLimitAndGenreAndYear(count, genreId, year);
         }
-        return totalFilmLikeDao.findPopularFilms(count);
+        return totalFilmLikeDao.findPopularIsLimit(count);
     }
 
     public Film getFilm(Long id) {
@@ -150,7 +150,7 @@ public class ServiceFilm {
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        totalFilmLikeDao.delete(filmId, userId);
+        totalFilmLikeDao.deleteAll(filmId, userId);
         eventsDao.insert(EventType.LIKE, EventOperation.REMOVE, userId, filmId);
     }
 

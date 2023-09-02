@@ -64,7 +64,7 @@ public class FilmControllerTest {
     @BeforeEach
     public void beforeEach() {
         totalGenreFilmDao.delete();
-        totalFilmLikeDao.delete();
+        totalFilmLikeDao.deleteAll();
         filmDao.deleteAll();
         userDao.delete();
         directorDao.delete();
@@ -209,9 +209,9 @@ public class FilmControllerTest {
         @Test
         @DisplayName("Запрос списка общих фильмов, когда он должен быть пустым")
         public void methodGet_EmptyCommonFilms() throws Exception {
-            totalFilmLikeDao.delete(1L, 2L);
-            totalFilmLikeDao.delete(2L, 1L);
-            totalFilmLikeDao.delete(2L, 2L);
+            totalFilmLikeDao.deleteAll(1L, 2L);
+            totalFilmLikeDao.deleteAll(2L, 1L);
+            totalFilmLikeDao.deleteAll(2L, 2L);
 
             mockMvc.perform(get("/films/common?userId=1&friendId=2"))
                 .andExpect(status().isOk())

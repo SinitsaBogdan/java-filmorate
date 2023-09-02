@@ -86,7 +86,7 @@ public class ServiceUser {
     }
 
     public List<Film> getRecommendation(Long userId) {
-        return totalFilmLikeDao.getRecommendationForUser(userId);
+        return totalFilmLikeDao.findRecommendationForUser(userId);
     }
 
     public void removeUser(Long userId) {

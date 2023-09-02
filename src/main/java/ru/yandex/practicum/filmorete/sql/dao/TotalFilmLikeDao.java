@@ -7,33 +7,33 @@ import java.util.List;
 
 public interface TotalFilmLikeDao {
 
-    List<Film> findPopularFilms(Integer limit);
+    List<TotalLikeFilm> findAll();
 
-    List<Film> findPopularFilms(Integer limit, Integer genreId);
+    List<TotalLikeFilm> findAllIsFilmId(Long filmId);
 
-    List<Film> findPopularFilmsSortByYear(Integer limit, Integer year);
+    List<TotalLikeFilm> findAllIsUserId(Long userId);
 
-    List<User> findUserToLikeFilm(Long filmId);
+    List<Film> findPopularIsLimit(Integer limit);
 
-    List<Film> findPopularFilms(Integer limit, Integer searchGenreId, Integer year);
+    List<Film> findPopularIsLimitAndYear(Integer limit, Integer year);
+
+    List<Film> findPopularIsLimitAndGenre(Integer limit, Integer genreId);
+
+    List<Film> findPopularIsLimitAndGenreAndYear(Integer limit, Integer searchGenreId, Integer year);
 
     List<Film> findFilmToLikeUser(Long userId);
 
-    List<TotalLikeFilm> findAllTotalFilmLike();
-
-    List<TotalLikeFilm> findAllTotalFilmLikeByFilmId(Long filmId);
-
-    List<TotalLikeFilm> findAllTotalFilmLikeByUserId(Long userId);
-
     List<Film> findCommonFilms(Long firstId, Long secondId);
 
-    List<Film> getRecommendationForUser(Long userId);
+    List<Film> findRecommendationForUser(Long userId);
+
+    List<User> findUserToLikeFilm(Long filmId);
 
     void insert(Long filmId, Long userId);
 
     void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId);
 
-    void delete();
+    void deleteAll();
 
-    void delete(Long filmId, Long userId);
+    void deleteAll(Long filmId, Long userId);
 }
