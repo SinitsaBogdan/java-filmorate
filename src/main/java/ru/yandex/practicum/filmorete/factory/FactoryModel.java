@@ -12,9 +12,6 @@ import java.util.Objects;
 
 public class FactoryModel {
 
-    private FactoryModel() {
-    }
-
     public static @NotNull Director buildDirector (@NotNull SqlRowSet row) {
         Long id = row.getLong("ID");
         String name = row.getString("NAME");
