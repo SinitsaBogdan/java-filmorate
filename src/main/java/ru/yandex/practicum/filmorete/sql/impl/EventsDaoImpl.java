@@ -37,8 +37,8 @@ public class EventsDaoImpl implements EventsDao {
     public List<Event> findAllByUserId(Long userId) {
         List<Event> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-          "SELECT * FROM EVENTS WHERE user_id = ?;",
-          userId
+                "SELECT * FROM EVENTS WHERE user_id = ?;",
+                userId
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;
@@ -55,13 +55,14 @@ public class EventsDaoImpl implements EventsDao {
     }
 
     @Override
-    public Optional<Event> findByEventTypeAndEntityId(EventType eventType, Long eventId) {
+    public List<Event> findByEventTypeAndEntityId(EventType eventType, Long entityId) {
+        List<Event> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM EVENTS WHERE id = ? AND type = ?;",
-                eventId, eventType.name()
+                "SELECT * FROM EVENTS WHERE entity_id = ? AND type = ?;",
+                entityId, eventType.name()
         );
-        if (rows.next()) return Optional.of(buildModel(rows));
-        else return Optional.empty();
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
     }
 
     @Override
@@ -108,6 +109,14 @@ public class EventsDaoImpl implements EventsDao {
         jdbcTemplate.update(
                 "DELETE FROM EVENTS WHERE id = ?;",
                 id
+        );
+    }
+
+    @Override
+    public void deleteByEventTypeAndEntityId(EventType eventType, Long entityId) {
+        jdbcTemplate.update(
+                "DELETE FROM EVENTS WHERE entity_id = ? AND type = ?;",
+                entityId, eventType.name()
         );
     }
 
