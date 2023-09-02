@@ -89,7 +89,7 @@ public class EventsDaoImpl implements EventsDao {
     public void insert(Long id, EventType type, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
                 "INSERT INTO EVENTS (id, user_id, type, operation, entity_id, timestamp) " +
-                        "VALUES (?, ?, ?, ?, ?);",
+                        "VALUES (?, ?, ?, ?, ?, ?);",
                 id, userId, type.name(), operation.name(), entityId, LocalDateTime.now()
         );
     }
