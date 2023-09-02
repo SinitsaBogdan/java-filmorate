@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorete.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionValidationUser;
 import ru.yandex.practicum.filmorete.model.Event;
@@ -134,7 +132,7 @@ public class UserController {
      * Возвращает ленту событий пользователя.
      */
     @GetMapping("{id}/feed")
-    public ResponseEntity<List<Event>> getEvents(@PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(serviceEvent.getAllEventByUserId(id));
+    public List<Event> getEvents(@PathVariable("id") Long id) {
+        return serviceEvent.getAllEventByUserId(id);
     }
 }

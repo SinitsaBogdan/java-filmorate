@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorete.enums.EventOperation;
+import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
 import ru.yandex.practicum.filmorete.model.*;
@@ -33,19 +35,22 @@ public class ServiceFilm {
 
     private final TotalGenreFilmDao totalGenreFilmDao;
 
+    private final EventsDao eventsDao;
+
 
     @Autowired
     public ServiceFilm(
-        FilmDao filmDao, UserDao userDao,
-        TotalDirectorFilmDao totalDirectorFilmDao,
-        TotalFilmLikeDao totalFilmLikeDao,
-        TotalGenreFilmDao totalGenreFilmDao
-    ) {
+            FilmDao filmDao, UserDao userDao,
+            TotalDirectorFilmDao totalDirectorFilmDao,
+            TotalFilmLikeDao totalFilmLikeDao,
+            TotalGenreFilmDao totalGenreFilmDao,
+            EventsDao eventsDao) {
         this.filmDao = filmDao;
         this.userDao = userDao;
         this.totalDirectorFilmDao = totalDirectorFilmDao;
         this.totalFilmLikeDao = totalFilmLikeDao;
         this.totalGenreFilmDao = totalGenreFilmDao;
+        this.eventsDao = eventsDao;
     }
 
     public List<Film> getAllFilms() {
@@ -146,6 +151,7 @@ public class ServiceFilm {
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalFilmLikeDao.delete(filmId, userId);
+        eventsDao.insert(EventType.LIKE, EventOperation.REMOVE, userId, filmId);
     }
 
     public void addLike(Long filmId, Long userId) {
@@ -155,6 +161,8 @@ public class ServiceFilm {
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalFilmLikeDao.insert(filmId, userId);
+        System.out.println(eventsDao.findByEventTypeAndEntityId(EventType.LIKE, filmId));
+        eventsDao.insert(EventType.LIKE, EventOperation.ADD, userId, filmId);
     }
 
     public List<Film> getFilmsToDirector(Long directorId, @NotNull String sorted) {
