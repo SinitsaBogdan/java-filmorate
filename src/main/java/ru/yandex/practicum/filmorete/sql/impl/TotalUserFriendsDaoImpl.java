@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.enums.StatusFriend;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
@@ -22,8 +23,6 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final UserDaoImpl userDao;
-
     @Override
     public List<User> findFriendsByUser(Long userId) {
         List<User> users = new ArrayList<>();
@@ -36,7 +35,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                     "ORDER BY id ASC;",
                 userId
         );
-        while (rows.next()) users.add(userDao.buildModel(rows));
+        while (rows.next()) users.add(FactoryModel.buildUser(rows));
         return users;
     }
 
@@ -56,7 +55,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                     ");",
                 userId, friendId
         );
-        while (rows.next()) users.add(userDao.buildModel(rows));
+        while (rows.next()) users.add(FactoryModel.buildUser(rows));
         return users;
     }
 
@@ -66,7 +65,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_USER_FRIENDS;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalUserFriends(rows));
         return result;
     }
 
@@ -78,7 +77,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                     "WHERE user_id = ?;",
                 userId
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalUserFriends(rows));
         return result;
     }
 
@@ -90,7 +89,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                     "WHERE friend_id = ?;",
                 friendId
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalUserFriends(rows));
         return result;
     }
 
@@ -102,7 +101,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                     "WHERE status = ?;",
                 status.toString()
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalUserFriends(rows));
         return result;
     }
 
@@ -113,7 +112,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                     "WHERE user_id = ? AND friend_id = ?;",
                 userId, friendId
         );
-        if (rows.next()) return Optional.of(buildModel(rows));
+        if (rows.next()) return Optional.of(FactoryModel.buildTotalUserFriends(rows));
         else return Optional.empty();
     }
 
@@ -176,13 +175,5 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
                     "WHERE status = ?;",
                 status.toString()
         );
-    }
-
-    protected TotalUserFriends buildModel(@NotNull SqlRowSet row) {
-        return TotalUserFriends.builder()
-                .userId(row.getLong("user_id"))
-                .friendId(row.getLong("friend_id"))
-                .statusFriend(StatusFriend.valueOf(row.getString("status")))
-                .build();
     }
 }

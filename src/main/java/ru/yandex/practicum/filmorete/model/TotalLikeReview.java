@@ -18,4 +18,10 @@ public class TotalLikeReview {
 
     @NotNull
     private boolean typeLike;
+
+    public TotalLikeReview(Long reviewId, Long userId, boolean typeLike) {
+        this.reviewId = reviewId;
+        this.userId = userId;
+        this.typeLike = typeLike;
+    }
 }

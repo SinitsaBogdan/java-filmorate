@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 
@@ -38,7 +38,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                 "SELECT * FROM ROSTER_GENRE " +
                     "ORDER BY id ASC;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildGenre(rows));
         return result;
     }
 
@@ -49,7 +49,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                     "WHERE id = ?;",
                 rowId
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
     }
 
@@ -60,7 +60,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                     "WHERE name = ?;",
                 name
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
     }
 
@@ -115,12 +115,5 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
                     "WHERE name = ?;",
                 name
         );
-    }
-
-    protected Genre buildModel(@NotNull SqlRowSet row) {
-        return Genre.builder()
-                .id(row.getInt("id"))
-                .name(row.getString("name"))
-                .build();
     }
 }

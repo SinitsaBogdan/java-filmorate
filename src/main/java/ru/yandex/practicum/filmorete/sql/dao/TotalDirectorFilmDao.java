@@ -9,6 +9,8 @@ public interface TotalDirectorFilmDao {
 
     List<TotalDirectorFilm> findAll();
 
+    List<TotalDirectorFilm> findById(Long directorId);
+
     List<TotalDirectorFilm> findAllTotalDirectorFilm(Long filmId);
 
     void insert(Long filmId, Long directorId);
@@ -16,6 +18,8 @@ public interface TotalDirectorFilmDao {
     void update(Long filmId, Long directorId);
 
     void deleteAllByFilmId(Long filmId);
+
+    void delete();
 
     List<Film> findPopularFilmsByDirector(Long directorId);
 

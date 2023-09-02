@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,4 +18,9 @@ public class Director {
     @NotBlank
     @Size(max = 50)
     private String name;
+
+    public Director(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
