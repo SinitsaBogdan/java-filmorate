@@ -29,17 +29,14 @@ public interface TotalFilmLikeDao {
 
     List<Film> getRecommendationForUser(Long userId);
 
-    // TODO
-    //  Добавить параметр в метод
-    //  insert(Long filmId, Long userId, Integer estimation)
-    void insert(Long filmId, Long userId);
+    void insert(Long filmId, Long userId, Integer estimation);
 
     // TODO Новый метод который пересчитывает среднюю оценку
     //  фильма по всем пользовательским оценкам
     //  и записывает результат в фильм ( 1 или 2 SQL запроса )
     //  recalculationPositive(Long filmId)
 
-    void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId);
+    void update(Long searchFilmId, Long searchUserId, Integer estimation);
 
     void delete();
 

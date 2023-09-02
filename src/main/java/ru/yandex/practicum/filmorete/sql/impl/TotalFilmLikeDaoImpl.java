@@ -527,15 +527,12 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         return entry.map(Map.Entry::getKey);
     }
 
-    // TODO
-    //  Добавить параметр в метод
-    //  insert(Long filmId, Long userId, Integer estimation)
     @Override
-    public void insert(Long filmId, Long userId) {
+    public void insert(Long filmId, Long userId, Integer estimation) {
         jdbcTemplate.update(
-                "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id) " +
-                        "VALUES(?, ?);",
-                filmId, userId
+                "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id, estimation) " +
+                    "VALUES(?, ?, ?);",
+                filmId, userId, estimation
         );
     }
 
@@ -543,11 +540,11 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     // TODO
     //  Добавить параметр в метод
     //  Integer estimation
-    public void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId) {
+    public void update(Long searchFilmId, Long searchUserId, Integer estimation) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_FILM_LIKE SET film_id = ?, user_id = ? " +
-                        "WHERE film_id = ? AND user_id = ?;",
-                filmId, userId, searchFilmId, searchUserId
+                "UPDATE TOTAL_FILM_LIKE SET estimation = ? " +
+                    "WHERE film_id = ? AND user_id = ?;",
+                estimation, searchFilmId, searchUserId
         );
     }
 
