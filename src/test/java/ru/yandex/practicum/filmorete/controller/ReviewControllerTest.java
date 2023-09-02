@@ -14,6 +14,10 @@ import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.time.LocalDate;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -56,14 +60,14 @@ class ReviewControllerTest {
         userDao.insert(1L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
         userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
 
-        reviewDao.insert(1L, "content-1", true, 1L, 1L);
-        reviewDao.insert(2L, "content-2", true, 2L, 1L);
-        reviewDao.insert(3L, "content-3", true, 2L, 2L);
+        reviewDao.insert(101L, "content-1", true, 1L, 1L);
+        reviewDao.insert(102L, "content-2", true, 2L, 1L);
+        reviewDao.insert(103L, "content-3", true, 2L, 2L);
 
-        totalLikeReviewDao.insert(1L, 1L, true);
-        totalLikeReviewDao.insert(2L, 1L, false);
-        totalLikeReviewDao.insert(2L, 2L, false);
-        totalLikeReviewDao.insert(3L, 1L, true);
+        totalLikeReviewDao.insert(101L, 1L, true);
+        totalLikeReviewDao.insert(102L, 1L, false);
+        totalLikeReviewDao.insert(102L, 2L, false);
+        totalLikeReviewDao.insert(103L, 1L, true);
     }
 
     @Nested
@@ -71,23 +75,42 @@ class ReviewControllerTest {
     public class MethodGet {
 
         @Test
-        @DisplayName("Получение отзыва: ID 1")
-        void methodGet_ReviewId1Test() {
+        @DisplayName("Получение отзыва: ID 101")
+        void methodGet_ReviewId1Test() throws Exception {
+            mockMvc.perform(get("/reviews/101"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.reviewId").value(101))
+                    .andExpect(jsonPath("$.content").value("content-1"))
+                    .andExpect(jsonPath("$.isPositive").value("true"))
+                    .andExpect(jsonPath("$.userId").value(1))
+                    .andExpect(jsonPath("$.filmId").value(1))
+                    .andExpect(jsonPath("$.useful").value(0))
+            ;
         }
 
         @Test
         @DisplayName("Запрос отзыва: ID 9999")
         public void methodGet_ReviewId9999Test() throws Exception {
+            mockMvc.perform(get("/reviews/9999"))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Запрос отзыва: ID -1")
         public void methodGet_ReviewIdMinus1Test() throws Exception {
+            mockMvc.perform(get("/reviews/-1"))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Получение всех отзывов")
-        void methodGet_AllReviews() {
+        void methodGet_AllReviews() throws Exception {
+            mockMvc.perform(get("/reviews"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(3))
+            ;
         }
     }
 
