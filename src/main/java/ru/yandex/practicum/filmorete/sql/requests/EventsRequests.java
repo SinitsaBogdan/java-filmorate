@@ -8,7 +8,7 @@ public enum EventsRequests {
         "SELECT * FROM EVENTS;"
     ),
 
-    SELECT_ALL__EVENTS__USER_ID(
+    SELECT_ALL__EVENTS__USER(
         "SELECT * FROM EVENTS " +
             "WHERE user_id = ?;"
     ),
@@ -18,33 +18,33 @@ public enum EventsRequests {
             "WHERE id = ?;"
     ),
 
-    SELECT_ALL__EVENTS__TYPE_ENTITY_ID(
+    SELECT_ALL__EVENTS__ENTITY_TYPE(
         "SELECT * FROM EVENTS " +
             "WHERE entity_id = ? AND type = ?;"
     ),
 
-    SELECT_ALL__EVENTS__TYPE__ENTITY_ID__USER_ID(
+    SELECT_ALL__EVENTS__TYPE_ENTITY_USER(
         "SELECT * FROM EVENTS " +
             "WHERE entity_id = ? AND type = ? AND user_id = ?;"
     ),
 
-    INSERT_ONE__EVENTS__USER_TYPE_OPERATION_ENTITY_TIMESTAMP(
+    INSERT_ONE__EVENTS_FULL__USER_TYPE_OPERATION_ENTITY_TIMESTAMP(
         "INSERT INTO EVENTS (user_id, type, operation, entity_id, timestamp) " +
-        "VALUES (?, ?, ?, ?, ?);"
+            "VALUES (?, ?, ?, ?, ?);"
     ),
 
-    INSERT_ONE__EVENTS_FULL(
+    INSERT_ONE__EVENTS_FULL__ID(
         "INSERT INTO EVENTS (id, user_id, type, operation, entity_id, timestamp) " +
             "VALUES (?, ?, ?, ?, ?, ?);"
     ),
 
-    UPDATE_ONE__EVENTS__SET_TYPE_OPERATION_USER_ID_ENTITY__ID(
+    UPDATE_ONE__EVENTS__SET_TYPE_OPERATION_USER_ENTITY__ID(
         "UPDATE EVENTS " +
             "SET " +
-            "type = ?, " +
-            "operation = ?, " +
-            "user_id = ?, " +
-            "entity_id = ? " +
+                "type = ?, " +
+                "operation = ?, " +
+                "user_id = ?, " +
+                "entity_id = ? " +
             "WHERE id = ?;"
     ),
 
@@ -57,7 +57,7 @@ public enum EventsRequests {
             "WHERE id = ?;"
     ),
 
-    DELETE_ONE__EVENTS__ENTITY_TYPE(
+    DELETE_ONE__EVENTS__ENTITY_ID_TYPE(
         "DELETE FROM EVENTS " +
             "WHERE entity_id = ? AND type = ?;"
     ),

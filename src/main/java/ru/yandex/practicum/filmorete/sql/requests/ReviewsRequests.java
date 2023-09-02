@@ -48,20 +48,20 @@ public enum ReviewsRequests {
     ),
 
     INSERT_ONE__REVIEWS_FULL__CONTENT_IS_POSITIVE_USER_FILM(
-        "INSERT INTO REVIEWS (content, is_positive, user_id, film_id) " +
-            "VALUES (?, ?, ?, ?);"
+            "INSERT INTO REVIEWS (content, is_positive, user_id, film_id) " +
+                "VALUES (?, ?, ?, ?);"
     ),
 
     INSERT_ONE__REVIEWS_FULL(
-        "INSERT INTO REVIEWS (id, content, is_positive, user_id, film_id) " +
-            "VALUES (?, ?, ?, ?, ?);"
+            "INSERT INTO REVIEWS (id, content, is_positive, user_id, film_id) " +
+                "VALUES (?, ?, ?, ?, ?);"
     ),
 
     UPDATE_ONE__REVIEWS_SET_CONTENT_IS_POSITIVE__ID(
         "UPDATE REVIEWS " +
             "SET " +
-            "content = ?, " +
-            "is_positive = ? " +
+                "content = ?, " +
+                "is_positive = ? " +
             "WHERE id = ?;"
     ),
 

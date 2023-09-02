@@ -25,6 +25,6 @@ public class ServiceEvent {
         if (user.isEmpty()) {
             throw new ExceptionNotFoundUserStorage(UserErrorMessage.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         }
-        return eventsDao.findAllByUserId(userId);
+        return eventsDao.findAll(userId);
     }
 }

@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorete.sql.dao.*;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,16 +56,26 @@ class ReviewControllerTest {
 
         filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
         filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(3L, 2, "Фильм 3", "", LocalDate.parse("2000-01-01"), 90);
 
         totalGenreFilmDao.insert(1L, 1);
         totalGenreFilmDao.insert(2L, 2);
+        totalGenreFilmDao.insert(3L, 3);
 
         userDao.insert(1L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
         userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
+        userDao.insert(3L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
 
         reviewDao.insert(101L, "content-1", true, 1L, 1L);
         reviewDao.insert(102L, "content-2", true, 2L, 1L);
         reviewDao.insert(103L, "content-3", true, 2L, 2L);
+        reviewDao.insert(104L, "content-4", false, 3L, 3L);
+
+        totalLikeReviewDao.insert(101L,1L,true);
+        totalLikeReviewDao.insert(102L,2L,true);
+        totalLikeReviewDao.insert(103L,2L,true);
+        totalLikeReviewDao.insert(104L,3L,false);
+
     }
 
     @Nested
@@ -267,18 +278,26 @@ class ReviewControllerTest {
 
         @Test
         @DisplayName("Удаление отзыва по ID")
-        void methodDelete_DeleteReviewByIdTest() {
-
+        void methodDelete_DeleteReviewByIdTest() throws Exception{
+            mockMvc.perform(delete("/reviews/101"))
+                    .andExpect(status().isOk())
+            ;
         }
 
         @Test
         @DisplayName("Удаление лайка отзыва")
-        void methodDelete_ReviewDeleteLike() {
+        void methodDelete_ReviewDeleteLike() throws Exception{
+            mockMvc.perform(delete("/reviews/101/like/1"))
+                    .andExpect(status().isOk())
+            ;
         }
 
         @Test
         @DisplayName("Удаление дизлайка отзыва")
-        void methodDelete_ReviewDeleteDislike() {
+        void methodDelete_ReviewDeleteDislike() throws Exception {
+            mockMvc.perform(delete("/reviews/104/dislike/3"))
+                    .andExpect(status().isOk())
+            ;
         }
     }
 }

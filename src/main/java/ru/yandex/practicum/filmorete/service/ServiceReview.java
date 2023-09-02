@@ -48,7 +48,7 @@ public class ServiceReview {
     }
 
     public List<Review> getAllReviewIsFilmId(Long filmId, Integer count) {
-        return reviewDao.findAllFilmIdAndIsCount(filmId, count);
+        return reviewDao.findAll(filmId, count);
     }
 
     /**
@@ -100,9 +100,9 @@ public class ServiceReview {
     public void delete(Long reviewId) {
         Optional<Review> byReviewId = reviewDao.findByReviewId(reviewId);
         if (byReviewId.isPresent()) {
-            reviewDao.delete(reviewId);
-            for (Event event : eventsDao.findByEventTypeAndEntityId(EventType.LIKE, reviewId)) {
-                eventsDao.deleteByEventTypeAndEntityId(EventType.LIKE, reviewId);
+            reviewDao.deleteAllIsReviewId(reviewId);
+            for (Event event : eventsDao.findAll(EventType.LIKE, reviewId)) {
+                eventsDao.deleteAll(EventType.LIKE, reviewId);
             }
             eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, byReviewId.get().getUserId(), reviewId);
         }
