@@ -26,7 +26,7 @@ public class FactoryModel {
     public static @NotNull Event buildEvent(@NotNull SqlRowSet row) {
         Long id = row.getLong("ID");
         System.out.println(row.getString("TIMESTAMP"));
-        Long timestamp = row.getLong("TIMESTAMP");
+        Long timestamp = Objects.requireNonNull(row.getTimestamp("TIMESTAMP")).getTime();
         Long userId = row.getLong("USER_ID");
         EventType type = EventType.valueOf(row.getString("TYPE"));
         EventOperation operation = EventOperation.valueOf(row.getString("OPERATION"));
