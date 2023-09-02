@@ -39,38 +39,6 @@ public class UserController {
     }
 
     /**
-     * Запрос пользователя по id.
-     */
-    @GetMapping("/{userId}")
-    public User findToId(@PathVariable Long userId) {
-        return serviceUser.getUser(userId);
-    }
-
-    /**
-     * Запрос списка фильмов которые лайкнул пользователь.
-     */
-    @GetMapping("/{userId}/to-like")
-    public List<Film> getUsersToLikeFilm(@PathVariable Long userId) {
-        return serviceFilm.getFilmsToLikeUser(userId);
-    }
-
-    /**
-     * Запрос списка друзей пользователя по id.
-     */
-    @GetMapping("/{userId}/friends")
-    public List<User> getFriends(@PathVariable Long userId) {
-        return serviceUser.getFriends(userId);
-    }
-
-    /**
-     * Запрос общих друзей по двум id.
-     */
-    @GetMapping("/{userId}/friends/common/{friendId}")
-    public List<User> getFriendsCommon(@PathVariable Long userId, @PathVariable Long friendId) {
-        return serviceUser.getFriendsCommon(userId, friendId);
-    }
-
-    /**
      * Добавление нового пользователя.
      */
     @PostMapping
@@ -87,19 +55,19 @@ public class UserController {
     }
 
     /**
-     * Добавление пользователя в друзья по id.
-     */
-    @PutMapping("/{userId}/friends/{friendId}")
-    public void addFriends(@PathVariable Long friendId, @PathVariable Long userId) {
-        serviceUser.addFriend(friendId, userId);
-    }
-
-    /**
      * Удаление всех пользователей.
      */
     @DeleteMapping
     public void clear() {
         serviceUser.clearStorage();
+    }
+
+    /**
+     * Запрос пользователя по id.
+     */
+    @GetMapping("/{userId}")
+    public User findToId(@PathVariable Long userId) {
+        return serviceUser.getUser(userId);
     }
 
     /**
@@ -111,15 +79,22 @@ public class UserController {
     }
 
     /**
-     * Удаление пользователя из друзей по id.
+     * Возвращает ленту событий пользователя.
      */
-    @DeleteMapping("/{userId}/friends/{friendId}")
-    public void deleteFriends(@PathVariable Long userId, @PathVariable Long friendId) {
-        serviceUser.removeFriend(userId, friendId);
+    @GetMapping("{id}/feed")
+    public List<Event> getEvents(@PathVariable("id") Long id) {
+        return serviceEvent.getAllEventByUserId(id);
     }
 
     /**
-     * NEW!!!
+     * Запрос списка фильмов которые лайкнул пользователь.
+     */
+    @GetMapping("/{userId}/to-like")
+    public List<Film> getUsersToLikeFilm(@PathVariable Long userId) {
+        return serviceFilm.getFilmsToLikeUser(userId);
+    }
+
+    /**
      * Возвращает рекомендации по фильмам для просмотра.
      */
     @GetMapping("/{userId}/recommendations")
@@ -128,11 +103,34 @@ public class UserController {
     }
 
     /**
-     * NEW!!!
-     * Возвращает ленту событий пользователя.
+     * Запрос списка друзей пользователя по id.
      */
-    @GetMapping("{id}/feed")
-    public List<Event> getEvents(@PathVariable("id") Long id) {
-        return serviceEvent.getAllEventByUserId(id);
+    @GetMapping("/{userId}/friends")
+    public List<User> getFriends(@PathVariable Long userId) {
+        return serviceUser.getFriends(userId);
+    }
+
+    /**
+     * Добавление пользователя в друзья по id.
+     */
+    @PutMapping("/{userId}/friends/{friendId}")
+    public void addFriends(@PathVariable Long friendId, @PathVariable Long userId) {
+        serviceUser.addFriend(friendId, userId);
+    }
+
+    /**
+     * Удаление пользователя из друзей по id.
+     */
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public void deleteFriends(@PathVariable Long userId, @PathVariable Long friendId) {
+        serviceUser.removeFriend(userId, friendId);
+    }
+
+    /**
+     * Запрос общих друзей по двум id.
+     */
+    @GetMapping("/{userId}/friends/common/{friendId}")
+    public List<User> getFriendsCommon(@PathVariable Long userId, @PathVariable Long friendId) {
+        return serviceUser.getFriendsCommon(userId, friendId);
     }
 }
