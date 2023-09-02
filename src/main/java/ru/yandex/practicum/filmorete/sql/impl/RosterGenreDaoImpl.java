@@ -8,13 +8,11 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static ru.yandex.practicum.filmorete.sql.requests.RosterGenreRequests.*;
-
 
 @Slf4j
 @Component
@@ -26,16 +24,16 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public List<String> findAllColumnName() {
         List<String> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_GENRE__COLUMN_NAME.getSql());
-        while (rows.next()) result.add(rows.getString("name"));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_GENRE__COLUMN_NAME.getSql());
+        while (row.next()) result.add(row.getString("name"));
         return result;
     }
 
     @Override
     public List<Genre> findAll() {
         List<Genre> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_GENRE__NAME.getSql());
-        while (rows.next()) result.add(FactoryModel.buildGenre(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_GENRE__NAME.getSql());
+        while (row.next()) result.add(FactoryModel.buildGenre(row));
         return result;
     }
 

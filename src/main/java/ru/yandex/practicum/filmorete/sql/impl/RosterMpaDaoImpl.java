@@ -8,13 +8,11 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Mpa;
 import ru.yandex.practicum.filmorete.sql.dao.RosterMpaDao;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static ru.yandex.practicum.filmorete.sql.requests.RosterMpaRequests.*;
-
 
 @Slf4j
 @Component
@@ -26,27 +24,27 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     @Override
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_MPA__NAME.getSql()
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_MPA__NAME.getSql()
         );
-        while (rows.next()) result.add(rows.getString("name"));
+        while (row.next()) result.add(row.getString("name"));
         return result;
     }
 
     @Override
     public List<String> findAllDescription() {
         List<String> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_MPA__DESCRIPTION.getSql()
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_MPA__DESCRIPTION.getSql()
         );
-        while (rows.next()) result.add(rows.getString("description"));
+        while (row.next()) result.add(row.getString("description"));
         return result;
     }
 
     @Override
     public List<Mpa> findAllMpa() {
         List<Mpa> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_MPA.getSql()
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_MPA.getSql()
         );
-        while (rows.next()) result.add(FactoryModel.buildMpa(rows));
+        while (row.next()) result.add(FactoryModel.buildMpa(row));
         return result;
     }
 

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.sql.dao.DirectorDao;
-
 import java.util.*;
 
 import static ru.yandex.practicum.filmorete.sql.requests.DirectorRequests.*;
@@ -23,8 +22,8 @@ public class DirectorDaoImpl implements DirectorDao {
     @Override
     public List<Director> find() {
         List<Director> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__DIRECTOR.getSql());
-        while (rows.next()) result.add(FactoryModel.buildDirector(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__DIRECTOR.getSql());
+        while (row.next()) result.add(FactoryModel.buildDirector(row));
         return result;
     }
 

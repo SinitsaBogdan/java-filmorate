@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Review;
 import ru.yandex.practicum.filmorete.sql.dao.ReviewDao;
-
 import java.util.*;
 
 import static ru.yandex.practicum.filmorete.sql.requests.ReviewsRequests.*;
@@ -23,67 +22,67 @@ public class ReviewsDaoImpl implements ReviewDao {
     @Override
     public List<Review> findAll() {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__REVIEWS.getSql());
-        while (rows.next()) result.add(FactoryModel.buildReview(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__REVIEWS.getSql());
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public List<Review> findAll(Long userId) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__REVIEWS__USER_ID.getSql(), userId
         );
-        while (rows.next()) result.add(FactoryModel.buildReview(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public List<Review> findAllIsCount(Integer count) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__REVIEWS__COUNT.getSql(), count
         );
-        while (rows.next()) result.add(FactoryModel.buildReview(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public List<Review> findAll(Long filmId, Integer count) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__REVIEWS__FILM_ID_COUNT.getSql(), filmId, count
         );
-        while (rows.next()) result.add(FactoryModel.buildReview(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public List<Review> findAll(Boolean isPositive) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__REVIEWS__IS_POSITIVE.getSql(), isPositive
         );
-        while (rows.next()) result.add(FactoryModel.buildReview(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public List<Review> findAllIsUseful(Integer useful) {
         List<Review> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__REVIEWS__USEFUL.getSql(), useful
         );
-        while (rows.next()) result.add(FactoryModel.buildReview(rows));
+        while (row.next()) result.add(FactoryModel.buildReview(row));
         return result;
     }
 
     @Override
     public Optional<Review> findByReviewId(Long reviewId) {
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__REVIEWS__ID.getSql(), reviewId
         );
-        if (rows.next()) return Optional.of(FactoryModel.buildReview(rows));
+        if (row.next()) return Optional.of(FactoryModel.buildReview(row));
         return Optional.empty();
     }
 

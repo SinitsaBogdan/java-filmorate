@@ -28,61 +28,61 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     @Override
     public List<User> findAll(Long userId) {
         List<User> users = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS__ID.getSql(), userId);
-        while (rows.next()) users.add(FactoryModel.buildUser(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS__ID.getSql(), userId);
+        while (row.next()) users.add(FactoryModel.buildUser(row));
         return users;
     }
 
     @Override
     public List<User> findFriendsCommon(Long userId, Long friendId) {
         List<User> users = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__USER_COMMON_FRIENDS__USER_FRIEND.getSql(), userId, friendId);
-        while (rows.next()) users.add(FactoryModel.buildUser(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USER_COMMON_FRIENDS__USER_FRIEND.getSql(), userId, friendId);
+        while (row.next()) users.add(FactoryModel.buildUser(row));
         return users;
     }
 
     @Override
     public List<TotalUserFriends> findAll() {
         List<TotalUserFriends> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS.getSql());
-        while (rows.next()) result.add(FactoryModel.buildTotalUserFriends(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS.getSql());
+        while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
         return result;
     }
 
     @Override
     public List<TotalUserFriends> findAllIsUser(Long userId) {
         List<TotalUserFriends> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS__USER.getSql(), userId);
-        while (rows.next()) result.add(FactoryModel.buildTotalUserFriends(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS__USER.getSql(), userId);
+        while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
         return result;
     }
 
     @Override
     public List<TotalUserFriends> findAllIsFriend(Long friendId) {
         List<TotalUserFriends> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS__FRIEND.getSql(), friendId);
-        while (rows.next()) result.add(FactoryModel.buildTotalUserFriends(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS__FRIEND.getSql(), friendId);
+        while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
         return result;
     }
 
     @Override
     public List<TotalUserFriends> findAll(StatusFriend status) {
         List<TotalUserFriends> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__TOTAL_USER_FRIENDS__STATUS.getSql(),
                 status.toString()
         );
-        while (rows.next()) result.add(FactoryModel.buildTotalUserFriends(rows));
+        while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
         return result;
     }
 
     @Override
     public Optional<TotalUserFriends> find(Long userId, Long friendId) {
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ONE__TOTAL_USER_FRIENDS__USER_FRIEND.getSql(),
                 userId, friendId
         );
-        if (rows.next()) return Optional.of(FactoryModel.buildTotalUserFriends(rows));
+        if (row.next()) return Optional.of(FactoryModel.buildTotalUserFriends(row));
         else return Optional.empty();
     }
 

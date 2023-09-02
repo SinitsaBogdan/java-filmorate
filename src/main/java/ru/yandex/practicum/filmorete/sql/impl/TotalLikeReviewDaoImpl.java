@@ -8,15 +8,9 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.TotalLikeReview;
 import ru.yandex.practicum.filmorete.sql.dao.TotalLikeReviewDao;
-
-
 import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.DELETE_ALL__TOTAL_LIKE_REVIEW;
-import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.DELETE_ONE__TOTAL_LIKE_REVIEW__REVIEW_USER;
-import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.INSERT_ONE__TOTAL_LIKE_REVIEW__REVIEW_USER_IS_POSITIVE;
-import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.SELECT_ALL_TOTAL_LIKE_REVIEW;
-import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.UPDATE_ONE__TOTAL_LIKE_REVIEW__SET_REVIEW_IS_POSITIVE__USER;
+import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.*;
 
 @Slf4j
 @Component
@@ -28,10 +22,10 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     @Override
     public List<TotalLikeReview> findAll() {
         List<TotalLikeReview> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
             SELECT_ALL_TOTAL_LIKE_REVIEW.getSql()
         );
-        while (rows.next()) result.add(FactoryModel.buildTotalLikeReview(rows));
+        while (row.next()) result.add(FactoryModel.buildTotalLikeReview(row));
         return result;
     }
 
