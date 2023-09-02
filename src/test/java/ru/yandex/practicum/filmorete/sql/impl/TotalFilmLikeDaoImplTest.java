@@ -35,7 +35,6 @@ class TotalFilmLikeDaoImplTest {
         totalFilmLikeDao.deleteAll();
         filmDao.deleteAll();
         userDao.deleteAll();
-        genreFilmDao.delete();
 
         userDao.insert(101L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru");
         userDao.insert(102L, "Иван", LocalDate.of(1974, 7, 15), "Ivan", "ivan@mail.ru");
@@ -64,11 +63,7 @@ class TotalFilmLikeDaoImplTest {
     @Test
     @DisplayName("findPopularFilms(Integer limit, Integer searchGenreId)")
     public void testFindLimitPopularFilmsByGenre() {
-        genreFilmDao.insert(1L, 4);
-        genreFilmDao.insert(2L, 5);
-        genreFilmDao.insert(3L, 5);
         List<Film> result = totalFilmLikeDao.findPopularIsLimitAndGenre(10, 5);
-
         assertEquals(result.size(), 2);
         assertEquals(result.get(0).getName(), "Фильм 1");
     }
@@ -85,9 +80,6 @@ class TotalFilmLikeDaoImplTest {
     @Test
     @DisplayName("findPopularFilms(Integer limit, Integer searchGenreId, Integer searchYear)")
     public void testFindLimitPopularFilmsSortByYearAndGenreId() {
-        genreFilmDao.insert(1L, 5);
-        genreFilmDao.insert(2L, 5);
-        genreFilmDao.insert(3L, 5);
         List<Film> result = totalFilmLikeDao.findPopularIsLimitAndGenreAndYear(3, 5, 2005);
         assertEquals(result.size(), 2);
         assertEquals(result.get(0).getName(), "Фильм 1");
