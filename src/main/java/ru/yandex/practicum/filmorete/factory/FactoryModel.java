@@ -50,7 +50,7 @@ public class FactoryModel {
         String filmDescription = row.getString("FILM_DESCRIPTION");
         LocalDate releaseDate = Objects.requireNonNull(row.getDate("FILM_RELEASE_DATE")).toLocalDate();
         Integer duration = row.getInt("FILM_DURATION");
-        Integer rate = row.getInt("FILM_RATE");
+        Double rate = row.getDouble("FILM_RATE");
         return Film.builder()
                 .id(filmId)
                 .name(filmName)
