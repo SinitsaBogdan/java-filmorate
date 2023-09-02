@@ -78,7 +78,7 @@ public class FilmController {
     /**
      * Пользователь ставит лайк фильму по id.
      */
-    @PutMapping("/{filmId}/like/{userId}")
+    @PostMapping("/{filmId}/like/{userId}")
     public void addEstimationFilm(@PathVariable Long filmId, @PathVariable Long userId, @RequestParam(defaultValue = "0") Integer estimation) {
         serviceFilms.addEstimation(filmId, userId, estimation);
     }
@@ -94,7 +94,7 @@ public class FilmController {
     /**
      * Пользователь обновляет фильму по id.
      */
-    @DeleteMapping("/{filmId}/like/{userId}")
+    @PutMapping("/{filmId}/like/{userId}")
     public void updateEstimationFilm(@PathVariable Long filmId, @PathVariable Long userId, @RequestParam Integer estimation) {
         serviceFilms.updateEstimation(filmId, userId, estimation);
     }

@@ -537,6 +537,25 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     @Override
+    public void recalculationPositive(Long filmId){
+        Double newRate = jdbcTemplate.queryForObject(
+            "SELECT AVG(estimation) " +
+                "FROM TOTAL_FILM_LIKE " +
+                "WHERE film_id = ?;",
+            Double.class, filmId
+        );
+        if(newRate != null){
+            jdbcTemplate.update(
+                "UPDATE FILMS " +
+                    "SET rate = ? " +
+                    "WHERE id = ?;",
+                newRate, filmId
+            );
+        }
+        System.out.println(filmId + ", " + newRate);
+    }
+
+    @Override
     // TODO
     //  Добавить параметр в метод
     //  Integer estimation

@@ -164,7 +164,12 @@ public class ServiceFilm {
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (estimation < 1.0 || estimation > 10.0) {
+            throw new IllegalArgumentException("Оценка должна быть от 1 до 10 включительно");
+        }
+
         totalFilmLikeDao.insert(filmId, userId, estimation);
+        totalFilmLikeDao.recalculationPositive(filmId);
         eventsDao.insert(EventType.LIKE, EventOperation.ADD, userId, filmId);
 
         // TODO Новый метод

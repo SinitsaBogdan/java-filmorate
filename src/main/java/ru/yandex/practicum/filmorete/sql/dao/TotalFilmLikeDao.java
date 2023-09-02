@@ -31,10 +31,7 @@ public interface TotalFilmLikeDao {
 
     void insert(Long filmId, Long userId, Integer estimation);
 
-    // TODO Новый метод который пересчитывает среднюю оценку
-    //  фильма по всем пользовательским оценкам
-    //  и записывает результат в фильм ( 1 или 2 SQL запроса )
-    //  recalculationPositive(Long filmId)
+    void recalculationPositive(Long filmId);
 
     void update(Long searchFilmId, Long searchUserId, Integer estimation);
 

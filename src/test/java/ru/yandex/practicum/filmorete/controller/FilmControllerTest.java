@@ -58,7 +58,7 @@ public class FilmControllerTest {
         .description("")
         .releaseDate(LocalDate.parse("2000-01-01"))
         .duration(90)
-        .rate(5)
+        .rate(5.0)
         .build();
 
     @BeforeEach
@@ -314,7 +314,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2000-01-01"))
                 .duration(90)
-                .rate(5)
+                .rate(5.0)
                 .mpa(Mpa.builder().id(1).build())
                 .build();
 
@@ -336,7 +336,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2000-01-01"))
                 .duration(90)
-                .rate(5)
+                .rate(5.0)
                 .mpa(Mpa.builder().id(1).build())
                 .build();
 
@@ -358,7 +358,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2000-01-01"))
                 .duration(90)
-                .rate(5)
+                .rate(5.0)
                 .mpa(Mpa.builder().id(1).build())
                 .build();
 
@@ -381,7 +381,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2000-01-01"))
                 .duration(90)
-                .rate(5)
+                .rate(5.0)
                 .mpa(Mpa.builder().id(1).build())
                 .build();
 
@@ -403,7 +403,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(null)
                 .duration(90)
-                .rate(5)
+                .rate(5.0)
                 .mpa(Mpa.builder().id(1).build())
                 .build();
 
@@ -425,7 +425,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("1000-01-01"))
                 .duration(90)
-                .rate(5)
+                .rate(5.0)
                 .mpa(Mpa.builder().id(1).build())
                 .build();
 
@@ -447,7 +447,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2000-01-01"))
                 .duration(null)
-                .rate(5)
+                .rate(5.0)
                 .mpa(Mpa.builder().id(1).build())
                 .build();
 
@@ -469,7 +469,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2000-01-01"))
                 .duration(-90)
-                .rate(5)
+                .rate(5.0)
                 .mpa(Mpa.builder().id(1).build())
                 .build();
 
@@ -496,7 +496,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -531,7 +531,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -553,7 +553,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -575,7 +575,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -597,7 +597,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -619,7 +619,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -641,7 +641,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -663,7 +663,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -686,7 +686,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -708,7 +708,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(null)
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -730,7 +730,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("1010-01-01"))
                 .duration(120)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -752,7 +752,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(null)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
@@ -774,7 +774,7 @@ public class FilmControllerTest {
                 .genres(Collections.singletonList(Genre.builder().id(1).build()))
                 .releaseDate(LocalDate.parse("2010-01-01"))
                 .duration(-10)
-                .rate(7)
+                .rate(7.0)
                 .mpa(Mpa.builder().id(2).build())
                 .build();
 
