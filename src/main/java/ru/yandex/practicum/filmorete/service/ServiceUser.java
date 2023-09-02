@@ -104,7 +104,7 @@ public class ServiceUser {
                 TotalUserFriends userStatus = optionalRowStatusUser.get();
                 if (userStatus.getStatusFriend().equals(StatusFriend.UNCONFIRMED)) {
                     totalUserFriendsDao.update(userId, friendId, StatusFriend.CONFIRMED);
-                    eventsDao.insert(EventType.FRIEND, EventOperation.UPDATE, userId, friendId);
+//                    eventsDao.insert(EventType.FRIEND, EventOperation.UPDATE, userId, friendId);
                 }
             } else {
                 totalUserFriendsDao.insert(userId, friendId, StatusFriend.CONFIRMED);
