@@ -73,7 +73,7 @@ public class ServiceUser {
     public List<User> getFriends(Long id) {
         Optional<User> optional = userDao.find(id);
         if (optional.isPresent()) {
-            return totalUserFriendsDao.findFriendsByUser(id);
+            return totalUserFriendsDao.findAll(id);
         } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
@@ -99,7 +99,7 @@ public class ServiceUser {
         Optional<User> optionalUser = userDao.find(userId);
         Optional<User> optionalFriend = userDao.find(friendId);
         if (optionalUser.isPresent() && optionalFriend.isPresent()) {
-            Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.findTotalUserFriend(userId, friendId);
+            Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.find(userId, friendId);
             if (optionalRowStatusUser.isPresent()) {
                 TotalUserFriends userStatus = optionalRowStatusUser.get();
                 if (userStatus.getStatusFriend().equals(StatusFriend.UNCONFIRMED)) {
@@ -110,7 +110,7 @@ public class ServiceUser {
                 totalUserFriendsDao.insert(userId, friendId, StatusFriend.CONFIRMED);
                 eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
             }
-            Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findTotalUserFriend(friendId, userId);
+            Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.find(friendId, userId);
             if (optionalRowStatusFriend.isEmpty()) {
                 totalUserFriendsDao.insert(friendId, userId, StatusFriend.UNCONFIRMED);
             }
@@ -118,7 +118,7 @@ public class ServiceUser {
     }
 
     public void removeFriend(Long userId, Long friendId) {
-        totalUserFriendsDao.delete(userId, friendId);
+        totalUserFriendsDao.deleteAll(userId, friendId);
         totalUserFriendsDao.update(friendId, userId, StatusFriend.UNCONFIRMED);
         eventsDao.insert(EventType.FRIEND, EventOperation.REMOVE, userId, friendId);
     }
