@@ -9,7 +9,14 @@ import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.TotalLikeReview;
 import ru.yandex.practicum.filmorete.sql.dao.TotalLikeReviewDao;
 
+
 import java.util.*;
+
+import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.DELETE_ALL__TOTAL_LIKE_REVIEW;
+import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.DELETE_ONE__TOTAL_LIKE_REVIEW__REVIEW_USER;
+import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.INSERT_ONE__TOTAL_LIKE_REVIEW__REVIEW_USER_IS_POSITIVE;
+import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.SELECT_ALL_TOTAL_LIKE_REVIEW;
+import static ru.yandex.practicum.filmorete.sql.requests.TotalLikeReviewRequests.UPDATE_ONE__TOTAL_LIKE_REVIEW__SET_REVIEW_IS_POSITIVE__USER;
 
 @Slf4j
 @Component
@@ -22,11 +29,7 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     public List<TotalLikeReview> findAll() {
         List<TotalLikeReview> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "t.review_id AS reviewId, " +
-                        "t.user_id  AS userId, " +
-                        "t.isPositive AS typeLike " +
-                    "FROM TOTAL_LIKE_REVIEWS AS t;"
+            SELECT_ALL_TOTAL_LIKE_REVIEW.getSql()
         );
         while (rows.next()) result.add(FactoryModel.buildTotalLikeReview(rows));
         return result;
@@ -35,8 +38,7 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     @Override
     public void insert(Long reviewId, Long userId, Boolean type) {
         jdbcTemplate.update(
-                "INSERT INTO TOTAL_LIKE_REVIEWS (review_id, user_id, is_positive) " +
-                    "VALUES (?, ?, ?);",
+            INSERT_ONE__TOTAL_LIKE_REVIEW__REVIEW_USER_IS_POSITIVE.getSql(),
                 reviewId, userId, type
         );
     }
@@ -44,24 +46,22 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     @Override
     public void update(Long reviewId, Long userId, Boolean type) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_LIKE_REVIEWS SET review_id = ?, is_positive = ? " +
-                    "WHERE user_id = ?;",
+            UPDATE_ONE__TOTAL_LIKE_REVIEW__SET_REVIEW_IS_POSITIVE__USER.getSql(),
                 reviewId, type, userId
         );
     }
 
     @Override
-    public void delete() {
+    public void deleteAll() {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_LIKE_REVIEWS;"
+            DELETE_ALL__TOTAL_LIKE_REVIEW.getSql()
         );
     }
 
     @Override
     public void delete(Long reviewId, Long userId) {
         jdbcTemplate.update(
-                "DELETE FROM TOTAL_LIKE_REVIEWS " +
-                    "WHERE review_id = ? AND user_id = ?;",
+            DELETE_ONE__TOTAL_LIKE_REVIEW__REVIEW_USER.getSql(),
                 reviewId, userId
         );
     }

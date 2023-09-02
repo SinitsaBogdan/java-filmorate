@@ -33,7 +33,7 @@ class ReviewsDaoImplTest {
         filmDao.deleteAll();
         userDao.deleteAll();
         reviewDao.deleteAll();
-        totalLikeReviewDao.delete();
+        totalLikeReviewDao.deleteAll();
 
         enumMpaDao.insert(1, "G", "Описание 2");
         filmDao.insert(100L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);

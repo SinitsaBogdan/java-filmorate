@@ -16,8 +16,7 @@ public class Event {
     @Positive
     private Long eventId;
 
-    @Builder.Default
-    private Long timestamp = Instant.now().getEpochSecond();
+    private Long timestamp;
 
     @Positive
     private Long userId;
