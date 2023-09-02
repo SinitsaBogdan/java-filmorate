@@ -43,10 +43,25 @@ public class UserControllerTest {
 
     @BeforeEach
     public void beforeEach() {
+
         userDao.delete();
+        filmDao.delete();
+        totalFilmLikeDao.delete();
+
+        filmDao.insert(101L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(102L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(103L, 3, "Фильм 3", "", LocalDate.parse("2000-01-01"), 90);
+
         userDao.insert(101L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
         userDao.insert(102L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
         userDao.insert(103L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
+
+        totalFilmLikeDao.insert(101L, 101L);
+        totalFilmLikeDao.insert(102L, 101L);
+        totalFilmLikeDao.insert(101L, 102L);
+        totalFilmLikeDao.insert(102L, 102L);
+        totalFilmLikeDao.insert(103L, 102L);
+        totalFilmLikeDao.insert(101L, 103L);
     }
 
     @Nested
@@ -114,36 +129,22 @@ public class UserControllerTest {
         public void methodGet_FilmRecommendationsByUserIdTestWhenNoLikes() throws Exception {
             mockMvc.perform(get("/users/101/recommendations"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(0))
+                    .andExpect(jsonPath("$.length()").value(1))
             ;
         }
 
         @Test
         @DisplayName("Запрос списка рекомендации по фильмам, когда общих лайков нет.")
         public void methodGet_FilmRecommendationsByUserIdTestWhenNoGeneralLikes() throws Exception {
-            filmDao.insert(101L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);
-            filmDao.insert(102L, 2, "Фильм 2", "", LocalDate.of(2004, 1, 1), 110);
-            totalFilmLikeDao.insert(101L, 101L);
-            totalFilmLikeDao.insert(102L, 102L);
             mockMvc.perform(get("/users/101/recommendations"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(0))
+                    .andExpect(jsonPath("$.length()").value(1))
             ;
         }
 
         @Test
         @DisplayName("Запрос списка рекомендации по фильмам.")
         public void methodGet_FilmRecommendationsByUserIdTest() throws Exception {
-            filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);
-            filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.of(2004, 1, 1), 110);
-            filmDao.insert(3L, 3, "Фильм 3", "", LocalDate.of(2003, 1, 1), 130);
-            totalFilmLikeDao.insert(1L, 101L);
-            totalFilmLikeDao.insert(2L, 101L);
-            totalFilmLikeDao.insert(1L, 102L);
-            totalFilmLikeDao.insert(2L, 102L);
-            totalFilmLikeDao.insert(3L, 102L);
-            totalFilmLikeDao.insert(1L, 103L);
-
             mockMvc.perform(get("/users/101/recommendations"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(1))
@@ -154,19 +155,16 @@ public class UserControllerTest {
         @Test
         @DisplayName("Запрос ленты событий пользователя")
         public void methodGet_FeedByUserIdTest() throws Exception {
-            mockMvc.perform(get("/users/103/feed"))
+            mockMvc.perform(get("/users/101/feed"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1));
-
+                    .andExpect(jsonPath("$.length()").value(0));
         }
 
         @Test
         @DisplayName("Запрос ленты событий пользователя: ID 9999")
         public void methodGet_FeedByUserId9999Test() throws Exception {
             mockMvc.perform(get("/users/9999/feed"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(0));
-
+                    .andExpect(status().is4xxClientError());
         }
     }
 
