@@ -68,11 +68,6 @@ class ReviewControllerTest {
         reviewDao.insert(102L, "content-2", true, 2L, 1L);
         reviewDao.insert(103L, "content-3", true, 2L, 2L);
         reviewDao.insert(104L, "content-4", false, 3L, 3L);
-
-        totalLikeReviewDao.insert(101L,1L,true);
-        totalLikeReviewDao.insert(102L,2L,true);
-        totalLikeReviewDao.insert(103L,2L,true);
-        totalLikeReviewDao.insert(104L,3L,false);
     }
 
     @Nested
