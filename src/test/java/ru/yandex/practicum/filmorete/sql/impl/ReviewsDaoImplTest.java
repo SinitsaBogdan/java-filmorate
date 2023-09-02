@@ -29,6 +29,7 @@ class ReviewsDaoImplTest {
 
     @BeforeEach
     void setUp() {
+
         enumMpaDao.delete();
         filmDao.delete();
         userDao.delete();
