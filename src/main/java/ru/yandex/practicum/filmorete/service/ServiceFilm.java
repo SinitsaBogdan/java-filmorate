@@ -54,7 +54,7 @@ public class ServiceFilm {
     }
 
     public List<Film> getAllFilms() {
-        return filmDao.findAllFilms();
+        return filmDao.findAll();
     }
 
     public List<Film> getFilmsToLikeUser(Long userId) {
@@ -67,15 +67,15 @@ public class ServiceFilm {
 
     public List<Film> getPopularFilms(Integer count, Integer genreId, Integer year) {
         if (genreId != null && year == null) {
-            return totalFilmLikeDao.findPopularFilms(count, genreId);
+            return totalFilmLikeDao.findPopularIsLimitAndGenre(count, genreId);
         }
         if (genreId == null && year != null) {
-            return totalFilmLikeDao.findPopularFilmsSortByYear(count, year);
+            return totalFilmLikeDao.findPopularIsLimitAndYear(count, year);
         }
         if (genreId != null) {
-            return totalFilmLikeDao.findPopularFilms(count, genreId, year);
+            return totalFilmLikeDao.findPopularIsLimitAndGenreAndYear(count, genreId, year);
         }
-        return totalFilmLikeDao.findPopularFilms(count);
+        return totalFilmLikeDao.findPopularIsLimit(count);
     }
 
     public Film getFilm(Long id) {
@@ -141,7 +141,7 @@ public class ServiceFilm {
     public void removeFilmSearchId(@NotNull Long filmId) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        filmDao.delete(filmId);
+        filmDao.deleteAll(filmId);
     }
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
@@ -150,7 +150,7 @@ public class ServiceFilm {
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        totalFilmLikeDao.delete(filmId, userId);
+        totalFilmLikeDao.deleteAll(filmId, userId);
         eventsDao.insert(EventType.LIKE, EventOperation.REMOVE, userId, filmId);
     }
 
@@ -173,11 +173,11 @@ public class ServiceFilm {
     }
 
     public void clearStorage() {
-        filmDao.delete();
+        filmDao.deleteAll();
     }
 
     public List<Film> getFilmsBySearchParam(String query, List<String> by) {
-        List<Film> films = filmDao.getFilmsBySearchParam(query, by);
+        List<Film> films = filmDao.findAll(query, by);
         return films.stream()
             .sorted(Comparator.comparing((Film film) -> film.getDirectors().isEmpty())
                 .thenComparing(Film::getName))

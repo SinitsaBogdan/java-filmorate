@@ -8,7 +8,9 @@ import java.util.Optional;
 
 public interface FilmDao {
 
-    List<Film> findAllFilms();
+    List<Film> findAll();
+
+    List<Film> findAll(String query, List<String> by);
 
     Optional<Film> findFilm(Long rowId);
 
@@ -20,17 +22,15 @@ public interface FilmDao {
 
     void update(String searchName, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration);
 
-    void delete();
+    void deleteAll();
 
-    void delete(Long filmId);
+    void deleteAll(Long filmId);
 
-    void delete(String filmName);
+    void deleteAll(String filmName);
 
-    void delete(LocalDate releaseDate);
+    void deleteAll(LocalDate releaseDate);
 
-    void delete(Integer duration);
+    void deleteAllIsDuration(Integer duration);
 
-    void deleteByRating(Integer mpaId);
-
-    List<Film> getFilmsBySearchParam(String query, List<String> by);
+    void deleteAllMpa(Integer mpaId);
 }

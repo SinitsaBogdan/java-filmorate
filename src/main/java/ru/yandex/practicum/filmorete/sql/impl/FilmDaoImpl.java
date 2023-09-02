@@ -14,6 +14,8 @@ import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import java.time.LocalDate;
 import java.util.*;
 
+import static ru.yandex.practicum.filmorete.sql.requests.FilmRequests.*;
+
 
 @Slf4j
 @Component
@@ -23,36 +25,17 @@ public class FilmDaoImpl implements FilmDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Film> findAllFilms() {
+    public List<Film> findAll() {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-            "SELECT " +
-                "f.id AS film_id, " +
-                "f.NAME AS film_name, " +
-                "f.description AS film_description, " +
-                "f.release_date AS film_release_date, " +
-                "f.duration AS film_duration, " +
-                "f.rate AS film_rate, " +
-                "r.id AS mpa_id, " +
-                "r.name AS mpa_name, " +
-                "g.id AS genre_id, " +
-                "g.name AS genre_name, " +
-                "d.id AS director_id, " +
-                "d.name AS director_name " +
-                "FROM FILMS AS f " +
-                "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
-                "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
-                "ORDER BY f.id;"
-        );
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS.getSql());
+
         while (rows.next()) {
             Long filmId = rows.getLong("FILM_ID");
             Integer genreId = rows.getInt("GENRE_ID");
             String genreName = rows.getString("GENRE_NAME");
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
+
             if (!result.containsKey(filmId)) {
                 Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
@@ -73,35 +56,13 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public Optional<Film> findFilm(Long rowId) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-            "SELECT " +
-                "f.id AS film_id, " +
-                "f.name AS film_name, " +
-                "f.description AS film_description, " +
-                "f.release_date AS film_release_date, " +
-                "f.duration AS film_duration, " +
-                "f.rate AS film_rate, " +
-                "r.id AS mpa_id, " +
-                "r.name AS mpa_name, " +
-                "g.id AS genre_id, " +
-                "g.name AS genre_name, " +
-                "d.id AS director_id, " +
-                "d.name AS director_name " +
-                "FROM FILMS AS f " +
-                "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
-                "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
-                "WHERE f.id = ? " +
-                "ORDER BY f.id;",
-            rowId
-        );
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__FILM__ID.getSql(), rowId);
         while (rows.next()) {
             Integer genreId = rows.getInt("GENRE_ID");
             String genreName = rows.getString("GENRE_NAME");
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
+
             if (!result.containsKey(rowId)) {
                 Film film = FactoryModel.buildFilm(rows);
                 result.put(rowId, film);
@@ -122,106 +83,69 @@ public class FilmDaoImpl implements FilmDao {
     public Long insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate,
                        Integer durationMinute) {
         jdbcTemplate.update(
-            "INSERT INTO FILMS (id, mpa_id, name, description, release_date, duration) " +
-                "VALUES (?, ?, ?, ?, ?, ?);",
-            rowId, mpaId, name, descriptions, releaseDate, durationMinute
+                INSERT_ONE__FILM__ID_MPA_ID_NAME_DESCRIPTION_RELEASE_DATE_DURATION.getSql(),
+                rowId, mpaId, name, descriptions, releaseDate, durationMinute
         );
-        return jdbcTemplate.queryForObject(
-            "SELECT MAX(ID) AS id FROM FILMS;", Long.class
-        );
+        return jdbcTemplate.queryForObject(SELECT_MAX_ID__FILM.getSql(), Long.class);
     }
 
     @Override
     public Long insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute) {
         jdbcTemplate.update(
-            "INSERT INTO FILMS (mpa_id, name, description, release_date, duration) " +
-                "VALUES (?, ?, ?, ?, ?);",
-            mpaId, name, descriptions, releaseDate, durationMinute
+                INSERT_ONE__FILM__MPA_ID_NAME_DESCRIPTION_RELEASE_DATE_DURATION.getSql(),
+                mpaId, name, descriptions, releaseDate, durationMinute
         );
-        return jdbcTemplate.queryForObject(
-            "SELECT MAX(ID) AS id FROM FILMS;", Long.class
-        );
+        return jdbcTemplate.queryForObject(SELECT_MAX_ID__FILM.getSql(), Long.class);
     }
 
     @Override
-    public void update(Long searchRowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate,
-                       Integer duration) {
+    public void update(Long searchRowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration) {
         jdbcTemplate.update(
-            "UPDATE FILMS " +
-                "SET " +
-                "mpa_id = ?, " +
-                "name = ?, " +
-                "description = ?, " +
-                "release_date = ?, " +
-                "duration = ? " +
-                "WHERE id = ?;",
-            mpaId, name, descriptions, releaseDate, duration, searchRowId
+                UPDATE_ONE__FILM__SET_MPA_ID_NAME_DESCRIPTION_RELEASE_DATE_DURATION__ID.getSql(),
+                mpaId, name, descriptions, releaseDate, duration, searchRowId
         );
     }
 
     @Override
-    public void update(String searchName, Integer mpaId, String name, String descriptions, LocalDate releaseDate,
-                       Integer duration) {
+    public void update(String searchName, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration) {
         jdbcTemplate.update(
-            "UPDATE FILMS " +
-                "SET " +
-                "mpa_id = ?, " +
-                "name = ?, " +
-                "description = ?, " +
-                "release_date = ?, " +
-                "duration = ? " +
-                "WHERE name = ?;",
-            mpaId, name, descriptions, releaseDate, duration, searchName
+                UPDATE_ONE__FILM__SET_MPA_ID_NAME_DESCRIPTION_RELEASE_DATE_DURATION__NAME.getSql(),
+                mpaId, name, descriptions, releaseDate, duration, searchName
         );
     }
 
     @Override
-    public void delete() {
-        jdbcTemplate.update("DELETE FROM FILMS;");
+    public void deleteAll() {
+        jdbcTemplate.update(DELETE_ALL__FILMS.getSql());
     }
 
     @Override
-    public void delete(Long filmId) {
-        jdbcTemplate.update(
-            "DELETE FROM FILMS WHERE id = ?;",
-            filmId
-        );
+    public void deleteAll(Long filmId) {
+        jdbcTemplate.update(DELETE_ONE__FILMS__ID.getSql(), filmId);
     }
 
     @Override
-    public void delete(String filmName) {
-        jdbcTemplate.update(
-            "DELETE FROM FILMS WHERE name = ?;",
-            filmName
-        );
+    public void deleteAll(String filmName) {
+        jdbcTemplate.update(DELETE_ONE__FILMS__NAME.getSql(), filmName);
     }
 
     @Override
-    public void delete(LocalDate releaseDate) {
-        jdbcTemplate.update(
-            "DELETE FROM FILMS WHERE release_date = ?;",
-            releaseDate
-        );
+    public void deleteAll(LocalDate releaseDate) {
+        jdbcTemplate.update(DELETE_ONE__FILMS__RELEASE_DATE.getSql(), releaseDate);
     }
 
     @Override
-    public void delete(Integer durationMinute) {
-        jdbcTemplate.update(
-            "DELETE FROM FILMS WHERE duration = ?;",
-            durationMinute
-        );
+    public void deleteAllIsDuration(Integer durationMinute) {
+        jdbcTemplate.update(DELETE_ONE__FILMS__DURATION.getSql(), durationMinute);
     }
 
     @Override
-    public void deleteByRating(Integer mpaId) {
-        jdbcTemplate.update(
-            "DELETE FROM FILMS WHERE mpa_id = ?;",
-            mpaId
-        );
+    public void deleteAllMpa(Integer mpaId) {
+        jdbcTemplate.update(DELETE_ONE__FILMS__MPA.getSql(), mpaId);
     }
 
     @Override
-    public List<Film> getFilmsBySearchParam(String query, List<String> by) {
+    public List<Film> findAll(String query, List<String> by) {
         String sql = "SELECT " +
             "f.id AS film_id, " +
             "f.NAME AS film_name, " +
@@ -246,18 +170,12 @@ public class FilmDaoImpl implements FilmDao {
         sqlBuilder.append("WHERE ");
         List<String> conditions = new ArrayList<>();
 
-        if (by.contains("director") && by.contains("title")) {
-            conditions.add("(f.name ILIKE '%" + query + "%' OR d.name ILIKE '%" + query + "%')");
-        } else if (by.contains("director")) {
-            conditions.add("d.name ILIKE '%" + query + "%'");
-        } else if (by.contains("title")) {
-            conditions.add("f.name ILIKE '%" + query + "%'");
-        }
-        if (!conditions.isEmpty()) {
-            sqlBuilder.append(String.join(" OR ", conditions));
-        } else {
-            return Collections.emptyList();
-        }
+        if (by.contains("director") && by.contains("title")) conditions.add("(f.name ILIKE '%" + query + "%' OR d.name ILIKE '%" + query + "%')");
+        else if (by.contains("director")) conditions.add("d.name ILIKE '%" + query + "%'");
+        else if (by.contains("title")) conditions.add("f.name ILIKE '%" + query + "%'");
+
+        if (!conditions.isEmpty()) sqlBuilder.append(String.join(" OR ", conditions));
+        else return Collections.emptyList();
 
         sqlBuilder.append(" ORDER BY f.id");
         SqlRowSet rows = jdbcTemplate.queryForRowSet(sqlBuilder.toString());

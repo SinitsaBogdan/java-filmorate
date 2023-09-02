@@ -24,7 +24,7 @@ class RosterGenreDaoImplTest {
 
     @BeforeEach
     public void beforeEach() {
-        dao.delete();
+        dao.deleteAll();
         dao.insert(100, "Комедия");
         dao.insert(101, "Ужасы");
         dao.insert(102, "Мультики");
@@ -33,21 +33,21 @@ class RosterGenreDaoImplTest {
     @Test
     @DisplayName("findAllName()")
     public void testFindAllRowsByName() {
-        List<String> result = dao.findAllName();
+        List<String> result = dao.findAllColumnName();
         assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        List<Genre> result = dao.findAllGenre();
+        List<Genre> result = dao.findAll();
         assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("findRow(rowId)")
     public void testFindRowSearchId() {
-        Optional<Genre> optional = dao.findGenre(100);
+        Optional<Genre> optional = dao.findAll(100);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "Комедия");
     }
@@ -55,7 +55,7 @@ class RosterGenreDaoImplTest {
     @Test
     @DisplayName("findRow(name)")
     public void testFindRowSearchName() {
-        Optional<Genre> optional = dao.findGenre("Комедия");
+        Optional<Genre> optional = dao.findAll("Комедия");
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "Комедия");
     }
@@ -64,7 +64,7 @@ class RosterGenreDaoImplTest {
     @DisplayName("insert(name)")
     public void testInsertName() {
         dao.insert("Документальный");
-        List<Genre> result = dao.findAllGenre();
+        List<Genre> result = dao.findAll();
         assertEquals(result.size(), 4);
     }
 
@@ -72,7 +72,7 @@ class RosterGenreDaoImplTest {
     @DisplayName("update(searchRowId, name)")
     public void testUpdateRowSearchIdByName() {
         dao.update(101, "Ужасы");
-        Optional<Genre> optional = dao.findGenre(101);
+        Optional<Genre> optional = dao.findAll(101);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "Ужасы");
     }
@@ -80,24 +80,24 @@ class RosterGenreDaoImplTest {
     @Test
     @DisplayName("delete()")
     public void testDeleteAllRows() {
-        dao.delete();
-        List<Genre> result = dao.findAllGenre();
+        dao.deleteAll();
+        List<Genre> result = dao.findAll();
         assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
-        dao.delete(101);
-        List<Genre> result = dao.findAllGenre();
+        dao.deleteAll(101);
+        List<Genre> result = dao.findAll();
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("delete(name)")
     public void testDeleteRowSearchName() {
-        dao.delete("Комедия");
-        List<Genre> result = dao.findAllGenre();
+        dao.deleteAll("Комедия");
+        List<Genre> result = dao.findAll();
         assertEquals(result.size(), 2);
     }
 }
