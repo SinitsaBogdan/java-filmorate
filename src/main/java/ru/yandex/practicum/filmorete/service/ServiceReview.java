@@ -99,7 +99,6 @@ public class ServiceReview {
     public void delete(Long reviewId) {
         Optional<Review> byReviewId = reviewDao.findByReviewId(reviewId);
         reviewDao.delete(reviewId);
-        byReviewId.ifPresent(value -> eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, value.getUserId(), reviewId));
     }
 
     /**
