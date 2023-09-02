@@ -12,15 +12,13 @@ import java.util.Objects;
 
 public class FactoryModel {
 
-    private FactoryModel() {}
+    private FactoryModel() {
+    }
 
     public static @NotNull Director buildDirector (@NotNull SqlRowSet row) {
         Long id = row.getLong("ID");
         String name = row.getString("NAME");
-        return Director.builder()
-                .id(id)
-                .name(name)
-                .build();
+        return Director.builder().id(id).name(name).build();
     }
 
     public static @NotNull Event buildEvent(@NotNull SqlRowSet row) {
@@ -66,21 +64,14 @@ public class FactoryModel {
     public static @NotNull Genre buildGenre(@NotNull SqlRowSet row) {
         Integer id = row.getInt("ID");
         String name = row.getString("NAME");
-        return Genre.builder()
-                .id(id)
-                .name(name)
-                .build();
+        return Genre.builder().id(id).name(name).build();
     }
 
     public static @NotNull Mpa buildMpa(@NotNull SqlRowSet row) {
         Integer id = row.getInt("ID");
         String name = row.getString("NAME");
         String description = row.getString("DESCRIPTION");
-        return Mpa.builder()
-                .id(id)
-                .name(name)
-                .description(description)
-                .build();
+        return Mpa.builder().id(id).name(name).description(description).build();
     }
 
     public static @NotNull Review buildReview(@NotNull SqlRowSet row) {
@@ -118,49 +109,32 @@ public class FactoryModel {
     public static TotalDirectorFilm buildTotalDirectorFilm(SqlRowSet row) {
         Long filmId = row.getLong("FILM_ID");
         Long directorId = row.getLong("DIRECTOR_ID");
-        return TotalDirectorFilm.builder()
-                .filmId(filmId)
-                .directorId(directorId)
-                .build();
+        return TotalDirectorFilm.builder().filmId(filmId).directorId(directorId).build();
     }
 
     public static @NotNull TotalGenreFilm buildTotalGenreFilm(@NotNull SqlRowSet row) {
         Long filmId = row.getLong("FILM_ID");
         Long genreId = row.getLong("GENRE_ID");
-        return TotalGenreFilm.builder()
-                .filmId(filmId)
-                .genreId(genreId)
-                .build();
+        return TotalGenreFilm.builder().filmId(filmId).genreId(genreId).build();
     }
 
     public static @NotNull TotalLikeFilm buildTotalLikeFilm(@NotNull SqlRowSet row) {
         Long filmId = row.getLong("FILM_ID");
         Long userId = row.getLong("USER_ID");
-        return TotalLikeFilm.builder()
-                .filmId(filmId)
-                .userId(userId)
-                .build();
+        return TotalLikeFilm.builder().filmId(filmId).userId(userId).build();
     }
 
     public static @NotNull TotalLikeReview buildTotalLikeReview(@NotNull SqlRowSet row) {
         Long reviewId = row.getLong("REVIEW_ID");
         Long userId = row.getLong("USER_ID");
         boolean typeLike = row.getBoolean("IS_POSITIVE");
-        return TotalLikeReview.builder()
-                .reviewId(reviewId)
-                .userId(userId)
-                .typeLike(typeLike)
-                .build();
+        return TotalLikeReview.builder().reviewId(reviewId).userId(userId).typeLike(typeLike).build();
     }
 
     public static @NotNull TotalUserFriends buildTotalUserFriends(@NotNull SqlRowSet row) {
         Long userId = row.getLong("USER_ID");
         Long friendId = row.getLong("FRIEND_ID");
         StatusFriend statusFriend = StatusFriend.valueOf(row.getString("STATUS"));
-        return TotalUserFriends.builder()
-                .userId(userId)
-                .friendId(friendId)
-                .statusFriend(statusFriend)
-                .build();
+        return TotalUserFriends.builder().userId(userId).friendId(friendId).statusFriend(statusFriend).build();
     }
 }
