@@ -1,6 +1,6 @@
-package ru.yandex.practicum.filmorete.exeptions;
+package ru.yandex.practicum.filmorete.exeptions.message;
 
-public enum MessageErrorServiceReview {
+public enum ReviewErrorMessage {
 
     SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS(
             "Отзыв не найден.",
@@ -14,7 +14,7 @@ public enum MessageErrorServiceReview {
 
     public final int httpStatusCode;
 
-    MessageErrorServiceReview(String name, String description, int httpStatusCode) {
+    ReviewErrorMessage(String name, String description, int httpStatusCode) {
         this.name = name;
         this.description = description;
         this.httpStatusCode = httpStatusCode;
