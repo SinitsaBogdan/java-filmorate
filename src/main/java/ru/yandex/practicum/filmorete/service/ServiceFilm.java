@@ -151,11 +151,8 @@ public class ServiceFilm {
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
 
         totalFilmLikeDao.update(filmId, userId, estimation);
+        totalFilmLikeDao.recalculationPositive(filmId);
         eventsDao.insert(EventType.LIKE, EventOperation.REMOVE, userId, filmId);
-
-        // TODO Вызов метода
-        //  recalculationPositive(Long filmId)
-        //  для пересчета среднего рейтинга у фильма
     }
 
     public void addEstimation(Long filmId, Long userId, Integer estimation) {
@@ -171,9 +168,6 @@ public class ServiceFilm {
         totalFilmLikeDao.insert(filmId, userId, estimation);
         totalFilmLikeDao.recalculationPositive(filmId);
         eventsDao.insert(EventType.LIKE, EventOperation.ADD, userId, filmId);
-
-        // TODO Новый метод
-        //  на пересчет среднего рейтинга у фильма
     }
 
     public List<Film> getFilmsToDirector(Long directorId, @NotNull String sorted) {
