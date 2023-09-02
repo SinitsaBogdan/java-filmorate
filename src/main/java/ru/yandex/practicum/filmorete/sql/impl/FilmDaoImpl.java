@@ -128,18 +128,18 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public List<Film> findAll(String query, List<String> by) {
         String sql = "SELECT " +
-            "f.id AS film_id, " +
-            "f.NAME AS film_name, " +
-            "f.description AS film_description, " +
-            "f.release_date AS film_release_date, " +
-            "f.duration AS film_duration, " +
-            "r.id AS mpa_id, " +
-            "r.name AS mpa_name, " +
-            "f.rate AS film_rate, " +
-            "g.id AS genre_id, " +
-            "g.name AS genre_name, " +
-            "d.id AS director_id, " +
-            "d.name AS director_name " +
+                "f.id AS film_id, " +
+                "f.NAME AS film_name, " +
+                "f.description AS film_description, " +
+                "f.release_date AS film_release_date, " +
+                "f.duration AS film_duration, " +
+                "r.id AS mpa_id, " +
+                "r.name AS mpa_name, " +
+                "f.rate AS film_rate, " +
+                "g.id AS genre_id, " +
+                "g.name AS genre_name, " +
+                "d.id AS director_id, " +
+                "d.name AS director_name " +
             "FROM FILMS AS f " +
             "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
             "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
@@ -163,24 +163,16 @@ public class FilmDaoImpl implements FilmDao {
 
         Map<Long, Film> result = new HashMap<>();
         while (row.next()) {
+
             Long filmId = row.getLong("FILM_ID");
             Integer genreId = row.getInt("GENRE_ID");
             String genreName = row.getString("GENRE_NAME");
             Long directorId = row.getLong("DIRECTOR_ID");
             String directorName = row.getString("DIRECTOR_NAME");
 
-            if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(row);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
-            if (directorName != null) {
-                Director director = Director.builder().id(directorId).name(directorName).build();
-                result.get(filmId).addDirector(director);
-            }
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (directorName != null) result.get(filmId).addDirector(Director.builder().id(directorId).name(directorName).build());
         }
         return new ArrayList<>(result.values());
     }
