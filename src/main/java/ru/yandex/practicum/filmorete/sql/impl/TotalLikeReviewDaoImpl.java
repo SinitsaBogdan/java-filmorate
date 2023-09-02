@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.TotalLikeReview;
 import ru.yandex.practicum.filmorete.sql.dao.TotalLikeReviewDao;
 
@@ -28,7 +28,7 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
                         "t.isPositive AS typeLike " +
                     "FROM TOTAL_LIKE_REVIEWS AS t;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalLikeReview(rows));
         return result;
     }
 
@@ -64,13 +64,5 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
                     "WHERE review_id = ? AND user_id = ?;",
                 reviewId, userId
         );
-    }
-
-    protected TotalLikeReview buildModel(@NotNull SqlRowSet row) {
-        return TotalLikeReview.builder()
-                .reviewId(row.getLong("REVIEW_ID"))
-                .userId(row.getLong("USER_ID"))
-                .typeLike(row.getBoolean("ISPOSITIVE"))
-                .build();
     }
 }

@@ -34,7 +34,7 @@ class TotalGenreFilmDaoImplTest {
         totalGenreFilmDao.delete();
         enumMpaDao.delete();
         filmDao.deleteAll();
-        rosterGenreDao.delete();
+        rosterGenreDao.deleteAll();
 
         rosterGenreDao.insert(1, "Комедия");
         rosterGenreDao.insert(2, "Мультики");

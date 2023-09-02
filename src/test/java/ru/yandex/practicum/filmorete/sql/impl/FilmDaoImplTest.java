@@ -37,7 +37,7 @@ class FilmDaoImplTest {
 
         enumMpaDao.delete();
         daoFilm.deleteAll();
-        enumGenreDao.delete();
+        enumGenreDao.deleteAll();
         daoTotalGenreFilm.delete();
         userDao.delete();
         daoTotalFilmLike.delete();
