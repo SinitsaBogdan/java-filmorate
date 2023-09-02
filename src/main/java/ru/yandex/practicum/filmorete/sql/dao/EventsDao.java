@@ -13,7 +13,9 @@ public interface EventsDao {
 
     List<Event> findAllByUserId(Long userId);
 
-    List<Event> findByEventTypeAndEntityId(EventType review, Long reviewId);
+    List<Event> findByEventTypeAndEntityId(EventType eventType, Long entityId);
+
+    Optional<Event> findByEventTypeAndEntityIdAndUserId(EventType eventType, Long entityId, Long userId);
 
     Optional<Event> findByEventId(Long eventId);
 
