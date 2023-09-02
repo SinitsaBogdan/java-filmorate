@@ -202,7 +202,7 @@ public class FilmControllerTest {
 
             mockMvc.perform(get("/films/common?userId=1&friendId=3"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(film2, film1))));
+                .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(film2, film1))))
             ;
         }
 

@@ -24,11 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventsDaoImplTest {
+
     private final EventsDao eventsDao;
     private final UserDao userDao;
 
     @BeforeEach
     public void beforeEach() {
+
         eventsDao.deleteAll();
         userDao.deleteAll();
 

@@ -28,6 +28,7 @@ class ReviewControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,9 +43,6 @@ class ReviewControllerTest {
 
     @Autowired
     private ReviewDao reviewDao;
-
-    @Autowired
-    private TotalLikeReviewDao totalLikeReviewDao;
 
     @BeforeEach
     public void beforeEach() {
@@ -75,7 +73,6 @@ class ReviewControllerTest {
         totalLikeReviewDao.insert(102L,2L,true);
         totalLikeReviewDao.insert(103L,2L,true);
         totalLikeReviewDao.insert(104L,3L,false);
-
     }
 
     @Nested

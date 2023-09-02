@@ -25,6 +25,7 @@ class RosterMpaDaoImplTest {
     @BeforeEach
     public void beforeEach() {
         dao.delete();
+
         dao.insert(1, "P", "Описание");
         dao.insert(2, "G", "Описание 2");
     }

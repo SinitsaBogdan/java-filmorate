@@ -104,7 +104,7 @@ class TotalUserFriendsDaoImplTest {
     @DisplayName("insert(userId, friendId, statusId)")
     void testInsertRowAllColumn() {
         userDao.insert(
-                103L, "Евгения", LocalDate.of(1995, 6, 17), "Евгения", "евгения@email.ru"
+                203L, "Евгения", LocalDate.of(1995, 6, 17), "Евгения", "евгения@email.ru"
         );
         totalUserFriendsDao.insert(100L, 103L, StatusFriend.UNCONFIRMED);
         List<TotalUserFriends> result = totalUserFriendsDao.findAll();

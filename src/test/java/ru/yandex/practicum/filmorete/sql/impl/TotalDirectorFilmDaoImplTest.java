@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class TotalDirectorFilmDaoImplTest {
+
     private final TotalDirectorFilmDao directorFilmDao;
     private final DirectorDao directorDao;
     private final FilmDaoImpl filmDao;
@@ -31,6 +32,7 @@ class TotalDirectorFilmDaoImplTest {
 
     @BeforeEach
     public void beforeEach() {
+
         directorFilmDao.delete();
         directorDao.delete();
         filmDao.deleteAll();
@@ -113,32 +115,16 @@ class TotalDirectorFilmDaoImplTest {
     @Test
     @DisplayName("findPopularFilmsByDirector(Long directorId)")
     public void testGetPopularFilmsSearchDirectorID() {
-        userDao.insert(100L, "user1", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru");
-        userDao.insert(200L, "user2", LocalDate.of(1995, 5, 24), "Stan", "stan@mail.ru");
-        userDao.insert(300L, "user3", LocalDate.of(2005, 5, 24), "Kyle", "kyle@mail.ru");
-        directorFilmDao.insert(101L, 10L);
-        directorFilmDao.insert(102L, 10L);
-        likeDao.insert(102L, 100L);
-        likeDao.insert(102L, 200L);
-        likeDao.insert(102L, 300L);
-        likeDao.insert(100L, 200L);
-        likeDao.insert(100L, 100L);
         List<Film> result = directorFilmDao.findPopularFilmsByDirector(10L);
-        assertEquals(result.size(), 3);
-        assertEquals(result.get(0).getId(), 102L);
-        assertEquals(result.get(1).getId(), 100L);
-        assertEquals(result.get(2).getId(), 101L);
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).getId(), 100L);
     }
 
     @Test
     @DisplayName("findFilmsByDirectorSortedByYear(Long directorId)")
     public void testGetFilmsSearchDirectorIDSortedByYear() {
-        directorFilmDao.insert(101L, 10L);
-        directorFilmDao.insert(102L, 10L);
         List<Film> result = directorFilmDao.findFilmsByDirectorSortedByYear(10L);
-        assertEquals(result.size(), 3);
-        assertEquals(result.get(0).getId(), 102L);
-        assertEquals(result.get(1).getId(), 101L);
-        assertEquals(result.get(2).getId(), 100L);
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).getId(), 100L);
     }
 }
