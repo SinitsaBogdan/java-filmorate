@@ -155,16 +155,19 @@ public class FilmControllerTest {
         @Test
         @DisplayName("Запрос списка популярных фильмов: genreId : 0, year : 0")
         public void methodGet_PopularFilmsOverloadTest() throws Exception {
+            // TODO Где тестирование PopularFilmsOverload ?
         }
 
         @Test
         @DisplayName("Запрос списка популярных фильмов: genreId : 1")
         public void methodGet_PopularFilmsGenreId1Test() throws Exception {
+            // TODO Где тестирование PopularFilmsGenreId1 ?
         }
 
         @Test
         @DisplayName("Запрос списка популярных фильмов: year : 2000")
         public void methodGet_PopularFilmsYear2000Test() throws Exception {
+            // TODO Где тестирование PopularFilmsYear2000?
         }
 
         @Test
@@ -183,7 +186,7 @@ public class FilmControllerTest {
 
             mockMvc.perform(get("/films/common?userId=1&friendId=3"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(film2, film1))));
+                .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(film2, film1))))
             ;
         }
 
@@ -212,11 +215,13 @@ public class FilmControllerTest {
         @Test
         @DisplayName("Запрос списка фильмов режиссера, отсортированные по популярности")
         public void methodGet_FilmsByDirectorSortedByLikes() throws Exception {
+            // TODO Где тестирование FilmsByDirectorSortedByLikes ?
         }
 
         @Test
         @DisplayName("Запрос списка фильмов режиссера, отсортированные по годам")
         public void methodGet_FilmsByDirectorSortedByYear() throws Exception {
+            // TODO Где тестирование FilmsByDirectorSortedByYear ?
         }
 
         @Test
