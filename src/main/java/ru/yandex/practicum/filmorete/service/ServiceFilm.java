@@ -143,35 +143,30 @@ public class ServiceFilm {
         filmDao.delete(filmId);
     }
 
-    // TODO Изменить название
-    //  removeEstimation(Long filmId, Long userId)
-    public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
+    public void updateEstimation(@NotNull Long filmId, @NotNull Long userId, Integer estimation) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         Optional<User> optionalUser = userDao.findUser(userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        totalFilmLikeDao.delete(filmId, userId);
+
+        totalFilmLikeDao.update(filmId, userId, estimation);
         eventsDao.insert(EventType.LIKE, EventOperation.REMOVE, userId, filmId);
+
         // TODO Вызов метода
         //  recalculationPositive(Long filmId)
         //  для пересчета среднего рейтинга у фильма
     }
 
-    // TODO
-    //  Добавить параметр в метод
-    //  addEstimation(Long filmId, Long userId, Double estimation)
-    public void addLike(Long filmId, Long userId) {
+    public void addEstimation(Long filmId, Long userId, Integer estimation) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         Optional<User> optionalUser = userDao.findUser(userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        // TODO
-        //  Добавить параметр в метод
-        //  totalFilmLikeDao.insert(filmId, userId, estimation)
-        totalFilmLikeDao.insert(filmId, userId);
+        totalFilmLikeDao.insert(filmId, userId, estimation);
         eventsDao.insert(EventType.LIKE, EventOperation.ADD, userId, filmId);
+
         // TODO Новый метод
         //  на пересчет среднего рейтинга у фильма
     }
