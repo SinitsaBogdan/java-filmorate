@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundReviewStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
+import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.model.Review;
 import ru.yandex.practicum.filmorete.model.TotalLikeReview;
 import ru.yandex.practicum.filmorete.sql.dao.*;
