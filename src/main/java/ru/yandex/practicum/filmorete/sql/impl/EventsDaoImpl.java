@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorete.enums.EventOperation;
 import ru.yandex.practicum.filmorete.enums.EventType;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
 
@@ -57,12 +58,22 @@ public class EventsDaoImpl implements EventsDao {
     @Override
     public List<Event> findByEventTypeAndEntityId(EventType eventType, Long entityId) {
         List<Event> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM EVENTS WHERE entity_id = ? AND type = ?;",
                 entityId, eventType.name()
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (row.next()) result.add(buildModel(row));
         return result;
+    }
+
+    @Override
+    public Optional<Event> findByEventTypeAndEntityIdAndUserId(EventType eventType, Long entityId, Long userId) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM EVENTS WHERE entity_id = ? AND type = ? AND user_id = ?;",
+                entityId, eventType.name(), userId
+        );
+        if (row.next()) return Optional.of(FactoryModel.buildEvent(row));
+        else return Optional.empty();
     }
 
     @Override
