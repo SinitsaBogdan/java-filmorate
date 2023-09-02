@@ -114,7 +114,6 @@ public class ServiceReview {
     public void add(@NotNull TotalLikeReview reviewLike) {
         totalReviewLikeDao.insert(reviewLike.getReviewId(), reviewLike.getUserId(), reviewLike.isTypeLike());
         reviewDao.recalculationPositive(reviewLike.getReviewId());
-        eventsDao.insert(EventType.LIKE, EventOperation.ADD, reviewLike.getUserId(), reviewLike.getReviewId());
     }
 
     /**
