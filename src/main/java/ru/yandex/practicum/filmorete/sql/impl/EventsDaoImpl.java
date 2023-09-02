@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,23 +26,23 @@ public class EventsDaoImpl implements EventsDao {
     @Override
     public List<Event> findAll() {
         List<Event> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__EVENTS.getSql());
-        while (rows.next()) result.add(FactoryModel.buildEvent(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__EVENTS.getSql());
+        while (row.next()) result.add(FactoryModel.buildEvent(row));
         return result;
     }
 
     @Override
     public List<Event> findAll(Long userId) {
         List<Event> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__EVENTS__USER.getSql(), userId);
-        while (rows.next()) result.add(FactoryModel.buildEvent(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__EVENTS__USER.getSql(), userId);
+        while (row.next()) result.add(FactoryModel.buildEvent(row));
         return result;
     }
 
     @Override
     public Optional<Event> findOne(Long eventId) {
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__EVENTS__ID.getSql(), eventId);
-        if (rows.next()) return Optional.of(FactoryModel.buildEvent(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__EVENTS__ID.getSql(), eventId);
+        if (row.next()) return Optional.of(FactoryModel.buildEvent(row));
         else return Optional.empty();
     }
 

@@ -180,7 +180,7 @@ public class ServiceFilm {
         List<Film> films = filmDao.findAll(query, by);
         return films.stream()
             .sorted(Comparator.comparing((Film film) -> film.getDirectors().isEmpty())
-                .thenComparing(Film::getName))
-            .collect(Collectors.toList());
+                    .thenComparing(Film::getName))
+                .collect(Collectors.toList());
     }
 }

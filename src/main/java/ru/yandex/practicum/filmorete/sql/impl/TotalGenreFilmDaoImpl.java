@@ -35,39 +35,39 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     @Override
     public List<Genre> findAllGenreByFilmId(Long id) {
         List<Genre> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__GENRE__FILM.getSql(),
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__GENRE__FILM.getSql(),
                 id
         );
-        while (rows.next()) result.add(FactoryModel.buildGenre(rows));
+        while (row.next()) result.add(FactoryModel.buildGenre(row));
         return result;
     }
 
     @Override
     public List<TotalGenreFilm> findTotalGenreFilm() {
         List<TotalGenreFilm> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_GENRE_FILM.getSql()
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_GENRE_FILM.getSql()
         );
-        while (rows.next()) result.add(FactoryModel.buildTotalGenreFilm(rows));
+        while (row.next()) result.add(FactoryModel.buildTotalGenreFilm(row));
         return result;
     }
 
     @Override
     public List<TotalGenreFilm> findAllTotalGenreFilmIsFimId(Long filmId) {
         List<TotalGenreFilm> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_GENRE_FILM__FILM.getSql(),
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_GENRE_FILM__FILM.getSql(),
                 filmId
         );
-        while (rows.next()) result.add(FactoryModel.buildTotalGenreFilm(rows));
+        while (row.next()) result.add(FactoryModel.buildTotalGenreFilm(row));
         return result;
     }
 
     @Override
     public List<TotalGenreFilm> findAllTotalGenreFilmIsGenreId(Integer genreId) {
         List<TotalGenreFilm> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_GENRE_FILM__GENRE.getSql(),
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_GENRE_FILM__GENRE.getSql(),
                 genreId
         );
-        while (rows.next()) result.add(FactoryModel.buildTotalGenreFilm(rows));
+        while (row.next()) result.add(FactoryModel.buildTotalGenreFilm(row));
         return result;
     }
 

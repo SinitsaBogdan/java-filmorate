@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import static ru.yandex.practicum.filmorete.sql.requests.UserRequests.*;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -33,8 +32,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> findAll() {
         List<User> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS.getSql());
-        while (rows.next()) result.add(FactoryModel.buildUser(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS.getSql());
+        while (row.next()) result.add(FactoryModel.buildUser(row));
         return result;
     }
 

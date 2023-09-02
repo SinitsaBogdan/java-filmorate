@@ -23,25 +23,19 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public List<Film> findPopularIsLimit(Integer limit) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS_POPULAR__LIMIT.getSql(), limit);
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long dirId = rows.getLong("DIRECTOR_ID");
-            String dirName = rows.getString("DIRECTOR_NAME");
-            if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
-            if (dirName != null) {
-                Director director = Director.builder().id(dirId).name(dirName).build();
-                result.get(filmId).addDirector(director);
-            }
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS_POPULAR__LIMIT.getSql(), limit);
+
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
@@ -50,28 +44,22 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public List<Film> findPopularIsLimitAndGenre(Integer limit, Integer searchGenreId) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__FILMS_POPULAR__LIMIT_GENRE.getSql(),
                 limit, searchGenreId
         );
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long dirId = rows.getLong("DIRECTOR_ID");
-            String dirName = rows.getString("DIRECTOR_NAME");
-            if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
-            if (dirName != null) {
-                Director director = Director.builder().id(dirId).name(dirName).build();
-                result.get(filmId).addDirector(director);
-            }
+
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
@@ -80,28 +68,21 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public List<Film> findPopularIsLimitAndYear(Integer limit, Integer searchYear) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__FILMS_POPULAR__LIMIT_YEAR.getSql(),
                 limit, searchYear
         );
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long dirId = rows.getLong("DIRECTOR_ID");
-            String dirName = rows.getString("DIRECTOR_NAME");
-            if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
-            if (dirName != null) {
-                Director director = Director.builder().id(dirId).name(dirName).build();
-                result.get(filmId).addDirector(director);
-            }
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
@@ -110,28 +91,21 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public List<Film> findPopularIsLimitAndGenreAndYear(Integer limit, Integer searchGenreId, Integer searchYear) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__FILMS_POPULAR__SORT_YEAR.getSql(),
                 limit, searchGenreId, searchYear
         );
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long dirId = rows.getLong("DIRECTOR_ID");
-            String dirName = rows.getString("DIRECTOR_NAME");
-            if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
-            if (dirName != null) {
-                Director director = Director.builder().id(dirId).name(dirName).build();
-                result.get(filmId).addDirector(director);
-            }
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
@@ -140,27 +114,24 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public List<User> findUserToLikeFilm(Long filmId) {
         List<User> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS_TOTAL_FILM_LIKE__FILM.getSql(), filmId);
-        while (rows.next()) result.add(FactoryModel.buildUser(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS_TOTAL_FILM_LIKE__FILM.getSql(), filmId);
+        while (row.next()) result.add(FactoryModel.buildUser(row));
         return result;
     }
 
     @Override
     public List<Film> findFilmToLikeUser(Long userId) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS_TOTAL_FILM_LIKE__USER.getSql(), userId);
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS_TOTAL_FILM_LIKE__USER.getSql(), userId);
+
+        while (row.next()) {
+            Long filmId = row.getLong("FILM_ID");
+
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
@@ -169,45 +140,40 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public List<TotalLikeFilm> findAll() {
         List<TotalLikeFilm> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_FILM_LIKE.getSql());
-        while (rows.next()) result.add(FactoryModel.buildTotalLikeFilm(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_FILM_LIKE.getSql());
+        while (row.next()) result.add(FactoryModel.buildTotalLikeFilm(row));
         return result;
     }
 
     @Override
     public List<TotalLikeFilm> findAllIsFilmId(Long filmId) {
         List<TotalLikeFilm> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_FILM_LIKE__FILM.getSql(), filmId);
-        while (rows.next()) result.add(FactoryModel.buildTotalLikeFilm(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_FILM_LIKE__FILM.getSql(), filmId);
+        while (row.next()) result.add(FactoryModel.buildTotalLikeFilm(row));
         return result;
     }
 
     @Override
     public List<TotalLikeFilm> findAllIsUserId(Long userId) {
         List<TotalLikeFilm> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_FILM_LIKE__USER.getSql(), userId);
-        while (rows.next()) result.add(FactoryModel.buildTotalLikeFilm(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_FILM_LIKE__USER.getSql(), userId);
+        while (row.next()) result.add(FactoryModel.buildTotalLikeFilm(row));
         return result;
     }
 
     @Override
     public List<Film> findCommonFilms(Long firstUserId, Long secondUserId) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__COMMON_FILMS.getSql(), firstUserId, secondUserId);
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__COMMON_FILMS.getSql(), firstUserId, secondUserId);
 
-        while (rows.next()) {
+        while (row.next()) {
 
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
@@ -218,27 +184,19 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         Optional<Long> friendByFilmsId = findFriendByFilmsId(userId);
         if (friendByFilmsId.isEmpty()) return Collections.emptyList();
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__RECOMMENDATION.getSql(), friendByFilmsId.get(), userId);
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__RECOMMENDATION.getSql(), friendByFilmsId.get(), userId);
 
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long dirId = rows.getLong("DIRECTOR_ID");
-            String dirName = rows.getString("DIRECTOR_NAME");
+        while (row.next()) {
 
-            if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
-            if (dirName != null) {
-                Director director = Director.builder().id(dirId).name(dirName).build();
-                result.get(filmId).addDirector(director);
-            }
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
@@ -246,10 +204,13 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     private Optional<Long> findFriendByFilmsId(Long userId) {
         Map<Long, Set<Long>> userLikeToFilm = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS_FILMS.getSql());
-        while (rows.next()) {
-            Long userLikeId = rows.getLong("user_id");
-            Long filmId = rows.getLong("film_id");
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS_FILMS.getSql());
+
+        while (row.next()) {
+
+            Long userLikeId = row.getLong("user_id");
+            Long filmId = row.getLong("film_id");
+
             if (!userLikeToFilm.containsKey(userLikeId)) {
                 Set<Long> idLikedFilms = new HashSet<>();
                 idLikedFilms.add(filmId);
@@ -259,9 +220,9 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                 idLikedFilms.add(filmId);
             }
         }
-        if (!userLikeToFilm.containsKey(userId)) {
-            return Optional.empty();
-        }
+
+        if (!userLikeToFilm.containsKey(userId)) return Optional.empty();
+
         Map<Long, Integer> userPoints = new HashMap<>();
         Set<Long> userIdFilms = userLikeToFilm.get(userId);
         userLikeToFilm.remove(userId);
@@ -273,9 +234,8 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         Optional<Map.Entry<Long, Integer>> entry = userPoints.entrySet()
                 .stream()
                 .max(Map.Entry.comparingByValue());
-        if (entry.isEmpty() || entry.get().getValue() == 0) {
-            return Optional.empty();
-        }
+
+        if (entry.isEmpty() || entry.get().getValue() == 0) return Optional.empty();
         return entry.map(Map.Entry::getKey);
     }
 

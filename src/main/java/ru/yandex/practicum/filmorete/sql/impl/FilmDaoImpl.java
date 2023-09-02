@@ -10,12 +10,10 @@ import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
-
 import java.time.LocalDate;
 import java.util.*;
 
 import static ru.yandex.practicum.filmorete.sql.requests.FilmRequests.*;
-
 
 @Slf4j
 @Component
@@ -27,27 +25,19 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public List<Film> findAll() {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS.getSql());
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS.getSql());
 
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long dirId = rows.getLong("DIRECTOR_ID");
-            String dirName = rows.getString("DIRECTOR_NAME");
+        while (row.next()) {
 
-            if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
-            if (dirName != null) {
-                Director director = Director.builder().id(dirId).name(dirName).build();
-                result.get(filmId).addDirector(director);
-            }
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
@@ -56,32 +46,23 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public Optional<Film> findFilm(Long rowId) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__FILM__ID.getSql(), rowId);
-        while (rows.next()) {
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long dirId = rows.getLong("DIRECTOR_ID");
-            String dirName = rows.getString("DIRECTOR_NAME");
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILM__ID.getSql(), rowId);
+        while (row.next()) {
 
-            if (!result.containsKey(rowId)) {
-                Film film = FactoryModel.buildFilm(rows);
-                result.put(rowId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(rowId).addGenre(genre);
-            }
-            if (dirName != null) {
-                Director director = Director.builder().id(dirId).name(dirName).build();
-                result.get(rowId).addDirector(director);
-            }
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(rowId)) result.put(rowId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(rowId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(rowId).addDirector(Director.builder().id(dirId).name(dirName).build());
         }
         return Optional.ofNullable(result.get(rowId));
     }
 
     @Override
-    public Long insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate,
-                       Integer durationMinute) {
+    public Long insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute) {
         jdbcTemplate.update(
                 INSERT_ONE__FILM__ID_MPA_ID_NAME_DESCRIPTION_RELEASE_DATE_DURATION.getSql(),
                 rowId, mpaId, name, descriptions, releaseDate, durationMinute
@@ -178,18 +159,18 @@ public class FilmDaoImpl implements FilmDao {
         else return Collections.emptyList();
 
         sqlBuilder.append(" ORDER BY f.id");
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(sqlBuilder.toString());
+        SqlRowSet row = jdbcTemplate.queryForRowSet(sqlBuilder.toString());
 
         Map<Long, Film> result = new HashMap<>();
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            Long directorId = rows.getLong("DIRECTOR_ID");
-            String directorName = rows.getString("DIRECTOR_NAME");
+        while (row.next()) {
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long directorId = row.getLong("DIRECTOR_ID");
+            String directorName = row.getString("DIRECTOR_NAME");
 
             if (!result.containsKey(filmId)) {
-                Film film = FactoryModel.buildFilm(rows);
+                Film film = FactoryModel.buildFilm(row);
                 result.put(filmId, film);
             }
             if (genreName != null) {
