@@ -47,9 +47,9 @@ public enum ReviewsRequests {
         "SELECT MAX(id) FROM REVIEWS"
     ),
 
-    INSERT_ONE__REVIEWS_FULL__ID(
-        "INSERT INTO REVIEWS (id, content, is_positive, user_id, film_id) " +
-            "VALUES (?, ?, ?, ?, ?);"
+    INSERT_ONE__REVIEWS_FULL__CONTENT_IS_POSITIVE_USER_FILM(
+        "INSERT INTO REVIEWS (content, is_positive, user_id, film_id) " +
+            "VALUES (?, ?, ?, ?);"
     ),
 
     INSERT_ONE__REVIEWS_FULL(

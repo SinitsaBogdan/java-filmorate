@@ -28,12 +28,12 @@ public enum EventsRequests {
             "WHERE entity_id = ? AND type = ? AND user_id = ?;"
     ),
 
-    INSERT_ONE__EVENTS_FULL(
+    INSERT_ONE__EVENTS__USER_TYPE_OPERATION_ENTITY_TIMESTAMP(
         "INSERT INTO EVENTS (user_id, type, operation, entity_id, timestamp) " +
         "VALUES (?, ?, ?, ?, ?);"
     ),
 
-    INSERT_ONE__EVENTS_FULL__ID(
+    INSERT_ONE__EVENTS_FULL(
         "INSERT INTO EVENTS (id, user_id, type, operation, entity_id, timestamp) " +
             "VALUES (?, ?, ?, ?, ?, ?);"
     ),
@@ -57,7 +57,7 @@ public enum EventsRequests {
             "WHERE id = ?;"
     ),
 
-    DELETE_ONE__EVENTS__ENTITY_ID_TYPE(
+    DELETE_ONE__EVENTS__ENTITY_TYPE(
         "DELETE FROM EVENTS " +
             "WHERE entity_id = ? AND type = ?;"
     ),
