@@ -314,21 +314,42 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     // TODO insert(Long filmId, Long userId, Double estimation)
     @Override
-    public void insert(Long filmId, Long userId) {
+    public void insert(Long filmId, Long userId, Double estimation) {
         jdbcTemplate.update(
-                "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id) " +
-                    "VALUES(?, ?);",
-                filmId, userId
+                "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id, estimation) " +
+                    "VALUES(?, ?, ?);",
+                filmId, userId, estimation
         );
+        System.out.println(filmId + ", " + userId+ ", " + estimation);
+    }
+
+    @Override
+    public void recalculationPositive(Long filmId){
+        Double newRate = jdbcTemplate.queryForObject(
+            "SELECT AVG(estimation) " +
+                "FROM TOTAL_FILM_LIKE " +
+                "WHERE film_id = ?;",
+            Double.class, filmId
+        );
+        if(newRate != null){
+            jdbcTemplate.update(
+                "UPDATE FILMS " +
+                    "SET rate = ? " +
+                    "WHERE id = ?;",
+                newRate, filmId
+            );
+        }
+        System.out.println(filmId + ", " + newRate);
     }
 
     @Override
     // update(Long searchFilmId, Long searchUserId, Long filmId, Long userId, Double estimation)
-    public void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId) {
+    public void update(Long filmId, Long userId, Double estimation) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_FILM_LIKE SET film_id = ?, user_id = ? " +
+                "UPDATE TOTAL_FILM_LIKE " +
+                    "SET estimation = ? " +
                     "WHERE film_id = ? AND user_id = ?;",
-                filmId, userId, searchFilmId, searchUserId
+            estimation, filmId, userId
         );
     }
 

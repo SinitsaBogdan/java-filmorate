@@ -34,10 +34,10 @@ public class ServiceFilm {
 
     @Autowired
     public ServiceFilm(
-            FilmDao filmDao, UserDao userDao,
-            TotalDirectorFilmDao totalDirectorFilmDao,
-            TotalFilmLikeDao totalFilmLikeDao,
-            TotalGenreFilmDao totalGenreFilmDao
+        FilmDao filmDao, UserDao userDao,
+        TotalDirectorFilmDao totalDirectorFilmDao,
+        TotalFilmLikeDao totalFilmLikeDao,
+        TotalGenreFilmDao totalGenreFilmDao
     ) {
         this.filmDao = filmDao;
         this.userDao = userDao;
@@ -71,8 +71,8 @@ public class ServiceFilm {
     public Film createFilm(Film film) {
         checkValidFilm(film);
         Long filmId = filmDao.insert(
-                film.getMpa().getId(), film.getName(), film.getDescription(),
-                film.getReleaseDate(), film.getDuration()
+            film.getMpa().getId(), film.getName(), film.getDescription(),
+            film.getReleaseDate(), film.getDuration()
         );
 
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
@@ -95,9 +95,9 @@ public class ServiceFilm {
         Optional<Film> optionalFilm = filmDao.findFilm(film.getId());
         if (optionalFilm.isPresent()) {
             filmDao.update(
-                    film.getId(), film.getMpa().getId(),
-                    film.getName(), film.getDescription(),
-                    film.getReleaseDate(), film.getDuration()
+                film.getId(), film.getMpa().getId(),
+                film.getName(), film.getDescription(),
+                film.getReleaseDate(), film.getDuration()
             );
 
             List<TotalDirectorFilm> totalDirectorFilms = totalDirectorFilmDao.findAllTotalDirectorFilm(film.getId());
@@ -114,7 +114,8 @@ public class ServiceFilm {
         if (!totalGenreFilms.isEmpty()) totalGenreFilmDao.deleteAllFilmId(film.getId());
         if (film.getGenres() != null) {
             for (Genre genreFilm : film.getGenres()) {
-                Optional<TotalGenreFilm> totalGenreFilm = totalGenreFilmDao.findTotalGenreFilm(film.getId(), genreFilm.getId());
+                Optional<TotalGenreFilm> totalGenreFilm =
+                    totalGenreFilmDao.findTotalGenreFilm(film.getId(), genreFilm.getId());
                 if (totalGenreFilm.isEmpty()) totalGenreFilmDao.insert(film.getId(), genreFilm.getId());
             }
         }
@@ -139,15 +140,26 @@ public class ServiceFilm {
     }
 
     // TODO addEstimation(Long filmId, Long userId, Double estimation)
-    public void addLike(Long filmId, Long userId) {
+
+    public void addEstimation(Long filmId, Long userId, Double estimation) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         Optional<User> optionalUser = userDao.findUser(userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (estimation < 1.0 || estimation > 10.0) {
+            throw new IllegalArgumentException("Оценка должна быть от 1 до 10 включительно");
+        }
         // TODO totalFilmLikeDao.insert(filmId, userId, estimation)
-        totalFilmLikeDao.insert(filmId, userId);
+        totalFilmLikeDao.insert(filmId, userId, estimation);
+
         // TODO Новый метод на пересчет среднего рейтинга у фильма
+        totalFilmLikeDao.recalculationPositive(filmId);
+    }
+
+    public void updateEstimation(Long filmId, Long userId, Double estimation) {
+        totalFilmLikeDao.update(filmId,userId,estimation);
+        totalFilmLikeDao.recalculationPositive(filmId);
     }
 
     public List<Film> getFilmsToDirector(Long directorId, @NotNull String sorted) {

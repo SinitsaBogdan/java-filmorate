@@ -76,13 +76,27 @@ public class FilmController {
     }
 
     /**
-     * Пользователь ставит лайк фильму по id.
+     * Пользователь добавляет оценку к фильму по id.
+     *
      * */
-    @PutMapping("/{filmId}/like/{userId}")
-    public void addLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
+    @PostMapping("/{filmId}/like/{userId}")
+    public void addEstimation(@PathVariable Long filmId,
+                              @PathVariable Long userId,
+                              @RequestParam(name = "estimation") Double estimation) {
         // TODO Тут вместо лайка ставим оценку ( Добавить целочисленный параметр оценки estimation )
         // TODO serviceFilms.addEstimation(filmId, userId, estimation)
-        serviceFilms.addLike(filmId, userId);
+        serviceFilms.addEstimation(filmId, userId, estimation);
+    }
+
+    /**
+     * Пользователь обновляет оценку фильма по id.
+     *
+     * */
+    @PutMapping("/{filmId}/like/{userId}")
+    public void updateEstimation(@PathVariable Long filmId,
+                              @PathVariable Long userId,
+                              @RequestParam(name = "estimation") Double estimation) {
+        serviceFilms.updateEstimation(filmId, userId, estimation);
     }
 
     /**

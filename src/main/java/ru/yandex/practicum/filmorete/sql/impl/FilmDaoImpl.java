@@ -33,6 +33,7 @@ public class FilmDaoImpl implements FilmDao {
                         "f.description AS film_description, " +
                         "f.release_date AS film_release_date, " +
                         "f.duration AS film_duration, " +
+                        "f.rate AS film_rate, " +
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
@@ -53,8 +54,10 @@ public class FilmDaoImpl implements FilmDao {
             String genreName = rows.getString("GENRE_NAME");
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
+            Double filmRate = rows.getDouble("FILM_RATE");
             if (!result.containsKey(filmId)) {
                 Film film = buildModel(rows);
+                film.setRate(filmRate);
                 result.put(filmId, film);
             }
             if (genreName != null) {
