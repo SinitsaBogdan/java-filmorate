@@ -270,7 +270,7 @@ class ReviewControllerTest {
 
         @Test
         @DisplayName("Удаление отзыва по ID")
-        void methodDelete_DeleteReviewByIdTest() throws Exception{
+        void methodDelete_DeleteReviewByIdTest() throws Exception {
             mockMvc.perform(delete("/reviews/101"))
                     .andExpect(status().isOk())
             ;
@@ -278,7 +278,7 @@ class ReviewControllerTest {
 
         @Test
         @DisplayName("Удаление лайка отзыва")
-        void methodDelete_ReviewDeleteLike() throws Exception{
+        void methodDelete_ReviewDeleteLike() throws Exception {
             mockMvc.perform(delete("/reviews/101/like/1"))
                     .andExpect(status().isOk())
             ;
