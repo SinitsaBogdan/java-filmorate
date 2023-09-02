@@ -76,15 +76,14 @@ public class ServiceReview {
      * Обновление существующего отзыва [ REVIEWS ].
      */
     public Review update(@NotNull Review reviews) {
-        if (userDao.findUser(reviews.getUserId()).isEmpty())
-            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        if (filmDao.findFilm(reviews.getFilmId()).isEmpty())
-            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        if (reviewDao.findByReviewId(reviews.getReviewId()).isEmpty())
+        Optional<Review> optional = reviewDao.findByReviewId(reviews.getReviewId());
+        if (optional.isPresent()) {
+            reviewDao.update(reviews.getReviewId(), reviews.getContent(), reviews.getIsPositive());
+            eventsDao.insert(EventType.REVIEW, EventOperation.UPDATE, optional.get().getUserId(), reviews.getReviewId());
+            return reviewDao.findByReviewId(reviews.getReviewId()).get();
+        } else {
             throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
-        reviewDao.update(reviews.getReviewId(), reviews.getContent(), reviews.getIsPositive());
-        eventsDao.insert(EventType.REVIEW, EventOperation.UPDATE, reviews.getUserId(), reviews.getReviewId());
-        return reviewDao.findByReviewId(reviews.getReviewId()).get();
+        }
     }
 
     /**
