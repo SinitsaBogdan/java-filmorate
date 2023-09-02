@@ -100,9 +100,11 @@ public class ServiceReview {
     public void delete(Long reviewId) {
         Optional<Review> byReviewId = reviewDao.findByReviewId(reviewId);
         if (byReviewId.isPresent()) {
-            eventsDao.deleteByEventTypeAndEntityId(EventType.LIKE, reviewId);
             reviewDao.delete(reviewId);
-            eventsDao.insert(EventType.LIKE, EventOperation.REMOVE, byReviewId.get().getUserId(), reviewId);
+            for (Event event : eventsDao.findByEventTypeAndEntityId(EventType.LIKE, reviewId)) {
+                eventsDao.deleteByEventTypeAndEntityId(EventType.LIKE, reviewId);
+            }
+            eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, byReviewId.get().getUserId(), reviewId);
         }
     }
 
