@@ -14,6 +14,10 @@ import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.time.LocalDate;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -21,6 +25,7 @@ class ReviewControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -36,34 +41,27 @@ class ReviewControllerTest {
     @Autowired
     private ReviewDao reviewDao;
 
-    @Autowired
-    private TotalLikeReviewDao totalLikeReviewDao;
-
     @BeforeEach
     public void beforeEach() {
 
         totalGenreFilmDao.delete();
         filmDao.delete();
         userDao.delete();
-        reviewDao.deleteAll();
 
-        filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
-        filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(101L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(102L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
 
-        totalGenreFilmDao.insert(1L, 1);
-        totalGenreFilmDao.insert(2L, 2);
+        userDao.insert(101L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
+        userDao.insert(102L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
 
-        userDao.insert(1L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
-        userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
+        reviewDao.insert(101L, "content-1", true, 101L, 101L);
+        reviewDao.insert(102L, "content-2", false, 102L, 101L);
+        reviewDao.insert(103L, "content-3", true, 102L, 102L);
 
-        reviewDao.insert(1L, "content-1", true, 1L, 1L);
-        reviewDao.insert(2L, "content-2", true, 2L, 1L);
-        reviewDao.insert(3L, "content-3", true, 2L, 2L);
-
-        totalLikeReviewDao.insert(1L, 1L, true);
-        totalLikeReviewDao.insert(2L, 1L, false);
-        totalLikeReviewDao.insert(2L, 2L, false);
-        totalLikeReviewDao.insert(3L, 1L, true);
+//        totalLikeReviewDao.insert(1L, 1L, true);
+//        totalLikeReviewDao.insert(2L, 1L, false);
+//        totalLikeReviewDao.insert(2L, 2L, false);
+//        totalLikeReviewDao.insert(3L, 1L, true);
     }
 
     @Nested
@@ -72,7 +70,12 @@ class ReviewControllerTest {
 
         @Test
         @DisplayName("Получение отзыва: ID 1")
-        void methodGet_ReviewId1Test() {
+        void methodGet_ReviewId1Test() throws Exception {
+            mockMvc.perform(get("/reviews/101"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.name").value("Фильм 1"))
+            ;
         }
 
         @Test
