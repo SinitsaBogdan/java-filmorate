@@ -64,7 +64,7 @@ public class ServiceReview {
      * Добавление нового отзыва [ REVIEWS ].
      */
     public Review add(@NotNull Review reviews) {
-        if (userDao.findUser(reviews.getUserId()).isEmpty())
+        if (userDao.find(reviews.getUserId()).isEmpty())
             throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         if (filmDao.findFilm(reviews.getFilmId()).isEmpty())
             throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);

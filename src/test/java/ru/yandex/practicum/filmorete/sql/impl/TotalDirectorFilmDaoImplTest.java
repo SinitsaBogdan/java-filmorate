@@ -35,7 +35,7 @@ class TotalDirectorFilmDaoImplTest {
         directorDao.delete();
         filmDao.deleteAll();
         enumMpaDao.delete();
-        userDao.delete();
+        userDao.deleteAll();
 
         directorDao.insert(10L, "director-1");
         directorDao.insert(20L, "director-2");

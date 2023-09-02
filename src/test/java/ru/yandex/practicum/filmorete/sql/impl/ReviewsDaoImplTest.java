@@ -31,7 +31,7 @@ class ReviewsDaoImplTest {
     void setUp() {
         enumMpaDao.delete();
         filmDao.deleteAll();
-        userDao.delete();
+        userDao.deleteAll();
         reviewDao.deleteAll();
         totalLikeReviewDao.delete();
 

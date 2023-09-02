@@ -30,7 +30,7 @@ class TotalUserFriendsDaoImplTest {
     @BeforeEach
     public void beforeEach() {
         totalUserFriendsDao.delete();
-        userDao.delete();
+        userDao.deleteAll();
         userDao.insert(
                 100L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
         );

@@ -43,23 +43,23 @@ public class ServiceUser {
     }
 
     public User getUser(Long userId) {
-        Optional<User> optional = userDao.findUser(userId);
+        Optional<User> optional = userDao.find(userId);
         if (optional.isPresent()) return optional.get();
         else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public User createUser(User user) {
         checkValidUser(user);
-        Optional<User> optional = userDao.findUser(user.getEmail());
+        Optional<User> optional = userDao.find(user.getEmail());
         if (optional.isEmpty()) {
             userDao.insert(user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
-            return userDao.findUser(user.getEmail()).get();
+            return userDao.find(user.getEmail()).get();
         } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
     }
 
     public User updateUser(User user) {
         checkValidUser(user);
-        Optional<User> optional = userDao.findUser(user.getId());
+        Optional<User> optional = userDao.find(user.getId());
         if (optional.isPresent()) {
             userDao.update(user.getId(), user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
             return user;
@@ -67,11 +67,11 @@ public class ServiceUser {
     }
 
     public List<User> getAllUsers() {
-        return userDao.findAllUsers();
+        return userDao.findAll();
     }
 
     public List<User> getFriends(Long id) {
-        Optional<User> optional = userDao.findUser(id);
+        Optional<User> optional = userDao.find(id);
         if (optional.isPresent()) {
             return totalUserFriendsDao.findFriendsByUser(id);
         } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
@@ -90,14 +90,14 @@ public class ServiceUser {
     }
 
     public void removeUser(Long userId) {
-        Optional<User> optionalUser = userDao.findUser(userId);
+        Optional<User> optionalUser = userDao.find(userId);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        userDao.delete(userId);
+        userDao.deleteAll(userId);
     }
 
     public void addFriend(Long friendId, Long userId) {
-        Optional<User> optionalUser = userDao.findUser(userId);
-        Optional<User> optionalFriend = userDao.findUser(friendId);
+        Optional<User> optionalUser = userDao.find(userId);
+        Optional<User> optionalFriend = userDao.find(friendId);
         if (optionalUser.isPresent() && optionalFriend.isPresent()) {
             Optional<TotalUserFriends> optionalRowStatusUser = totalUserFriendsDao.findTotalUserFriend(userId, friendId);
             if (optionalRowStatusUser.isPresent()) {
@@ -124,6 +124,6 @@ public class ServiceUser {
     }
 
     public void clearStorage() {
-        userDao.delete();
+        userDao.deleteAll();
     }
 }

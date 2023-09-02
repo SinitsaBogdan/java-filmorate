@@ -21,7 +21,7 @@ public class ServiceEvent {
     private final UserDao userDao;
 
     public List<Event> getAllEventByUserId(Long userId) {
-        Optional<User> user = userDao.findUser(userId);
+        Optional<User> user = userDao.find(userId);
         if (user.isEmpty()) {
             throw new ExceptionNotFoundUserStorage(UserErrorMessage.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         }

@@ -51,7 +51,7 @@ class ReviewControllerTest {
 
         totalGenreFilmDao.delete();
         filmDao.deleteAll();
-        userDao.delete();
+        userDao.deleteAll();
         reviewDao.deleteAll();
 
         filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);

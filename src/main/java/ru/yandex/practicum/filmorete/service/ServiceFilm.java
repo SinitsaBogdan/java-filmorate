@@ -146,7 +146,7 @@ public class ServiceFilm {
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
-        Optional<User> optionalUser = userDao.findUser(userId);
+        Optional<User> optionalUser = userDao.find(userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
@@ -156,7 +156,7 @@ public class ServiceFilm {
 
     public void addLike(Long filmId, Long userId) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
-        Optional<User> optionalUser = userDao.findUser(userId);
+        Optional<User> optionalUser = userDao.find(userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);

@@ -30,7 +30,7 @@ public class EventsDaoImplTest {
     @BeforeEach
     public void beforeEach() {
         eventsDao.deleteAll();
-        userDao.delete();
+        userDao.deleteAll();
 
         userDao.insert(
                 1L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
