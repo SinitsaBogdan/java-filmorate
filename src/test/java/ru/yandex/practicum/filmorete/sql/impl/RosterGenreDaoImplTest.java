@@ -24,6 +24,7 @@ class RosterGenreDaoImplTest {
 
     @BeforeEach
     public void beforeEach() {
+
         dao.delete();
         dao.insert(100, "Комедия");
         dao.insert(101, "Ужасы");
