@@ -2,15 +2,15 @@ package ru.yandex.practicum.filmorete.service;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorete.enums.EventOperation;
+import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundReviewStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
+import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.model.Review;
 import ru.yandex.practicum.filmorete.model.TotalLikeReview;
-import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
-import ru.yandex.practicum.filmorete.sql.dao.ReviewDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalLikeReviewDao;
-import ru.yandex.practicum.filmorete.sql.dao.UserDao;
+import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +30,14 @@ public class ServiceReview {
 
     private final TotalLikeReviewDao totalReviewLikeDao;
 
-    private ServiceReview(ReviewDao reviewDao, UserDao userDao, FilmDao filmDao, TotalLikeReviewDao totalReviewLikeDao) {
+    private final EventsDao eventsDao;
+
+    private ServiceReview(ReviewDao reviewDao, UserDao userDao, FilmDao filmDao, TotalLikeReviewDao totalReviewLikeDao, EventsDao eventsDao) {
         this.reviewDao = reviewDao;
         this.userDao = userDao;
         this.filmDao = filmDao;
         this.totalReviewLikeDao = totalReviewLikeDao;
+        this.eventsDao = eventsDao;
     }
 
     /**
@@ -60,22 +63,28 @@ public class ServiceReview {
     /**
      * Добавление нового отзыва [ REVIEWS ].
      */
-    public Review add(@NotNull Review review) {
-        if (userDao.findUser(review.getUserId()).isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        if (filmDao.findFilm(review.getFilmId()).isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        Long reviewId = reviewDao.insert(review.getContent(), review.getIsPositive(), review.getUserId(), review.getFilmId());
+    public Review add(@NotNull Review reviews) {
+        if (userDao.findUser(reviews.getUserId()).isEmpty())
+            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (filmDao.findFilm(reviews.getFilmId()).isEmpty())
+            throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        Long reviewId = reviewDao.insert(reviews.getContent(), reviews.getIsPositive(), reviews.getUserId(), reviews.getFilmId());
+        eventsDao.insert(EventType.REVIEW, EventOperation.ADD, reviews.getUserId(), reviewId);
         return reviewDao.findByReviewId(reviewId).get();
     }
 
     /**
      * Обновление существующего отзыва [ REVIEWS ].
      */
-    public Review update(@NotNull Review review) {
-        if (userDao.findUser(review.getUserId()).isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        if (filmDao.findFilm(review.getFilmId()).isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        if (reviewDao.findByReviewId(review.getReviewId()).isEmpty()) throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
-        reviewDao.update(review.getReviewId(), review.getContent(), review.getIsPositive());
-        return reviewDao.findByReviewId(review.getReviewId()).get();
+    public Review update(@NotNull Review reviews) {
+        Optional<Review> optional = reviewDao.findByReviewId(reviews.getReviewId());
+        if (optional.isPresent()) {
+            reviewDao.update(reviews.getReviewId(), reviews.getContent(), reviews.getIsPositive());
+            eventsDao.insert(EventType.REVIEW, EventOperation.UPDATE, optional.get().getUserId(), reviews.getReviewId());
+            return reviewDao.findByReviewId(reviews.getReviewId()).get();
+        } else {
+            throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
+        }
     }
 
     /**
@@ -89,7 +98,14 @@ public class ServiceReview {
      * Удаление отзыва по ID [ REVIEWS ].
      */
     public void delete(Long reviewId) {
-        reviewDao.delete(reviewId);
+        Optional<Review> byReviewId = reviewDao.findByReviewId(reviewId);
+        if (byReviewId.isPresent()) {
+            reviewDao.delete(reviewId);
+            for (Event event : eventsDao.findByEventTypeAndEntityId(EventType.LIKE, reviewId)) {
+                eventsDao.deleteByEventTypeAndEntityId(EventType.LIKE, reviewId);
+            }
+            eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, byReviewId.get().getUserId(), reviewId);
+        }
     }
 
     /**
@@ -106,5 +122,6 @@ public class ServiceReview {
     public void deleteReviewLike(Long reviewLikeId, Long userId) {
         totalReviewLikeDao.delete(reviewLikeId, userId);
         reviewDao.recalculationPositive(reviewLikeId);
+        eventsDao.insert(EventType.LIKE, EventOperation.REMOVE, userId, reviewLikeId);
     }
 }
