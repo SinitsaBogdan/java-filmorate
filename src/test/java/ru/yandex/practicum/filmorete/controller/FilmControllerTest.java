@@ -65,7 +65,7 @@ public class FilmControllerTest {
     public void beforeEach() {
         totalGenreFilmDao.delete();
         totalFilmLikeDao.delete();
-        filmDao.delete();
+        filmDao.deleteAll();
         userDao.delete();
         directorDao.delete();
         totalDirectorFilmDao.delete();

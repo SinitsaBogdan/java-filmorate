@@ -50,7 +50,7 @@ class ReviewControllerTest {
     public void beforeEach() {
 
         totalGenreFilmDao.delete();
-        filmDao.delete();
+        filmDao.deleteAll();
         userDao.delete();
         reviewDao.deleteAll();
 

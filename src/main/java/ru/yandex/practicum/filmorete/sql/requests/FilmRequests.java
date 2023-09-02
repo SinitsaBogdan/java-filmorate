@@ -1,5 +1,8 @@
 package ru.yandex.practicum.filmorete.sql.requests;
 
+import lombok.Getter;
+
+@Getter
 public enum FilmRequests {
     SELECT_ALL__FILMS(
         "SELECT " +
@@ -107,7 +110,7 @@ public enum FilmRequests {
             "WHERE duration = ?;"
     ),
 
-    DELETE_ONE__FILMS__MPA_ID(
+    DELETE_ONE__FILMS__MPA(
         "DELETE FROM FILMS " +
             "WHERE mpa_id = ?;"
     );

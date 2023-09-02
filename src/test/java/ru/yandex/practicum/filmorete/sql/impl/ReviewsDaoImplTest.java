@@ -30,7 +30,7 @@ class ReviewsDaoImplTest {
     @BeforeEach
     void setUp() {
         enumMpaDao.delete();
-        filmDao.delete();
+        filmDao.deleteAll();
         userDao.delete();
         reviewDao.deleteAll();
         totalLikeReviewDao.delete();

@@ -33,7 +33,7 @@ class TotalFilmLikeDaoImplTest {
     @BeforeEach
     public void beforeEach() {
         totalFilmLikeDao.delete();
-        filmDao.delete();
+        filmDao.deleteAll();
         userDao.delete();
         genreFilmDao.delete();
 
