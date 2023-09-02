@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceGenre.SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.GenreErrorMessage.SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS;
 
 @Slf4j
 @Service
