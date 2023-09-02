@@ -126,7 +126,7 @@ public class ServiceFilm {
 
         } else throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
 
-        List<TotalGenreFilm> totalGenreFilms = totalGenreFilmDao.findAllTotalGenreFilm(film.getId());
+        List<TotalGenreFilm> totalGenreFilms = totalGenreFilmDao.findAllTotalGenreFilmIsFimId(film.getId());
         if (!totalGenreFilms.isEmpty()) totalGenreFilmDao.deleteAllFilmId(film.getId());
         if (film.getGenres() != null) {
             for (Genre genreFilm : film.getGenres()) {
