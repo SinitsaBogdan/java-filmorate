@@ -79,7 +79,7 @@ public class EventsDaoImpl implements EventsDao {
     @Override
     public void insert(Long id, EventType type, EventOperation operation, Long userId, Long entityId) {
         jdbcTemplate.update(
-                INSERT_ONE__EVENTS_FULL.getSql(),
+                INSERT_ONE__EVENTS_FULL__ID.getSql(),
                 id, userId, type.name(), operation.name(), entityId, LocalDateTime.now()
         );
     }
@@ -104,7 +104,7 @@ public class EventsDaoImpl implements EventsDao {
 
     @Override
     public void deleteAll(EventType eventType, Long entityId) {
-        jdbcTemplate.update(DELETE_ONE__EVENTS__ENTITY_TYPE.getSql(), entityId, eventType.name());
+        jdbcTemplate.update(DELETE_ONE__EVENTS__ENTITY_ID_TYPE.getSql(), entityId, eventType.name());
     }
 
     @Override
