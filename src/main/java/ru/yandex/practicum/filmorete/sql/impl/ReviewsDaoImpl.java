@@ -60,8 +60,6 @@ public class ReviewsDaoImpl implements ReviewDao {
         return result;
     }
 
-
-
     @Override
     public List<Review> findAll(Boolean isPositive) {
         List<Review> result = new ArrayList<>();

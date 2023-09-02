@@ -161,7 +161,6 @@ public class ServiceFilm {
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalFilmLikeDao.insert(filmId, userId);
-        System.out.println(eventsDao.findByEventTypeAndEntityId(EventType.LIKE, filmId));
         eventsDao.insert(EventType.LIKE, EventOperation.ADD, userId, filmId);
     }
 
@@ -179,7 +178,6 @@ public class ServiceFilm {
 
     public List<Film> getFilmsBySearchParam(String query, List<String> by) {
         List<Film> films = filmDao.getFilmsBySearchParam(query, by);
-
         return films.stream()
             .sorted(Comparator.comparing((Film film) -> film.getDirectors().isEmpty())
                 .thenComparing(Film::getName))
