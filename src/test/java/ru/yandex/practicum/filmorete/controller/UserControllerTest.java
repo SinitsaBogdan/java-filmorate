@@ -43,15 +43,7 @@ public class UserControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-
-        userDao.delete();
-        filmDao.delete();
-        totalFilmLikeDao.delete();
-
-        filmDao.insert(101L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
-        filmDao.insert(102L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
-        filmDao.insert(103L, 3, "Фильм 3", "", LocalDate.parse("2000-01-01"), 90);
-
+        userDao.deleteAll();
         userDao.insert(101L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
         userDao.insert(102L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
         userDao.insert(103L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");

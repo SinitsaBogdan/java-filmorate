@@ -40,7 +40,7 @@ public class GenreControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        enumGenreDao.delete();
+        enumGenreDao.deleteAll();
         enumGenreDao.insert(
                 listGenre.get(0).getId(),
                 listGenre.get(0).getName()

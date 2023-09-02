@@ -31,14 +31,6 @@ public class ReviewController {
     }
 
     /**
-     * Запрос отзыва по идентификатору.
-     * */
-    @GetMapping("/{reviewId}")
-    public Review getSearchId(@PathVariable Long reviewId) {
-        return serviceReview.getReviewSearchId(reviewId);
-    }
-
-    /**
      * Добавление нового отзыва.
      * */
     @PostMapping
@@ -63,6 +55,14 @@ public class ReviewController {
     }
 
     /**
+     * Запрос отзыва по идентификатору.
+     * */
+    @GetMapping("/{reviewId}")
+    public Review getSearchId(@PathVariable Long reviewId) {
+        return serviceReview.getReviewSearchId(reviewId);
+    }
+
+    /**
      * Удаление уже имеющегося отзыва по ID.
      * */
     @DeleteMapping("/{reviewId}")
@@ -79,19 +79,19 @@ public class ReviewController {
     }
 
     /**
-     * Пользователь ставит дизлайк отзыву.
-     * */
-    @PutMapping("/{reviewId}/dislike/{userId}")
-    public void addDislikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-        serviceReview.add(TotalLikeReview.builder().reviewId(reviewId).typeLike(false).userId(userId).build());
-    }
-
-    /**
      * Пользователь удаляет лайк у отзыва.
      * */
     @DeleteMapping("/{reviewId}/like/{userId}")
     public void deleteLikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
         serviceReview.deleteReviewLike(reviewId, userId);
+    }
+
+    /**
+     * Пользователь ставит дизлайк отзыву.
+     * */
+    @PutMapping("/{reviewId}/dislike/{userId}")
+    public void addDislikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
+        serviceReview.add(TotalLikeReview.builder().reviewId(reviewId).typeLike(false).userId(userId).build());
     }
 
     /**

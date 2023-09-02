@@ -64,9 +64,9 @@ public class FilmControllerTest {
     @BeforeEach
     public void beforeEach() {
         totalGenreFilmDao.delete();
-        totalFilmLikeDao.delete();
-        filmDao.delete();
-        userDao.delete();
+        totalFilmLikeDao.deleteAll();
+        filmDao.deleteAll();
+        userDao.deleteAll();
         directorDao.delete();
         totalDirectorFilmDao.delete();
 
@@ -87,6 +87,16 @@ public class FilmControllerTest {
         totalFilmLikeDao.insert(1L, 1L);
         totalFilmLikeDao.insert(2L, 1L);
         totalFilmLikeDao.insert(2L, 2L);
+
+        directorDao.insert(1L, "Режиссёр1");
+        directorDao.insert(2L, "Режиссёр2");
+        directorDao.insert(3L, "Режиссёр3");
+
+        totalDirectorFilmDao.insert(1L, 1L);
+        totalDirectorFilmDao.insert(2L, 1L);
+        totalDirectorFilmDao.insert(3L, 2L);
+        totalDirectorFilmDao.insert(4L, 2L);
+        totalDirectorFilmDao.insert(5L, 2L);
     }
 
     @Nested
@@ -155,19 +165,25 @@ public class FilmControllerTest {
         @Test
         @DisplayName("Запрос списка популярных фильмов: genreId : 0, year : 0")
         public void methodGet_PopularFilmsOverloadTest() throws Exception {
-            // TODO Где тестирование PopularFilmsOverload ?
+            mockMvc.perform(get("/films/popular?genreId=0&year=0"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(0));
         }
 
         @Test
         @DisplayName("Запрос списка популярных фильмов: genreId : 1")
         public void methodGet_PopularFilmsGenreId1Test() throws Exception {
-            // TODO Где тестирование PopularFilmsGenreId1 ?
+            mockMvc.perform(get("/films/popular?genreId=1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1));
         }
 
         @Test
         @DisplayName("Запрос списка популярных фильмов: year : 2000")
         public void methodGet_PopularFilmsYear2000Test() throws Exception {
-            // TODO Где тестирование PopularFilmsYear2000?
+            mockMvc.perform(get("/films/popular?year=2000"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(5));
         }
 
         @Test
@@ -193,9 +209,9 @@ public class FilmControllerTest {
         @Test
         @DisplayName("Запрос списка общих фильмов, когда он должен быть пустым")
         public void methodGet_EmptyCommonFilms() throws Exception {
-            totalFilmLikeDao.delete(1L, 2L);
-            totalFilmLikeDao.delete(2L, 1L);
-            totalFilmLikeDao.delete(2L, 2L);
+            totalFilmLikeDao.deleteAll(1L, 2L);
+            totalFilmLikeDao.deleteAll(2L, 1L);
+            totalFilmLikeDao.deleteAll(2L, 2L);
 
             mockMvc.perform(get("/films/common?userId=1&friendId=2"))
                 .andExpect(status().isOk())
@@ -215,13 +231,17 @@ public class FilmControllerTest {
         @Test
         @DisplayName("Запрос списка фильмов режиссера, отсортированные по популярности")
         public void methodGet_FilmsByDirectorSortedByLikes() throws Exception {
-            // TODO Где тестирование FilmsByDirectorSortedByLikes ?
+            mockMvc.perform(get("/films/director/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2));
         }
 
         @Test
         @DisplayName("Запрос списка фильмов режиссера, отсортированные по годам")
         public void methodGet_FilmsByDirectorSortedByYear() throws Exception {
-            // TODO Где тестирование FilmsByDirectorSortedByYear ?
+            mockMvc.perform(get("/films/director/2"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(3));
         }
 
         @Test

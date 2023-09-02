@@ -9,12 +9,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorete.model.Review;
 import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.time.LocalDate;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,23 +48,31 @@ class ReviewControllerTest {
     public void beforeEach() {
 
         totalGenreFilmDao.delete();
-        filmDao.delete();
-        userDao.delete();
+        filmDao.deleteAll();
+        userDao.deleteAll();
+        reviewDao.deleteAll();
 
-        filmDao.insert(101L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
-        filmDao.insert(102L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(3L, 2, "Фильм 3", "", LocalDate.parse("2000-01-01"), 90);
 
-        userDao.insert(101L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
-        userDao.insert(102L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
+        totalGenreFilmDao.insert(1L, 1);
+        totalGenreFilmDao.insert(2L, 2);
+        totalGenreFilmDao.insert(3L, 3);
 
-        reviewDao.insert(101L, "content-1", true, 101L, 101L);
-        reviewDao.insert(102L, "content-2", false, 102L, 101L);
-        reviewDao.insert(103L, "content-3", true, 102L, 102L);
+        userDao.insert(1L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
+        userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
+        userDao.insert(3L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
 
-//        totalLikeReviewDao.insert(1L, 1L, true);
-//        totalLikeReviewDao.insert(2L, 1L, false);
-//        totalLikeReviewDao.insert(2L, 2L, false);
-//        totalLikeReviewDao.insert(3L, 1L, true);
+        reviewDao.insert(101L, "content-1", true, 1L, 1L);
+        reviewDao.insert(102L, "content-2", true, 2L, 1L);
+        reviewDao.insert(103L, "content-3", true, 2L, 2L);
+        reviewDao.insert(104L, "content-4", false, 3L, 3L);
+
+        totalLikeReviewDao.insert(101L,1L,true);
+        totalLikeReviewDao.insert(102L,2L,true);
+        totalLikeReviewDao.insert(103L,2L,true);
+        totalLikeReviewDao.insert(104L,3L,false);
     }
 
     @Nested
@@ -69,28 +80,42 @@ class ReviewControllerTest {
     public class MethodGet {
 
         @Test
-        @DisplayName("Получение отзыва: ID 1")
+        @DisplayName("Получение отзыва: ID 101")
         void methodGet_ReviewId1Test() throws Exception {
             mockMvc.perform(get("/reviews/101"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(1))
-                    .andExpect(jsonPath("$.name").value("Фильм 1"))
+                    .andExpect(jsonPath("$.reviewId").value(101))
+                    .andExpect(jsonPath("$.content").value("content-1"))
+                    .andExpect(jsonPath("$.isPositive").value("true"))
+                    .andExpect(jsonPath("$.userId").value(1))
+                    .andExpect(jsonPath("$.filmId").value(1))
+                    .andExpect(jsonPath("$.useful").value(0))
             ;
         }
 
         @Test
         @DisplayName("Запрос отзыва: ID 9999")
         public void methodGet_ReviewId9999Test() throws Exception {
+            mockMvc.perform(get("/reviews/9999"))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Запрос отзыва: ID -1")
         public void methodGet_ReviewIdMinus1Test() throws Exception {
+            mockMvc.perform(get("/reviews/-1"))
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Получение всех отзывов")
-        void methodGet_AllReviews() {
+        void methodGet_AllReviews() throws Exception {
+            mockMvc.perform(get("/reviews"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(3))
+            ;
         }
     }
 
@@ -99,33 +124,51 @@ class ReviewControllerTest {
     public class MethodPost {
 
         @Test
-        @DisplayName("Проверка добавления дубликата отзыва")
-        void methodPost_NewReviewValidTrue_AndDoubleFalseTest() throws Exception {
-        }
-
-        @Test
         @DisplayName("Добавление нового отзыва - userId : null")
         public void methodPost_NewReviewValidTrue_UserIdNullTest() throws Exception {
+            Review review = Review.builder().reviewId(200L).content("content-200").isPositive(false).userId(3L).filmId(1L).build();
+            mockMvc.perform(post("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового отзыва - filmId : null")
         public void methodPost_NewReviewValidTrue_FilmIdNullTest() throws Exception {
+            Review review = Review.builder().reviewId(200L).content("content-200").isPositive(false).userId(3L).filmId(null).build();
+            mockMvc.perform(post("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового отзыва - content : null")
         public void methodPost_NewReviewValidTrue_ContentNullTest() throws Exception {
+            Review review = Review.builder().reviewId(200L).content(null).isPositive(false).userId(3L).filmId(2L).build();
+            mockMvc.perform(post("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Добавление нового отзыва - content : empty")
         public void methodPost_NewReviewValidTrue_ContentEmptyTest() throws Exception {
-        }
-
-        @Test
-        @DisplayName("Добавление нового отзыва - content : max length")
-        public void methodPost_NewReviewValidTrue_ContentMaxLengthTest() throws Exception {
+            Review review = Review.builder().reviewId(200L).content("").isPositive(false).userId(3L).filmId(2L).build();
+            mockMvc.perform(post("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
         }
     }
 
@@ -136,41 +179,93 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Обновление отзыва")
         void methodPut_ReviewValidTrueTest() throws Exception {
+            Review review = Review.builder().reviewId(102L).content("Обновление").isPositive(true).userId(3L).filmId(2L).build();
+            mockMvc.perform(put("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+            ;
         }
 
         @Test
         @DisplayName("Обновление отзыва - id : null")
         public void methodPut_ReviewValidFalse_IdNullTest() throws Exception {
+            Review review = Review.builder().reviewId(null).content("Обновление").isPositive(true).userId(3L).filmId(2L).build();
+            mockMvc.perform(put("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
-        @DisplayName("Обновление отзыва - id : 99")
+        @DisplayName("Обновление отзыва - id : 9999L")
         public void methodPut_ReviewValidFalse_IdNotInCollectionsTest() throws Exception {
+            Review review = Review.builder().reviewId(9999L).content("Обновление").isPositive(true).userId(3L).filmId(2L).build();
+            mockMvc.perform(put("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление отзыва - content : empty")
         public void methodPut_ReviewValidFalse_ContentEmptyTest() throws Exception {
+            Review review = Review.builder().reviewId(102L).content("").isPositive(true).userId(3L).filmId(2L).build();
+            mockMvc.perform(put("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление отзыва - content : null")
         public void methodPut_ReviewValidFalse_ContentNullTest() throws Exception {
+            Review review = Review.builder().reviewId(102L).content(null).isPositive(true).userId(3L).filmId(2L).build();
+            mockMvc.perform(put("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().is4xxClientError())
+            ;
         }
 
         @Test
         @DisplayName("Обновление отзыва - useful : -1")
         public void methodPut_ReviewValidFalse_UsefulNegativeTest() throws Exception {
+            Review review = Review.builder().reviewId(102L).content("Обновление").isPositive(true).userId(3L).filmId(2L).useful(-1).build();
+            mockMvc.perform(put("/reviews")
+                            .content(objectMapper.writeValueAsString(review))
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+            ;
         }
 
         @Test
-        @DisplayName("Обновление отзыва - добавление лайка")
+        @DisplayName("Добавление лайка к отзыву")
         public void methodPut_ReviewAddLikeTest() throws Exception {
+            mockMvc.perform(put("/reviews/101/like/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+            ;
         }
 
         @Test
-        @DisplayName("Обновление отзыва - добавление дизлайка")
+        @DisplayName("Добавление дизлайка к отзыву")
         public void methodPut_ReviewAddDislikeTest() throws Exception {
+            mockMvc.perform(put("/reviews/101/dislike/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+            ;
         }
     }
 
@@ -180,18 +275,26 @@ class ReviewControllerTest {
 
         @Test
         @DisplayName("Удаление отзыва по ID")
-        void methodDelete_DeleteReviewByIdTest() {
-
+        void methodDelete_DeleteReviewByIdTest() throws Exception{
+            mockMvc.perform(delete("/reviews/101"))
+                    .andExpect(status().isOk())
+            ;
         }
 
         @Test
         @DisplayName("Удаление лайка отзыва")
-        void methodDelete_ReviewDeleteLike() {
+        void methodDelete_ReviewDeleteLike() throws Exception{
+            mockMvc.perform(delete("/reviews/101/like/1"))
+                    .andExpect(status().isOk())
+            ;
         }
 
         @Test
         @DisplayName("Удаление дизлайка отзыва")
-        void methodDelete_ReviewDeleteDislike() {
+        void methodDelete_ReviewDeleteDislike() throws Exception {
+            mockMvc.perform(delete("/reviews/104/dislike/3"))
+                    .andExpect(status().isOk())
+            ;
         }
     }
 }

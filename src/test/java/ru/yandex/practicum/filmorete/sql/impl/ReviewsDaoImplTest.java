@@ -31,10 +31,10 @@ class ReviewsDaoImplTest {
     void setUp() {
 
         enumMpaDao.delete();
-        filmDao.delete();
-        userDao.delete();
+        filmDao.deleteAll();
+        userDao.deleteAll();
         reviewDao.deleteAll();
-        totalLikeReviewDao.delete();
+        totalLikeReviewDao.deleteAll();
 
         enumMpaDao.insert(1, "G", "Описание 2");
         filmDao.insert(100L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);
@@ -83,7 +83,7 @@ class ReviewsDaoImplTest {
     @DisplayName("findByUseful(useful)")
     public void findAll__Useful() {
         List<Review> result;
-        result = reviewDao.findAll(0);
+        result = reviewDao.findAllIsUseful(0);
         assertEquals(result.size(), 2);
     }
 
@@ -150,7 +150,7 @@ class ReviewsDaoImplTest {
     @Test
     @DisplayName("delete(reviewId)")
     public void delete__ReviewId() {
-        reviewDao.delete(100L);
+        reviewDao.deleteAllIsReviewId(100L);
         assertEquals(reviewDao.findAll().size(), 1);
     }
 
@@ -164,14 +164,14 @@ class ReviewsDaoImplTest {
     @Test
     @DisplayName("deleteAllUserId(userId)")
     public void deleteAllUserId__userId() {
-        reviewDao.deleteAllUserId(100L);
+        reviewDao.deleteAllIsUserId(100L);
         assertEquals(reviewDao.findAll().size(), 1);
     }
 
     @Test
     @DisplayName("deleteAllFilmId(filmId)")
     public void deleteAllFilmId__filmId() {
-        reviewDao.deleteAllFilmId(100L);
+        reviewDao.deleteAllIsFilmId(100L);
         assertEquals(reviewDao.findAll().size(), 0);
     }
 }

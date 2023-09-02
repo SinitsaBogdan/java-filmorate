@@ -1,6 +1,6 @@
-package ru.yandex.practicum.filmorete.exeptions;
+package ru.yandex.practicum.filmorete.exeptions.message;
 
-public enum MessageErrorServiceGenre {
+public enum GenreErrorMessage {
 
     SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS(
             "Жанр не найден.",
@@ -14,7 +14,7 @@ public enum MessageErrorServiceGenre {
 
     public final int httpStatusCode;
 
-    MessageErrorServiceGenre(String name, String description, int httpStatusCode) {
+    GenreErrorMessage(String name, String description, int httpStatusCode) {
         this.name = name;
         this.description = description;
         this.httpStatusCode = httpStatusCode;

@@ -8,31 +8,31 @@ import java.util.Optional;
 
 public interface TotalUserFriendsDao {
 
-    List<User> findFriendsByUser(Long userId);
+    List<TotalUserFriends> findAll();
+
+    List<TotalUserFriends> findAll(StatusFriend statusFriend);
+
+    List<TotalUserFriends> findAllIsUser(Long userId);
+
+    List<TotalUserFriends> findAllIsFriend(Long friendId);
+
+    Optional<TotalUserFriends> find(Long userId, Long friendId);
+
+    List<User> findAll(Long userId);
 
     List<User> findFriendsCommon(Long userId, Long friendId);
-
-    List<TotalUserFriends> findAllTotalUserFriend();
-
-    List<TotalUserFriends> findAllTotalFriendByUserId(Long userId);
-
-    List<TotalUserFriends> findAllTotalUserByFriendId(Long friendId);
-
-    List<TotalUserFriends> findAllTotalByStatusId(StatusFriend statusFriend);
-
-    Optional<TotalUserFriends> findTotalUserFriend(Long userId, Long friendId);
 
     void insert(Long userId, Long friendId, StatusFriend status);
 
     void update(Long searchUserId, Long searchFriendId, StatusFriend status);
 
-    void delete();
+    void deleteAll();
 
-    void delete(Long userId, Long friendId);
+    void deleteAll(Long userId, Long friendId);
+
+    void deleteAll(StatusFriend status);
 
     void deleteAllUserId(Long userId);
 
     void deleteAllFriendId(Long friendId);
-
-    void deleteAllStatusId(StatusFriend status);
 }

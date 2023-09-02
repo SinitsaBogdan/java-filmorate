@@ -33,8 +33,8 @@ class TotalGenreFilmDaoImplTest {
     public void beforeEach() {
         totalGenreFilmDao.delete();
         enumMpaDao.delete();
-        filmDao.delete();
-        rosterGenreDao.delete();
+        filmDao.deleteAll();
+        rosterGenreDao.deleteAll();
 
         rosterGenreDao.insert(1, "Комедия");
         rosterGenreDao.insert(2, "Мультики");
@@ -71,14 +71,14 @@ class TotalGenreFilmDaoImplTest {
     @Test
     @DisplayName("findRowsByFilmId(filmId)")
     public void testFindAllRowsSearchFilmId() {
-        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm(100L);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilmIsFimId(100L);
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRowsByGenreId(genreId)")
     public void testFindAllRowsSearchGenreId() {
-        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm(2);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilmIsGenreId(2);
         assertEquals(result.size(), 1);
     }
 

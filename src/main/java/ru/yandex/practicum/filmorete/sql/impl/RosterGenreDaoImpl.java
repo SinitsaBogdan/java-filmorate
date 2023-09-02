@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static ru.yandex.practicum.filmorete.sql.requests.RosterGenreRequests.*;
+
 
 @Slf4j
 @Component
@@ -22,98 +24,62 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<String> findAllName() {
+    public List<String> findAllColumnName() {
         List<String> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT name FROM ROSTER_GENRE;"
-        );
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_GENRE__COLUMN_NAME.getSql());
         while (rows.next()) result.add(rows.getString("name"));
         return result;
     }
 
     @Override
-    public List<Genre> findAllGenre() {
+    public List<Genre> findAll() {
         List<Genre> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE " +
-                    "ORDER BY id ASC;"
-        );
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_GENRE__NAME.getSql());
         while (rows.next()) result.add(FactoryModel.buildGenre(rows));
         return result;
     }
 
     @Override
-    public Optional<Genre> findGenre(Integer rowId) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE " +
-                    "WHERE id = ?;",
-                rowId
-        );
+    public Optional<Genre> findAll(Integer rowId) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__ROSTER_GENRE.getSql(), rowId);
         if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
     }
 
     @Override
-    public Optional<Genre> findGenre(String name) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE " +
-                    "WHERE name = ?;",
-                name
-        );
+    public Optional<Genre> findAll(String name) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__ROSTER_GENRE__NAME.getSql(), name);
         if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
     }
 
     @Override
     public void insert(String name) {
-        jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (name) " +
-                    "VALUES(?);",
-                name
-        );
+        jdbcTemplate.update(INSERT_ONE__ROSTER_GENRE__NAME.getSql(), name);
     }
 
     @Override
     public void insert(Integer rowId, String name) {
-        jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (id, name) " +
-                    "VALUES(?, ?);",
-                rowId, name
-        );
+        jdbcTemplate.update(INSERT_ONE__ROSTER_GENRE__FULL.getSql(), rowId, name);
     }
 
     @Override
     public void update(Integer searchRowId, String name) {
-        jdbcTemplate.update(
-                "UPDATE ROSTER_GENRE " +
-                    "SET name = ? " +
-                    "WHERE id = ?;",
-                name, searchRowId
-        );
+        jdbcTemplate.update(UPDATE_ONE__ROSTER_GENRE__SET_NAME__ID.getSql(), name, searchRowId);
     }
 
     @Override
-    public void delete() {
-        jdbcTemplate.update(
-                "DELETE FROM ROSTER_GENRE;"
-        );
+    public void deleteAll() {
+        jdbcTemplate.update(DELETE_ALL__ROSTER_GENRE.getSql(), "DELETE FROM ROSTER_GENRE;");
     }
 
     @Override
-    public void delete(Integer rowId) {
-        jdbcTemplate.update(
-                "DELETE FROM ROSTER_GENRE " +
-                    "WHERE id = ?;",
-                rowId
-        );
+    public void deleteAll(Integer rowId) {
+        jdbcTemplate.update(DELETE_ONE__ROSTER_GENRE__ID.getSql(), rowId);
     }
 
     @Override
-    public void delete(String name) {
-        jdbcTemplate.update(
-                "DELETE FROM ROSTER_GENRE " +
-                    "WHERE name = ?;",
-                name
-        );
+    public void deleteAll(String name) {
+        jdbcTemplate.update(DELETE_ONE__ROSTER_GENRE__NAME.getSql(), name);
     }
 }

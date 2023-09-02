@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static ru.yandex.practicum.filmorete.sql.requests.UserRequests.*;
+
 
 @Slf4j
 @Component
@@ -23,39 +25,29 @@ public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
 
     public Optional<Long> findLastIdUser() {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT MAX(id) AS last_id FROM USERS;"
-        );
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_MAX_ID__ID.getSql());
         if (row.next()) return Optional.of(row.getLong("last_id"));
         else return Optional.empty();
     }
 
     @Override
-    public List<User> findAllUsers() {
+    public List<User> findAll() {
         List<User> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM USERS;"
-        );
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS.getSql());
         while (rows.next()) result.add(FactoryModel.buildUser(rows));
         return result;
     }
 
     @Override
-    public Optional<User> findUser(Long userId) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM USERS WHERE id = ?;",
-                userId
-        );
+    public Optional<User> find(Long userId) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__USER__ID.getSql(), userId);
         if (row.next()) return Optional.of(FactoryModel.buildUser(row));
         else return Optional.empty();
     }
 
     @Override
-    public Optional<User> findUser(String email) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM USERS WHERE email = ?;",
-                email
-        );
+    public Optional<User> find(String email) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__USER__EMAIL.getSql(), email);
         if (row.next()) return Optional.of(FactoryModel.buildUser(row));
         else return Optional.empty();
     }
@@ -63,7 +55,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(Long id, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                "INSERT INTO USERS (id, name, birthday, login, email) VALUES (?, ?, ?, ?, ?);",
+                INSERT_ONE__USER__FULL.getSql(),
                 id, name, birthday, login, email
         );
     }
@@ -71,7 +63,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                "INSERT INTO USERS (name, birthday, login, email) VALUES (?, ?, ?, ?);",
+                INSERT_ONE__USER__NAME_BIRTHDAY_LOGIN_EMAIL.getSql(),
                 name, birthday, login, email
         );
     }
@@ -79,31 +71,23 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(Long rowId, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                "UPDATE USERS SET name = ?, birthday = ?, login = ?, email = ? WHERE  id = ?;",
+                UPDATE_ONE__USER__SET_NAME_BIRTHDAY_LOGIN_EMAIL__ID.getSql(),
                 name, birthday, login, email, rowId
         );
     }
 
     @Override
-    public void delete() {
-        jdbcTemplate.update(
-                "DELETE FROM USERS;"
-        );
+    public void deleteAll() {
+        jdbcTemplate.update(DELETE_ALL__USERS.getSql());
     }
 
     @Override
-    public void delete(Long rowId) {
-        jdbcTemplate.update(
-                "DELETE FROM USERS WHERE id = ?;",
-                rowId
-        );
+    public void deleteAll(Long rowId) {
+        jdbcTemplate.update(DELETE_ONE__USER__ID.getSql(), rowId);
     }
 
     @Override
-    public void delete(String login) {
-        jdbcTemplate.update(
-                "DELETE FROM USERS WHERE login = ?;",
-                login
-        );
+    public void deleteAll(String login) {
+        jdbcTemplate.update(DELETE_ONE__USER__LOGIN.getSql(), login);
     }
 }

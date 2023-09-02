@@ -1,6 +1,6 @@
-package ru.yandex.practicum.filmorete.exeptions;
+package ru.yandex.practicum.filmorete.exeptions.message;
 
-public enum MessageErrorServiceFilm {
+public enum FilmErrorMessage {
 
     SERVICE_ERROR_COLLECTIONS_IN_NULL(
             "Коллекция пустая",
@@ -14,7 +14,7 @@ public enum MessageErrorServiceFilm {
 
     public final int httpStatusCode;
 
-    MessageErrorServiceFilm(String name, String description, int httpStatusCode) {
+    FilmErrorMessage(String name, String description, int httpStatusCode) {
         this.name = name;
         this.description = description;
         this.httpStatusCode = httpStatusCode;

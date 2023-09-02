@@ -6,13 +6,13 @@ import java.util.Optional;
 
 public interface RosterGenreDao {
 
-    List<String> findAllName();
+    List<Genre> findAll();
 
-    List<Genre> findAllGenre();
+    Optional<Genre> findAll(Integer rowId);
 
-    Optional<Genre> findGenre(Integer rowId);
+    Optional<Genre> findAll(String name);
 
-    Optional<Genre> findGenre(String name);
+    List<String> findAllColumnName();
 
     void insert(String name);
 
@@ -20,9 +20,9 @@ public interface RosterGenreDao {
 
     void update(Integer searchRowId, String name);
 
-    void delete();
+    void deleteAll();
 
-    void delete(Integer rowId);
+    void deleteAll(Integer rowId);
 
-    void delete(String name);
+    void deleteAll(String name);
 }

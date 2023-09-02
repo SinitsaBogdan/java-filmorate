@@ -15,9 +15,9 @@ import ru.yandex.practicum.filmorete.sql.dao.*;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceReview.SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidFilm.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.MessageErrorValidUser.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.ReviewErrorMessage.SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
 
 @Service
 public class ServiceReview {
@@ -48,7 +48,7 @@ public class ServiceReview {
     }
 
     public List<Review> getAllReviewIsFilmId(Long filmId, Integer count) {
-        return reviewDao.findAllFilmIdAndIsCount(filmId, count);
+        return reviewDao.findAll(filmId, count);
     }
 
     /**
@@ -64,7 +64,7 @@ public class ServiceReview {
      * Добавление нового отзыва [ REVIEWS ].
      */
     public Review add(@NotNull Review reviews) {
-        if (userDao.findUser(reviews.getUserId()).isEmpty())
+        if (userDao.find(reviews.getUserId()).isEmpty())
             throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         if (filmDao.findFilm(reviews.getFilmId()).isEmpty())
             throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
@@ -100,9 +100,9 @@ public class ServiceReview {
     public void delete(Long reviewId) {
         Optional<Review> byReviewId = reviewDao.findByReviewId(reviewId);
         if (byReviewId.isPresent()) {
-            reviewDao.delete(reviewId);
-            for (Event event : eventsDao.findByEventTypeAndEntityId(EventType.LIKE, reviewId)) {
-                eventsDao.deleteByEventTypeAndEntityId(EventType.LIKE, reviewId);
+            reviewDao.deleteAllIsReviewId(reviewId);
+            for (Event event : eventsDao.findAll(EventType.LIKE, reviewId)) {
+                eventsDao.deleteAll(EventType.LIKE, reviewId);
             }
             eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, byReviewId.get().getUserId(), reviewId);
         }

@@ -1,7 +1,7 @@
-package ru.yandex.practicum.filmorete.exeptions;
+package ru.yandex.practicum.filmorete.exeptions.message;
 
 
-public enum MessageErrorValidFilm {
+public enum ValidFilmErrorMessage {
 
     VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS(
         "Ошибка обработки поля id",
@@ -30,7 +30,7 @@ public enum MessageErrorValidFilm {
 
     public final int httpStatusCode;
 
-    MessageErrorValidFilm(String name, String description, int httpStatusCode) {
+    ValidFilmErrorMessage(String name, String description, int httpStatusCode) {
         this.name = name;
         this.description = description;
         this.httpStatusCode = httpStatusCode;

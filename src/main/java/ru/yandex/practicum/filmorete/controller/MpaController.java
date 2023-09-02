@@ -28,14 +28,6 @@ public class MpaController {
     }
 
     /**
-     * Запрос записи по id
-     */
-    @GetMapping("/{mpaId}")
-    public Mpa getSearchId(@PathVariable Integer mpaId) {
-        return serviceMpa.getSearchId(mpaId);
-    }
-
-    /**
      * Добавление новой записи
      */
     @PostMapping
@@ -57,6 +49,14 @@ public class MpaController {
     @DeleteMapping
     public void deleteAll() {
         serviceMpa.deleteAll();
+    }
+
+    /**
+     * Запрос записи по id
+     */
+    @GetMapping("/{mpaId}")
+    public Mpa getSearchId(@PathVariable Integer mpaId) {
+        return serviceMpa.getSearchId(mpaId);
     }
 
     /**
