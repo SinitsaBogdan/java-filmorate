@@ -65,11 +65,6 @@ class ReviewControllerTest {
         reviewDao.insert(101L, "content-1", true, 1L, 1L);
         reviewDao.insert(102L, "content-2", true, 2L, 1L);
         reviewDao.insert(103L, "content-3", true, 2L, 2L);
-
-        totalLikeReviewDao.insert(101L, 1L, true);
-        totalLikeReviewDao.insert(102L, 1L, false);
-        totalLikeReviewDao.insert(102L, 2L, false);
-        totalLikeReviewDao.insert(103L, 1L, true);
     }
 
     @Nested
@@ -248,12 +243,21 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Добавление лайка к отзыву")
         public void methodPut_ReviewAddLikeTest() throws Exception {
-            
+            mockMvc.perform(put("/reviews/101/like/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+            ;
         }
 
         @Test
         @DisplayName("Добавление дизлайка к отзыву")
         public void methodPut_ReviewAddDislikeTest() throws Exception {
+            mockMvc.perform(put("/reviews/101/dislike/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+            ;
         }
     }
 
