@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorete.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorete.exeptions.ExceptionValidationUser;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionValidation;
 import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.User;
@@ -42,7 +42,7 @@ public class UserController {
      * Добавление нового пользователя.
      */
     @PostMapping
-    public User create(@Valid @RequestBody User user) throws ExceptionValidationUser {
+    public User create(@Valid @RequestBody User user) throws ExceptionValidation {
         return serviceUser.createUser(user);
     }
 
@@ -50,7 +50,7 @@ public class UserController {
      * Обновление пользователя по id.
      */
     @PutMapping
-    public User update(@Valid @RequestBody User user) throws ExceptionValidationUser {
+    public User update(@Valid @RequestBody User user) throws ExceptionValidation {
         return serviceUser.updateUser(user);
     }
 
