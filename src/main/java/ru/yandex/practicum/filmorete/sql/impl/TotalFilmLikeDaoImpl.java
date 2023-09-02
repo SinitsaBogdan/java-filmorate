@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.*;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
 
@@ -18,10 +18,6 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final FilmDaoImpl filmDao;
-
-    private final UserDaoImpl userDao;
-
     @Override
     public List<Film> findPopularFilms(Integer limit) {
         Map<Long, Film> result = new HashMap<>();
@@ -32,6 +28,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "f.description AS film_description, " +
                         "f.release_date AS film_release_date, " +
                         "f.duration AS film_duration, " +
+                        "f.rate AS film_rate, " +
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
@@ -63,7 +60,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
             if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -89,6 +86,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "f.description AS film_description, " +
                         "f.release_date AS film_release_date, " +
                         "f.duration AS film_duration, " +
+                        "f.rate AS film_rate, " +
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
@@ -125,7 +123,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
             if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -151,6 +149,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "f.description AS film_description, " +
                         "f.release_date AS film_release_date, " +
                         "f.duration AS film_duration, " +
+                        "f.rate AS film_rate, " +
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
@@ -187,7 +186,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
             if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -213,6 +212,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "f.description AS film_description, " +
                         "f.release_date AS film_release_date, " +
                         "f.duration AS film_duration, " +
+                        "f.rate AS film_rate, " +
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
@@ -254,7 +254,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
             if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -282,7 +282,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         ");",
                 filmId
         );
-        while (rows.next()) result.add(userDao.buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildUser(rows));
         return result;
     }
 
@@ -317,7 +317,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
             Integer genreId = rows.getInt("GENRE_ID");
             String genreName = rows.getString("GENRE_NAME");
             if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -335,7 +335,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM TOTAL_FILM_LIKE;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalLikeFilm(rows));
         return result;
     }
 
@@ -346,7 +346,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                 "SELECT * FROM TOTAL_FILM_LIKE WHERE film_id = ?;",
                 filmId
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalLikeFilm(rows));
         return result;
     }
 
@@ -357,7 +357,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                 "SELECT * FROM TOTAL_FILM_LIKE WHERE user_id = ?;",
                 userId
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalLikeFilm(rows));
         return result;
     }
 
@@ -370,6 +370,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "f.description AS film_description, " +
                         "f.release_date AS film_release_date, " +
                         "f.duration AS film_duration, " +
+                        "f.rate AS film_rate, " +
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
@@ -402,7 +403,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
             Integer genreId = rows.getInt("GENRE_ID");
             String genreName = rows.getString("GENRE_NAME");
             if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -427,6 +428,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "f.description AS film_description, " +
                         "f.release_date AS film_release_date, " +
                         "f.duration AS film_duration, " +
+                        "f.rate AS film_rate, " +
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
@@ -459,7 +461,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
             if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
+                Film film = FactoryModel.buildFilm(rows);
                 result.put(filmId, film);
             }
             if (genreName != null) {
@@ -542,12 +544,5 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
                         "WHERE film_id = ? AND user_id = ?;",
                 filmId, userId
         );
-    }
-
-    protected TotalLikeFilm buildModel(@NotNull SqlRowSet row) {
-        return TotalLikeFilm.builder()
-                .filmId(row.getLong("film_id"))
-                .userId(row.getLong("user_id"))
-                .build();
     }
 }

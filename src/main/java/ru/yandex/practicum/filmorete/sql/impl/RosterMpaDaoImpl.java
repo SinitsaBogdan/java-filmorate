@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Mpa;
 import ru.yandex.practicum.filmorete.sql.dao.RosterMpaDao;
 
@@ -48,7 +48,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM ROSTER_MPA;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildMpa(rows));
         return result;
     }
 
@@ -59,7 +59,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
                     "WHERE id = ?;",
                 rowId
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildMpa(row));
         else return Optional.empty();
     }
 
@@ -70,7 +70,7 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
                     "WHERE name = ?;",
                 name
         );
-        if (row.next()) return Optional.of(buildModel(row));
+        if (row.next()) return Optional.of(FactoryModel.buildMpa(row));
         else return Optional.empty();
     }
 
@@ -139,13 +139,5 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
                     "WHERE name = ?;",
                 name
         );
-    }
-
-    protected Mpa buildModel(@NotNull SqlRowSet row) {
-        return Mpa.builder()
-                .id(row.getInt("id"))
-                .name(row.getString("name"))
-                .description(row.getString("description"))
-                .build();
     }
 }

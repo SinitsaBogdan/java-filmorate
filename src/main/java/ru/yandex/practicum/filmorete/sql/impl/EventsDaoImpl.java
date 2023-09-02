@@ -37,8 +37,8 @@ public class EventsDaoImpl implements EventsDao {
     public List<Event> findAllByUserId(Long userId) {
         List<Event> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT e.* FROM EVENTS e WHERE e.user_id = ? ORDER BY e.timestamp;",
-                userId
+          "SELECT * FROM EVENTS WHERE user_id = ?;",
+          userId
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;

@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
@@ -21,8 +21,6 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final FilmDaoImpl filmDao;
-
     @Override
     public List<TotalDirectorFilm> findAll() {
         List<TotalDirectorFilm> result = new ArrayList<>();
@@ -32,7 +30,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
                         "t.director_id AS directorId " +
                         "FROM TOTAL_FILM_DIRECTOR AS t;"
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalDirectorFilm(rows));
         return result;
     }
 
@@ -43,7 +41,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
                 "SELECT * FROM TOTAL_FILM_DIRECTOR WHERE director_id = ?;",
                 directorId
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalDirectorFilm(rows));
         return result;
     }
 
@@ -54,7 +52,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
                 "SELECT * FROM TOTAL_FILM_DIRECTOR WHERE film_id = ?;",
                 filmId
         );
-        while (rows.next()) result.add(buildModel(rows));
+        while (rows.next()) result.add(FactoryModel.buildTotalDirectorFilm(rows));
         return result;
     }
 
@@ -96,6 +94,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
                         "f.description AS film_description, " +
                         "f.release_date AS film_release_date, " +
                         "f.duration AS film_duration, " +
+                        "f.rate AS film_rate, " +
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
@@ -120,7 +119,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
             String genreName = rows.getString("GENRE_NAME");
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
-            Film film = filmDao.buildModel(rows);
+            Film film = FactoryModel.buildFilm(rows);
             if (filmsId.contains(film.getId())) {
                 continue;
             }
@@ -149,6 +148,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
                         "f.description AS film_description, " +
                         "f.release_date AS film_release_date, " +
                         "f.duration AS film_duration, " +
+                        "f.rate AS film_rate, " +
                         "r.id AS mpa_id, " +
                         "r.name AS mpa_name, " +
                         "g.id AS genre_id, " +
@@ -173,7 +173,7 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
             String genreName = rows.getString("GENRE_NAME");
             Long dirId = rows.getLong("DIRECTOR_ID");
             String dirName = rows.getString("DIRECTOR_NAME");
-            Film film = filmDao.buildModel(rows);
+            Film film = FactoryModel.buildFilm(rows);
             if (filmsId.contains(film.getId())) {
                 continue;
             }
@@ -194,12 +194,5 @@ public class TotalDirectorFilmDaoImpl implements TotalDirectorFilmDao {
         jdbcTemplate.update(
                 "DELETE FROM TOTAL_FILM_DIRECTOR;"
         );
-    }
-
-    public TotalDirectorFilm buildModel(@NotNull SqlRowSet row) {
-        return TotalDirectorFilm.builder()
-                .filmId(row.getLong("FILM_ID"))
-                .directorId(row.getLong("DIRECTOR_ID"))
-                .build();
     }
 }
