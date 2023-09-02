@@ -24,7 +24,7 @@ public class ServiceDirector {
      * Запрос режиссёра из таблицы DIRECTORS по ID [ DIRECTORS ].
      */
     public Director getDirectorSearchId(Long directorId) {
-        Optional<Director> result = directorDao.findById(directorId);
+        Optional<Director> result = directorDao.find(directorId);
         if (result.isPresent()) return result.get();
         else throw new ExceptionNotFoundDirectorStorage(SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS);
     }
@@ -33,7 +33,7 @@ public class ServiceDirector {
      * Запрос всех режиссёров из таблицы DIRECTORS [ DIRECTORS ].
      */
     public List<Director> getAllDirector() {
-        return directorDao.findAll();
+        return directorDao.find();
     }
 
     /**
@@ -41,7 +41,7 @@ public class ServiceDirector {
      */
     public Director add(@NotNull Director director) {
         Long id = directorDao.insert(director.getName());
-        Optional<Director> result = directorDao.findById(id);
+        Optional<Director> result = directorDao.find(id);
         return result.orElse(null);
     }
 
@@ -49,10 +49,10 @@ public class ServiceDirector {
      * Обновление существующего режиссёра [ DIRECTORS ].
      */
     public Director update(@NotNull Director director) {
-        Optional<Director> optionalDirector = directorDao.findById(director.getId());
+        Optional<Director> optionalDirector = directorDao.find(director.getId());
         if (optionalDirector.isPresent()) {
             directorDao.update(director.getId(), director.getName());
-            Optional<Director> result = directorDao.findById(director.getId());
+            Optional<Director> result = directorDao.find(director.getId());
             return result.orElse(null);
         } else throw new ExceptionNotFoundDirectorStorage(SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS);
     }

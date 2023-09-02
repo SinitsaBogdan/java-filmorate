@@ -32,7 +32,7 @@ class DirectorDaoImplTest {
     @Test
     @DisplayName("findAll()")
     public void testFindAllRows() {
-        List<Director> result = dao.findAll();
+        List<Director> result = dao.find();
         assertEquals(result.size(), 3);
         assertEquals(result.get(0).getName(), "director-1");
     }
@@ -40,7 +40,7 @@ class DirectorDaoImplTest {
     @Test
     @DisplayName("findById()")
     public void testFindRowSearchId() {
-        Optional<Director> optional = dao.findById(20L);
+        Optional<Director> optional = dao.find(20L);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "director-2");
     }
@@ -49,7 +49,7 @@ class DirectorDaoImplTest {
     @DisplayName("insert(name)")
     public void testInsertName() {
         dao.insert("director-4");
-        List<Director> result = dao.findAll();
+        List<Director> result = dao.find();
         assertEquals(result.size(), 4);
     }
 
@@ -57,7 +57,7 @@ class DirectorDaoImplTest {
     @DisplayName("insert")
     public void testInsert() {
         dao.insert(4L, "director-4");
-        List<Director> result = dao.findAll();
+        List<Director> result = dao.find();
         assertEquals(result.size(), 4);
     }
 
@@ -65,7 +65,7 @@ class DirectorDaoImplTest {
     @DisplayName("update(Long id, String name)")
     public void testUpdateRowSearchIdByName() {
         dao.update(10L, "updateDirector-1");
-        Optional<Director> optional = dao.findById(10L);
+        Optional<Director> optional = dao.find(10L);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "updateDirector-1");
     }
@@ -74,7 +74,7 @@ class DirectorDaoImplTest {
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         dao.delete();
-        List<Director> result = dao.findAll();
+        List<Director> result = dao.find();
         assertEquals(result.size(), 0);
     }
 
@@ -82,7 +82,7 @@ class DirectorDaoImplTest {
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
         dao.delete(10L);
-        List<Director> result = dao.findAll();
+        List<Director> result = dao.find();
         assertEquals(result.size(), 2);
     }
 
@@ -90,7 +90,7 @@ class DirectorDaoImplTest {
     @DisplayName("delete(name)")
     public void testDeleteRowSearchName() {
         dao.delete("director-1");
-        List<Director> result = dao.findAll();
+        List<Director> result = dao.find();
         assertEquals(result.size(), 2);
     }
 }

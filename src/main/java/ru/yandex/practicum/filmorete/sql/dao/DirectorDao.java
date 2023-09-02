@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface DirectorDao {
 
-    List<Director> findAll();
+    List<Director> find();
 
-    Optional<Director> findById(Long rowId);
+    Optional<Director> find(Long rowId);
 
     Long insert(String name);
 
