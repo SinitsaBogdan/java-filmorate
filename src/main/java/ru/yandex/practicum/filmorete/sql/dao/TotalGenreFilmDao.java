@@ -11,9 +11,9 @@ public interface TotalGenreFilmDao {
 
     List<TotalGenreFilm> findTotalGenreFilm();
 
-    List<TotalGenreFilm> findAllTotalGenreFilm(Long filmId);
+    List<TotalGenreFilm> findAllTotalGenreFilmIsFimId(Long filmId);
 
-    List<TotalGenreFilm> findAllTotalGenreFilm(Integer genreId);
+    List<TotalGenreFilm> findAllTotalGenreFilmIsGenreId(Integer genreId);
 
     Optional<TotalGenreFilm> findTotalGenreFilm(Long filmId, Integer genreId);
 
