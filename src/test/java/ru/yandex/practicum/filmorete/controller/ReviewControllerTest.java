@@ -253,6 +253,11 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Добавление дизлайка к отзыву")
         public void methodPut_ReviewAddDislikeTest() throws Exception {
+            mockMvc.perform(put("/reviews/101/dislike/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+            ;
         }
     }
 
