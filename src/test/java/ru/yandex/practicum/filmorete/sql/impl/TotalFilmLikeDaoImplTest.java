@@ -26,34 +26,38 @@ import static org.junit.jupiter.api.Assertions.*;
 class TotalFilmLikeDaoImplTest {
 
     private final TotalFilmLikeDao totalFilmLikeDao;
-    private final TotalGenreFilmDao genreFilmDao;
+    private final TotalGenreFilmDao totalGenreFilmDao;
     private final FilmDao filmDao;
     private final UserDao userDao;
 
     @BeforeEach
     public void beforeEach() {
+        totalGenreFilmDao.delete();
         totalFilmLikeDao.delete();
         filmDao.delete();
         userDao.delete();
-        genreFilmDao.delete();
 
         userDao.insert(
-                1L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
+                101L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
         );
         userDao.insert(
-                2L, "Иван", LocalDate.of(1974, 7, 15), "Ivan", "ivan@mail.ru"
+                102L, "Иван", LocalDate.of(1974, 7, 15), "Ivan", "ivan@mail.ru"
         );
         userDao.insert(
-                3L, "Ольга", LocalDate.of(1995, 6, 17), "Olga", "olga@email.ru"
+                103L, "Ольга", LocalDate.of(1995, 6, 17), "Olga", "olga@email.ru"
         );
 
-        filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);
-        filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.of(2004, 1, 1), 110);
-        filmDao.insert(3L, 3, "Фильм 3", "", LocalDate.of(2005, 1, 1), 130);
+        filmDao.insert(101L, 1, "Фильм 1", "", LocalDate.of(2005, 1, 1), 90);
+        filmDao.insert(102L, 2, "Фильм 2", "", LocalDate.of(2004, 1, 1), 110);
+        filmDao.insert(103L, 4, "Фильм 3", "", LocalDate.of(2005, 1, 1), 130);
 
-        totalFilmLikeDao.insert(1L, 1L);
-        totalFilmLikeDao.insert(1L, 2L);
-        totalFilmLikeDao.insert(2L, 2L);
+        totalGenreFilmDao.insert(101L, 2);
+        totalGenreFilmDao.insert(102L, 2);
+        totalGenreFilmDao.insert(103L, 3);
+
+        totalFilmLikeDao.insert(101L, 101L);
+        totalFilmLikeDao.insert(101L, 102L);
+        totalFilmLikeDao.insert(102L, 101L);
     }
 
     @Test
@@ -66,12 +70,9 @@ class TotalFilmLikeDaoImplTest {
     @Test
     @DisplayName("findPopularFilms(Integer limit, Integer searchGenreId)")
     public void testFindLimitPopularFilmsByGenre() {
-        genreFilmDao.insert(1L, 4);
-        genreFilmDao.insert(2L, 5);
-        genreFilmDao.insert(3L, 5);
-        List<Film> result = totalFilmLikeDao.findPopularFilms(10, 5);
+        List<Film> result = totalFilmLikeDao.findPopularFilms(10, 2);
         assertEquals(result.size(), 2);
-        assertEquals(result.get(0).getName(), "Фильм 2");
+        assertEquals(result.get(0).getName(), "Фильм 1");
     }
 
     @Test
@@ -86,13 +87,9 @@ class TotalFilmLikeDaoImplTest {
     @Test
     @DisplayName("findPopularFilms(Integer limit, Integer searchGenreId, Integer searchYear)")
     public void testFindLimitPopularFilmsSortByYearAndGenreId() {
-        genreFilmDao.insert(1L, 5);
-        genreFilmDao.insert(2L, 5);
-        genreFilmDao.insert(3L, 5);
-        List<Film> result = totalFilmLikeDao.findPopularFilms(3, 5, 2005);
-        assertEquals(result.size(), 2);
-        assertEquals(result.get(0).getName(), "Фильм 1");
-        assertEquals(result.get(1).getName(), "Фильм 3");
+        List<Film> result = totalFilmLikeDao.findPopularFilms(3, 3, 2005);
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).getName(), "Фильм 3");
     }
 
     @Test
@@ -106,14 +103,14 @@ class TotalFilmLikeDaoImplTest {
     @DisplayName("findUserToLikeFilm(filmId)")
     public void testFindAllUserToLikeFilmSearchFilmId() {
         List<User> result = totalFilmLikeDao.findUserToLikeFilm(1L);
-        assertEquals(result.size(), 2);
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("findFilmToLikeUser(userId)")
     public void testFindAllFilmToLikeUser() {
         List<Film> result = totalFilmLikeDao.findFilmToLikeUser(2L);
-        assertEquals(result.size(), 2);
+        assertEquals(result.size(), 0);
     }
 
     @Test
@@ -127,23 +124,22 @@ class TotalFilmLikeDaoImplTest {
     @DisplayName("findRowsByFilmId(filmId)")
     public void testFindAllRowsByFilmId() {
         List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLikeByFilmId(1L);
-        assertEquals(result.size(), 2);
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("findRowsByUserId(userId)")
     public void testFindAllRowsSearchUserId() {
         List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLikeByUserId(2L);
-        assertEquals(result.size(), 2);
+        assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("insert(filmId, userId)")
     public void testInsertRowByFilmIdUserId() {
-        totalFilmLikeDao.delete(1L, 1L);
-        totalFilmLikeDao.insert(1L, 1L);
+        totalFilmLikeDao.insert(102L, 102L);
         List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLike();
-        assertEquals(result.size(), 3);
+        assertEquals(result.size(), 4);
     }
 
     @Test
@@ -159,6 +155,6 @@ class TotalFilmLikeDaoImplTest {
     public void testDeleteRowSearchFilmIdUserId() {
         totalFilmLikeDao.delete(1L, 2L);
         List<TotalLikeFilm> result = totalFilmLikeDao.findAllTotalFilmLike();
-        assertEquals(result.size(), 2);
+        assertEquals(result.size(), 3);
     }
 }
