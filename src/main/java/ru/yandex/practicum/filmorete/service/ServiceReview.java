@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundReviewStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
-import ru.yandex.practicum.filmorete.model.Event;
 import ru.yandex.practicum.filmorete.model.Review;
 import ru.yandex.practicum.filmorete.model.TotalLikeReview;
 import ru.yandex.practicum.filmorete.sql.dao.*;
@@ -96,13 +95,10 @@ public class ServiceReview {
      * Удаление отзыва по ID [ REVIEWS ].
      */
     public void delete(Long reviewId) {
-        Optional<Review> byReviewId = reviewDao.findByReviewId(reviewId);
-        if (byReviewId.isPresent()) {
+        Optional<Review> optional = reviewDao.findByReviewId(reviewId);
+        if (optional.isPresent()) {
             reviewDao.deleteAllIsReviewId(reviewId);
-            for (Event event : eventsDao.findAll(EventType.LIKE, reviewId)) {
-                eventsDao.deleteAll(EventType.LIKE, reviewId);
-            }
-            eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, byReviewId.get().getUserId(), reviewId);
+            eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, optional.get().getUserId(), reviewId);
         }
     }
 
