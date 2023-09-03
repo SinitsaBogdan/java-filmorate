@@ -5,7 +5,7 @@ public enum TotalFilmLikeErrorMessage {
     SERVICE_ERROR_DOUBLE_IN_COLLECTIONS(
             "Запись уже есть в программе",
             "Дублирование существующей запси!",
-            403
+            204
     );
 
     public final String name;

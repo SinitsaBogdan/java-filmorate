@@ -163,9 +163,10 @@ public class ServiceFilm {
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        if (optionalTotalLikeFilm.isPresent()) throw new ExceptionTotalFilmLikeStorage(SERVICE_ERROR_DOUBLE_IN_COLLECTIONS);
 
-        totalFilmLikeDao.insert(filmId, userId);
+        // TODO Возможная ошибка проверить бд
+        if (optionalTotalLikeFilm.isEmpty()) totalFilmLikeDao.insert(filmId, userId);
+
         eventsDao.insert(EventType.LIKE, EventOperation.ADD, userId, filmId);
     }
 
