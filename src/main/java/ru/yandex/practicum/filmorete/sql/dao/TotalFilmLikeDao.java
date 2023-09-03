@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.TotalLikeFilm;
 import ru.yandex.practicum.filmorete.model.User;
 import java.util.List;
+import java.util.Optional;
 
 public interface TotalFilmLikeDao {
 
@@ -12,6 +13,8 @@ public interface TotalFilmLikeDao {
     List<TotalLikeFilm> findAllIsFilmId(Long filmId);
 
     List<TotalLikeFilm> findAllIsUserId(Long userId);
+
+    Optional<TotalLikeFilm> find(Long filmId, Long userId);
 
     List<Film> findPopularIsLimit(Integer limit);
 

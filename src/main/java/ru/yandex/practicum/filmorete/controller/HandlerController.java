@@ -10,6 +10,12 @@ import ru.yandex.practicum.filmorete.exeptions.*;
 @ControllerAdvice
 public class HandlerController {
 
+    @ExceptionHandler(ExceptionTotalFilmLikeStorage.class)
+    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionTotalFilmLikeStorage exception) {
+        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
+    }
+
     @ExceptionHandler(ExceptionValidation.class)
     public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionValidation exception) {
         ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());

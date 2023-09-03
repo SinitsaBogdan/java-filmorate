@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorete.enums.EventOperation;
 import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionTotalFilmLikeStorage;
 import ru.yandex.practicum.filmorete.model.*;
 import ru.yandex.practicum.filmorete.sql.dao.*;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorete.exeptions.message.FilmErrorMessage.SERVICE_ERROR_COLLECTIONS_IN_NULL;
+import static ru.yandex.practicum.filmorete.exeptions.message.TotalFilmLikeErrorMessage.SERVICE_ERROR_DOUBLE_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidFilm;
@@ -157,9 +159,12 @@ public class ServiceFilm {
     public void addLike(Long filmId, Long userId) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         Optional<User> optionalUser = userDao.find(userId);
+        Optional<TotalLikeFilm> optionalTotalLikeFilm = totalFilmLikeDao.find(filmId, userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optionalTotalLikeFilm.isPresent()) throw new ExceptionTotalFilmLikeStorage(SERVICE_ERROR_DOUBLE_IN_COLLECTIONS);
+
         totalFilmLikeDao.insert(filmId, userId);
         eventsDao.insert(EventType.LIKE, EventOperation.ADD, userId, filmId);
     }

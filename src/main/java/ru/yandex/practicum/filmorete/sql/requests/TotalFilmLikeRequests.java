@@ -5,6 +5,11 @@ import lombok.Getter;
 @Getter
 public enum TotalFilmLikeRequests {
 
+    SELECT_ONE__TOTAL_FILM_LIKE__FILM_USER(
+            "SELECT * FROM TOTAL_FILM_LIKE " +
+                "WHERE film_id = ? AND user_id = ?;"
+    ),
+
     SELECT_ALL__FILMS_POPULAR__LIMIT(
         "SELECT " +
                 "f.id AS film_id, " +

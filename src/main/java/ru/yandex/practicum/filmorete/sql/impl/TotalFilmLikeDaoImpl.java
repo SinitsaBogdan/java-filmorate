@@ -21,6 +21,13 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
+    public Optional<TotalLikeFilm> find(Long filmId, Long userId) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__TOTAL_FILM_LIKE__FILM_USER.getSql(), filmId, userId);
+        if (row.next()) return Optional.of(FactoryModel.buildTotalLikeFilm(row));
+        else return Optional.empty();
+    }
+
+    @Override
     public List<Film> findPopularIsLimit(Integer limit) {
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS_POPULAR__LIMIT.getSql(), limit);
