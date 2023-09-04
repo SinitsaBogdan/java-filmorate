@@ -21,7 +21,7 @@ public interface TotalGenreFilmDao {
 
     void delete();
 
-    void delete(Long filmId, Integer genreId);
+    void deleteByFilmIdAndGenreId(Long filmId, Integer genreId);
 
     void deleteAllFilmId(Long filmId);
 

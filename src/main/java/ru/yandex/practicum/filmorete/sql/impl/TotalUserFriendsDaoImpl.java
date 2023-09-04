@@ -24,7 +24,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<User> findAll(Long userId) {
+    public List<User> findAllByUserId(Long userId) {
         List<User> users = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS__ID.getSql(), userId);
         while (row.next()) users.add(FactoryModel.buildUser(row));
@@ -48,7 +48,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public List<TotalUserFriends> findAllIsUser(Long userId) {
+    public List<TotalUserFriends> findAllIsUserByUserId(Long userId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS__USER.getSql(), userId);
         while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
@@ -56,7 +56,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public List<TotalUserFriends> findAllIsFriend(Long friendId) {
+    public List<TotalUserFriends> findAllFriendByFriendId(Long friendId) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS__FRIEND.getSql(), friendId);
         while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
@@ -64,7 +64,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public List<TotalUserFriends> findAll(StatusFriend status) {
+    public List<TotalUserFriends> findAllByStatusFriend(StatusFriend status) {
         List<TotalUserFriends> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ALL__TOTAL_USER_FRIENDS__STATUS.getSql(),
@@ -75,7 +75,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public Optional<TotalUserFriends> find(Long userId, Long friendId) {
+    public Optional<TotalUserFriends> findByUserIdAndFriendId(Long userId, Long friendId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ONE__TOTAL_USER_FRIENDS__USER_FRIEND.getSql(),
                 userId, friendId
@@ -106,7 +106,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public void deleteAll(Long userId, Long friendId) {
+    public void deleteAllByUserIdAndFriendId(Long userId, Long friendId) {
         jdbcTemplate.update(DELETE_ONE__TOTAL_USER_FRIENDS__USER_FRIEND.getSql(), userId, friendId);
     }
 
@@ -121,7 +121,7 @@ public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
     }
 
     @Override
-    public void deleteAll(StatusFriend status) {
+    public void deleteAllByStatusFriend(StatusFriend status) {
         jdbcTemplate.update(DELETE_ALL__TOTAL_USER_FRIENDS__STATUS.getSql(), status.toString());
     }
 }

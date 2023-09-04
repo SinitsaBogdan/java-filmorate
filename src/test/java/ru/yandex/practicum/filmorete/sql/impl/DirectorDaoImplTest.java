@@ -48,7 +48,7 @@ class DirectorDaoImplTest {
     @Test
     @DisplayName("insert(name)")
     public void testInsertName() {
-        dao.insert("director-4");
+        dao.insertByName("director-4");
         List<Director> result = dao.find();
         assertEquals(result.size(), 4);
     }

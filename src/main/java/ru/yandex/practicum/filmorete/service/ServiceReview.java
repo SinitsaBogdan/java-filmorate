@@ -63,9 +63,9 @@ public class ServiceReview {
      * Добавление нового отзыва [ REVIEWS ].
      */
     public Review add(@NotNull Review reviews) {
-        if (userDao.find(reviews.getUserId()).isEmpty())
+        if (userDao.findByRowId(reviews.getUserId()).isEmpty())
             throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        if (filmDao.findFilm(reviews.getFilmId()).isEmpty())
+        if (filmDao.findFilmById(reviews.getFilmId()).isEmpty())
             throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         Long reviewId = reviewDao.insert(reviews.getContent(), reviews.getIsPositive(), reviews.getUserId(), reviews.getFilmId());
         eventsDao.insert(EventType.REVIEW, EventOperation.ADD, reviews.getUserId(), reviewId);
@@ -114,7 +114,7 @@ public class ServiceReview {
      * Удаление лайка отзыва по ID отзыва и ID пользователя [ TOTAL_LIKE_REVIEWS ].
      */
     public void deleteReviewLike(Long reviewLikeId, Long userId) {
-        totalReviewLikeDao.delete(reviewLikeId, userId);
+        totalReviewLikeDao.deleteByReviewIdAndUserId(reviewLikeId, userId);
         reviewDao.recalculationPositive(reviewLikeId);
     }
 }

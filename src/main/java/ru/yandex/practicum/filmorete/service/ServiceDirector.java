@@ -40,7 +40,7 @@ public class ServiceDirector {
      * Добавление нового режиссёра [ DIRECTORS ].
      */
     public Director add(@NotNull Director director) {
-        Long id = directorDao.insert(director.getName());
+        Long id = directorDao.insertByName(director.getName());
         Optional<Director> result = directorDao.findById(id);
         return result.orElse(null);
     }

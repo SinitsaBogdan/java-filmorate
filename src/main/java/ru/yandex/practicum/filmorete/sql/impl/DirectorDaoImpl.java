@@ -35,7 +35,7 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
-    public Long insert(String name) {
+    public Long insertByName(String name) {
         jdbcTemplate.update(INSERT_ONE__DIRECTOR__NAME.getSql(), name);
         return jdbcTemplate.queryForObject(SELECT_MAX_ID__DIRECTOR.getSql(), Long.class);
     }

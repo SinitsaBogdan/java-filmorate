@@ -101,7 +101,7 @@ class TotalGenreFilmDaoImplTest {
     @Test
     @DisplayName("delete(filmId, genreId)")
     public void testDeleteRowSearchFilmIdAndGenreId() {
-        totalGenreFilmDao.delete(100L, 1);
+        totalGenreFilmDao.deleteByFilmIdAndGenreId(100L, 1);
         List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
         assertEquals(result.size(), 3);
     }

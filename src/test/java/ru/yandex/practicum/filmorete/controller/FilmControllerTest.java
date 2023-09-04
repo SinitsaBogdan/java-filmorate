@@ -195,8 +195,8 @@ public class FilmControllerTest {
             totalFilmLikeDao.insert(2L, 3L);
             totalFilmLikeDao.insert(3L, 3L);
 
-            Film film1 = filmDao.findFilm(1L).get();
-            Film film2 = filmDao.findFilm(2L).get();
+            Film film1 = filmDao.findFilmById(1L).get();
+            Film film2 = filmDao.findFilmById(2L).get();
 
             mockMvc.perform(get("/films/common?userId=1&friendId=3"))
                 .andExpect(status().isOk())
@@ -289,7 +289,7 @@ public class FilmControllerTest {
         @DisplayName("Запрос фильма по режиссёру")
         public void methodGet_SearchFilmsByDirector() throws Exception {
 
-            directorDao.insert("Director-1");
+            directorDao.insertByName("Director-1");
             totalDirectorFilmDao.insert(1L, 2L);
 
             mockMvc.perform(get("/films/search?query=dir&by=director"))
@@ -302,7 +302,7 @@ public class FilmControllerTest {
         @DisplayName("Запрос фильма по названию и режиссёру")
         public void methodGet_SearchFilmsByTitleAndDirector() throws Exception {
 
-            directorDao.insert("Director-1");
+            directorDao.insertByName("Director-1");
             totalDirectorFilmDao.insert(2L, 1L);
 
             mockMvc.perform(get("/films/search?query=1&by=title,director"))

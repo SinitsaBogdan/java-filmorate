@@ -23,7 +23,7 @@ public class ServiceMpa {
     }
 
     public Mpa getSearchId(Integer mpaId) {
-        Optional<Mpa> optional = mpaDao.findMpa(mpaId);
+        Optional<Mpa> optional = mpaDao.findMpaByRowId(mpaId);
         if (optional.isPresent()) return optional.get();
         else throw new ExceptionNotFoundMpaStorage(SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
     }
@@ -46,6 +46,6 @@ public class ServiceMpa {
     }
 
     public void deleteSearchId(Integer mpaId) {
-        mpaDao.delete(mpaId);
+        mpaDao.deleteByRowId(mpaId);
     }
 }

@@ -10,15 +10,15 @@ public interface TotalUserFriendsDao {
 
     List<TotalUserFriends> findAll();
 
-    List<TotalUserFriends> findAll(StatusFriend statusFriend);
+    List<TotalUserFriends> findAllByStatusFriend(StatusFriend statusFriend);
 
-    List<TotalUserFriends> findAllIsUser(Long userId);
+    List<TotalUserFriends> findAllIsUserByUserId(Long userId);
 
-    List<TotalUserFriends> findAllIsFriend(Long friendId);
+    List<TotalUserFriends> findAllFriendByFriendId(Long friendId);
 
-    Optional<TotalUserFriends> find(Long userId, Long friendId);
+    Optional<TotalUserFriends> findByUserIdAndFriendId(Long userId, Long friendId);
 
-    List<User> findAll(Long userId);
+    List<User> findAllByUserId(Long userId);
 
     List<User> findFriendsCommon(Long userId, Long friendId);
 
@@ -28,9 +28,9 @@ public interface TotalUserFriendsDao {
 
     void deleteAll();
 
-    void deleteAll(Long userId, Long friendId);
+    void deleteAllByUserIdAndFriendId(Long userId, Long friendId);
 
-    void deleteAll(StatusFriend status);
+    void deleteAllByStatusFriend(StatusFriend status);
 
     void deleteAllUserId(Long userId);
 

@@ -56,7 +56,7 @@ class ReviewsDaoImplTest {
     @Test
     @DisplayName("findAll(userId)")
     public void findAll__UserId() {
-        List<Review> result = reviewDao.findAll(100L);
+        List<Review> result = reviewDao.findAllByUserId(100L);
         assertEquals(result.size(), 1);
     }
 
@@ -64,10 +64,10 @@ class ReviewsDaoImplTest {
     @DisplayName("findAll(isPositive)")
     public void findAll__IsPositive() {
         List<Review> result;
-        result = reviewDao.findAll(true);
+        result = reviewDao.findAllIsPositive(true);
         assertEquals(result.size(), 2);
 
-        result = reviewDao.findAll(false);
+        result = reviewDao.findAllIsPositive(false);
         assertEquals(result.size(), 0);
     }
 

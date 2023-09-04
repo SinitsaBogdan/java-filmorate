@@ -12,9 +12,9 @@ public interface RosterMpaDao {
 
     List<Mpa> findAllMpa();
 
-    Optional<Mpa> findMpa(Integer rowId);
+    Optional<Mpa> findMpaByRowId(Integer rowId);
 
-    Optional<Mpa> findMpa(String name);
+    Optional<Mpa> findMpaByName(String name);
 
     void insert(String name, String description);
 
@@ -26,7 +26,7 @@ public interface RosterMpaDao {
 
     void delete();
 
-    void delete(Integer rowId);
+    void deleteByRowId(Integer rowId);
 
-    void delete(String name);
+    void deleteByName(String name);
 }
