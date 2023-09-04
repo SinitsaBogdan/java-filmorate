@@ -15,8 +15,8 @@ import ru.yandex.practicum.filmorete.sql.dao.*;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.ERROR_USER_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidUser;
 
@@ -44,13 +44,13 @@ public class ServiceUser {
     public User getUser(Long userId) {
         Optional<User> optional = userDao.findByRowId(userId);
         if (optional.isPresent()) return optional.get();
-        else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        else throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public User createUser(User user) {
         checkValidUser(user);
         Optional<User> optional = userDao.findByEmail(user.getEmail());
-        if (optional.isPresent()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
+        if (optional.isPresent()) throw new ExceptionNotFoundUserStorage(ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
         userDao.insert(user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
         return userDao.findByEmail(user.getEmail()).get();
     }
@@ -58,7 +58,7 @@ public class ServiceUser {
     public User updateUser(User user) {
         checkValidUser(user);
         Optional<User> optional = userDao.findByRowId(user.getId());
-        if (optional.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optional.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         userDao.update(user.getId(), user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
         return user;
     }
@@ -69,8 +69,8 @@ public class ServiceUser {
 
     public List<User> getFriends(Long id) {
         Optional<User> optional = userDao.findByRowId(id);
-        if (optional.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        return totalUserFriendsDao.findAllByUserId(id);
+        if (optional.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        return totalUserFriendsDao.findAll(id);
     }
 
     public List<User> getUsersToLikeFilm(Long filmId) {
@@ -83,20 +83,20 @@ public class ServiceUser {
         Optional<User> optionalUser = userDao.findByRowId(userId);
         Optional<User> optionalFriend = userDao.findByRowId(userId);
         if (optionalUser.isEmpty() || optionalFriend.isEmpty()) {
-            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+            throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         }
         else return totalUserFriendsDao.findFriendsCommon(userId, friendId);
     }
 
     public List<Film> getRecommendation(Long userId) {
         Optional<User> optionalUser = userDao.findByRowId(userId);
-        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         return totalFilmLikeDao.findRecommendationForUser(userId);
     }
 
     public void removeUser(Long userId) {
         Optional<User> optionalUser = userDao.findByRowId(userId);
-        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         userDao.deleteAllByRowId(userId);
     }
 
@@ -118,14 +118,14 @@ public class ServiceUser {
             if (optionalRowStatusFriend.isEmpty()) {
                 totalUserFriendsDao.insert(friendId, userId, StatusFriend.UNCONFIRMED);
             }
-        } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        } else throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 
     public void removeFriend(Long userId, Long friendId) {
         Optional<User> optionalUser = userDao.findByRowId(userId);
         Optional<User> optionalFriend = userDao.findByRowId(userId);
         if (optionalUser.isEmpty() || optionalFriend.isEmpty())
-            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+            throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalUserFriendsDao.deleteAllByUserIdAndFriendId(userId, friendId);
         totalUserFriendsDao.update(friendId, userId, StatusFriend.UNCONFIRMED);
         eventsDao.insert(EventType.FRIEND, EventOperation.REMOVE, userId, friendId);
