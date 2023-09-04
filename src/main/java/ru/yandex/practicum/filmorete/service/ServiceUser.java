@@ -114,9 +114,7 @@ public class ServiceUser {
                 eventsDao.insert(EventType.FRIEND, EventOperation.ADD, userId, friendId);
             }
             Optional<TotalUserFriends> optionalRowStatusFriend = totalUserFriendsDao.findByUserIdAndFriendId(friendId, userId);
-            if (optionalRowStatusFriend.isEmpty()) {
-                totalUserFriendsDao.insert(friendId, userId, StatusFriend.UNCONFIRMED);
-            }
+            if (optionalRowStatusFriend.isEmpty()) totalUserFriendsDao.insert(friendId, userId, StatusFriend.UNCONFIRMED);
         } else throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
     }
 

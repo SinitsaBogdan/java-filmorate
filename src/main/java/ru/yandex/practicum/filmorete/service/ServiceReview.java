@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorete.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.enums.EventOperation;
@@ -21,7 +20,6 @@ import static ru.yandex.practicum.filmorete.exeptions.message.ReviewErrorMessage
 import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.ERROR_USER_ID_NOT_IN_COLLECTIONS;
 
-@Slf4j
 @Service
 public class ServiceReview {
 
@@ -47,12 +45,10 @@ public class ServiceReview {
      * Запрос всех отзывов [ REVIEWS ].
      */
     public List<Review> getAllReview(Integer count) {
-        log.info("GET-запрос: получение списка всех отзывов.");
         return reviewDao.findAllIsCount(count);
     }
 
     public List<Review> getAllReviewIsFilmId(Long filmId, Integer count) {
-        log.info("GET-запрос: получение всех отзывов по идентификатору фильма {}.", filmId);
         return reviewDao.findAllIsFilmIdAndCount(filmId, count);
     }
 
