@@ -297,6 +297,19 @@ public enum TotalFilmLikeRequests {
             "FROM TOTAL_FILM_LIKE"
     ),
 
+    SELECT_USER_BY_COUNT_FILM_LIKES(
+            "SELECT tfl2.user_id, COUNT(tfl2.user_id) AS common_likes " +
+                "FROM TOTAL_FILM_LIKE AS tfl2 " +
+                "WHERE tfl2.film_id IN (" +
+                    "SELECT tfl.film_id " +
+                    "FROM TOTAL_FILM_LIKE AS tfl " +
+                    "WHERE tfl.user_id = ?) " +
+                "AND NOT tfl2.user_id = ? " +
+                "GROUP BY tfl2.user_id " +
+                "ORDER BY common_likes DESC " +
+                "LIMIT 1"
+    ),
+
     INSERT_ONE__TOTAL_FILM_LIKE__FILM_USER(
         "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id) " +
             "VALUES(?, ?);"
