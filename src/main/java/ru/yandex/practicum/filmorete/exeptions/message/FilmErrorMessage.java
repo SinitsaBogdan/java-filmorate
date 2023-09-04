@@ -2,9 +2,9 @@ package ru.yandex.practicum.filmorete.exeptions.message;
 
 public enum FilmErrorMessage {
 
-    SERVICE_ERROR_COLLECTIONS_IN_NULL(
-            "Коллекция пустая",
-            "Не верные параметры запроса илиотсутствие результата!",
+    ERROR_COLLECTIONS_IN_NULL(
+            "Коллекция фильмов пустая",
+            "Не верные параметры запроса или отсутствие результата!",
             404
     );
 

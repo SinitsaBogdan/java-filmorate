@@ -2,12 +2,12 @@ package ru.yandex.practicum.filmorete.exeptions.message;
 
 public enum DirectorErrorMessage {
 
-    SERVICE_ERROR_DIRECTOR_NOT_IN_COLLECTIONS(
+    ERROR_DIRECTOR_NOT_IN_COLLECTIONS(
             "Режиссёр не найден.",
             "Режиссёр отсутствует в программе!",
             404
     ),
-    SERVICE_ERROR_DIRECTOR_DUPLICATE_IN_COLLECTIONS(
+    ERROR_DIRECTOR_DUPLICATE_IN_COLLECTIONS(
             "Режиссёр уже есть.",
             "Режиссёр уже есть в программе!",
             203

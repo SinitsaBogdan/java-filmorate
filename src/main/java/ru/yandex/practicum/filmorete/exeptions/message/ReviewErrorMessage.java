@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorete.exeptions.message;
 
 public enum ReviewErrorMessage {
 
-    SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS(
+    ERROR_REVIEW_NOT_IN_COLLECTIONS(
             "Отзыв не найден.",
             "Отзыв отсутствует в программе!",
             404
