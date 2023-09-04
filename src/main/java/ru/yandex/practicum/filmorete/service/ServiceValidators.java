@@ -17,16 +17,28 @@ public class ServiceValidators {
 
     public static void checkValidUser(@NotNull User user) {
         if (user.getName() == null || user.getName().isEmpty()) user.setName(user.getLogin());
-        if (user.getLogin().isBlank()) throw new ExceptionValidation(VALID_ERROR_USER_NOT_LOGIN);
-        if (user.getLogin().contains(" ")) throw new ExceptionValidation(VALID_ERROR_USER_LOGIN_IS_WHITESPACE);
+        if (user.getLogin().isBlank()) {
+            log.error("Некорректный лоин пользователя {}.", user);
+            throw new ExceptionValidation(VALID_ERROR_USER_NOT_LOGIN);
+        }
+        if (user.getLogin().contains(" ")) {
+            log.error("Некорректный лоин пользователя {}.", user);
+            throw new ExceptionValidation(VALID_ERROR_USER_LOGIN_IS_WHITESPACE);
+        }
     }
 
     public static void checkValidFilm(@NotNull Film film) {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            log.error("Некорректная дата релиза фильма {}.", film);
             throw new ExceptionValidation(VALID_ERROR_FILM_RELEASED_MIN);
         }
-        if (film.getDuration() == null) throw new ExceptionValidation(VALID_ERROR_FILM_NOT_DURATION);
-        if (film.getDuration() < 0) throw new ExceptionValidation(VALID_ERROR_FILM_DURATION_MIN);
-
+        if (film.getDuration() == null) {
+            log.error("Некорректная продолжительность фильма {}.", film);
+            throw new ExceptionValidation(VALID_ERROR_FILM_NOT_DURATION);
+        }
+        if (film.getDuration() < 0) {
+            log.error("Некорректная продолжительность фильма {}.", film);
+            throw new ExceptionValidation(VALID_ERROR_FILM_DURATION_MIN);
+        }
     }
 }

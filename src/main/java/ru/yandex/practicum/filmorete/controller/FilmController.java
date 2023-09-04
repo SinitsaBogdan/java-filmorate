@@ -30,6 +30,7 @@ public class FilmController {
      */
     @GetMapping
     public List<Film> findAll() {
+        log.info("Get-запрос: получение списка всех фильмов.");
         return serviceFilms.getAllFilms();
     }
 
@@ -38,6 +39,7 @@ public class FilmController {
      */
     @PostMapping
     public Film create(@Valid @RequestBody Film film) throws ExceptionValidation {
+        log.info("Post-запрос: добавление нового фильма: {}.", film);
         return serviceFilms.createFilm(film);
     }
 
@@ -46,6 +48,7 @@ public class FilmController {
      */
     @PutMapping
     public Film update(@Valid @RequestBody Film film) throws ExceptionValidation {
+        log.info("Put-запрос: обновление существующего фильма: {}.", film);
         return serviceFilms.updateFilm(film);
     }
 
@@ -54,18 +57,19 @@ public class FilmController {
      */
     @DeleteMapping
     public void clear() {
+        log.info("Delete-запрос: удаление всех фильмов.");
         serviceFilms.clearStorage();
     }
 
     /**
-     * Запрос всех популярных фильмов с возможностью фильтрации по году и жанру.
+     * Запрос списка популярных фильмов с возможностью фильтрации по году и жанру.
      */
     @GetMapping("/popular")
     public List<Film> getPopularFilms(
             @RequestParam(defaultValue = "10") Integer count,
             @RequestParam(required = false) Integer genreId,
             @RequestParam(required = false) Integer year) {
-        return serviceFilms.getPopularFilms(count, genreId, year);
+        return serviceFilms.getPopularFilms(count, genreId, year); // конкретные логи внутри
     }
 
     /**
@@ -73,6 +77,7 @@ public class FilmController {
      */
     @GetMapping("/common")
     public List<Film> getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
+        log.info("Get-запрос: получение списка общих популярных фильмов друзей под id {} и {}.", userId, friendId);
         return serviceFilms.getCommonFilms(userId, friendId);
     }
 
@@ -84,6 +89,7 @@ public class FilmController {
             @RequestParam String query,
             @RequestParam List<String> by
     ) {
+        log.info("Get-запрос: получение фильмов по режиссеру и/или названию.");
         return serviceFilms.getFilmsBySearchParam(query, by);
     }
 
@@ -92,6 +98,7 @@ public class FilmController {
      */
     @GetMapping("/{filmId}")
     public Film getToId(@PathVariable Long filmId) {
+        log.info("Get-запрос: получение фильма по id {}.", filmId);
         return serviceFilms.getFilm(filmId);
     }
 
@@ -100,6 +107,7 @@ public class FilmController {
      */
     @DeleteMapping("/{filmId}")
     public void removeToId(@PathVariable Long filmId) {
+        log.info("Delete-запрос: удаление фильма по id {}.", filmId);
         serviceFilms.removeFilmSearchId(filmId);
     }
 
@@ -108,6 +116,7 @@ public class FilmController {
      */
     @GetMapping("/{filmId}/to-like")
     public List<User> getUsersToLikeFilm(@PathVariable Long filmId) {
+        log.info("Get-запрос: получение списка пользователей которые поставили лайк фильму под id {}.", filmId);
         return serviceUsers.getUsersToLikeFilm(filmId);
     }
 
@@ -116,6 +125,7 @@ public class FilmController {
      */
     @PutMapping("/{filmId}/like/{userId}")
     public void addLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
+        log.info("Put-запрос: пользователь {} ставит лайк фильму под id {}.", userId, filmId);
         serviceFilms.addLike(filmId, userId);
     }
 
@@ -124,6 +134,7 @@ public class FilmController {
      */
     @DeleteMapping("/{filmId}/like/{userId}")
     public void removeLikeFilm(@PathVariable Long filmId, @PathVariable Long userId) {
+        log.info("Delete-запрос: пользователь {} удаляет лайк фильму под id {}.", userId, filmId);
         serviceFilms.removeLike(filmId, userId);
     }
 
@@ -136,6 +147,6 @@ public class FilmController {
             @PathVariable Long directorId,
             @RequestParam(defaultValue = "likes") String sortBy
     ) {
-        return serviceFilms.getFilmsToDirector(directorId, sortBy);
+        return serviceFilms.getFilmsToDirector(directorId, sortBy); //логи внутри
     }
 }

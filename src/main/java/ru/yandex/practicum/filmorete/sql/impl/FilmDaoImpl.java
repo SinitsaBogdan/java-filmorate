@@ -12,6 +12,8 @@ import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import java.time.LocalDate;
 import java.util.*;
 
+import static ru.yandex.practicum.filmorete.enums.RequestPathParameter.DIRECTOR;
+import static ru.yandex.practicum.filmorete.enums.RequestPathParameter.TITLE;
 import static ru.yandex.practicum.filmorete.sql.requests.FilmRequests.*;
 
 @Component
@@ -149,9 +151,10 @@ public class FilmDaoImpl implements FilmDao {
         sqlBuilder.append("WHERE ");
         List<String> conditions = new ArrayList<>();
 
-        if (by.contains("director") && by.contains("title")) conditions.add("(f.name ILIKE '%" + query + "%' OR d.name ILIKE '%" + query + "%')");
-        else if (by.contains("director")) conditions.add("d.name ILIKE '%" + query + "%'");
-        else if (by.contains("title")) conditions.add("f.name ILIKE '%" + query + "%'");
+        if (by.contains(DIRECTOR.toString().toLowerCase()) && by.contains(TITLE.toString().toLowerCase()))
+            conditions.add("(f.name ILIKE '%" + query + "%' OR d.name ILIKE '%" + query + "%')");
+        else if (by.contains(DIRECTOR.toString().toLowerCase())) conditions.add("d.name ILIKE '%" + query + "%'");
+        else if (by.contains(TITLE.toString().toLowerCase())) conditions.add("f.name ILIKE '%" + query + "%'");
 
         if (!conditions.isEmpty()) sqlBuilder.append(String.join(" OR ", conditions));
         else return Collections.emptyList();
