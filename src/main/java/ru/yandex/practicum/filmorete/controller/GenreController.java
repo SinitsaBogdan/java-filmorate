@@ -28,19 +28,19 @@ public class GenreController {
     }
 
     /**
-     * Запрос записи по id
-     */
-    @GetMapping("/{genreId}")
-    public Genre getGenresSearchId(@PathVariable Integer genreId) {
-        return serviceGenre.getGenresSearchId(genreId);
-    }
-
-    /**
      * Добавление новой записи
      */
     @PostMapping
     public void post(@Valid @RequestBody Genre genre) {
         serviceGenre.add(genre);
+    }
+
+    /**
+     * Очистка хранилища
+     */
+    @DeleteMapping
+    public void deleteAll() {
+        serviceGenre.deleteAll();
     }
 
     /**
@@ -52,11 +52,11 @@ public class GenreController {
     }
 
     /**
-     * Очистка хранилища
+     * Запрос записи по id
      */
-    @DeleteMapping
-    public void deleteAll() {
-        serviceGenre.deleteAll();
+    @GetMapping("/{genreId}")
+    public Genre getGenresSearchId(@PathVariable Integer genreId) {
+        return serviceGenre.getGenresSearchId(genreId);
     }
 
     /**

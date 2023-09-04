@@ -24,7 +24,7 @@ class UserDaoImplTest {
 
     @BeforeEach
     public void beforeEach() {
-        dao.delete();
+        dao.deleteAll();
         dao.insert(
                 100L, "Максим", LocalDate.of(1895, 5, 24), "Maxim", "maxim@mail.ru"
         );
@@ -39,14 +39,14 @@ class UserDaoImplTest {
     @Test
     @DisplayName("find()")
     void testFindAllRows() {
-        List<User> result = dao.findAllUsers();
+        List<User> result = dao.findAll();
         assertEquals(result.size(), 3);
     }
 
     @Test
     @DisplayName("find(rowId)")
     void testFindRowById() {
-        Optional<User> optional = dao.findUser(100L);
+        Optional<User> optional = dao.find(100L);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getId(), 100L);
     }
@@ -54,7 +54,7 @@ class UserDaoImplTest {
     @Test
     @DisplayName("find(email)")
     void testFindRowByEmail() {
-        Optional<User> optional = dao.findUser("maxim@mail.ru");
+        Optional<User> optional = dao.find("maxim@mail.ru");
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getEmail(), "maxim@mail.ru");
     }
@@ -64,7 +64,7 @@ class UserDaoImplTest {
     void testInsertByNameBirthdayLoginEmail() {
         dao.insert("Максим2", LocalDate.of(1995, 5, 24), "Maxim2", "maxim2@email.ru");
         Long lastId = dao.findLastIdUser().get();
-        Optional<User> optional = dao.findUser(lastId);
+        Optional<User> optional = dao.find(lastId);
         assertThat(optional)
                 .isPresent()
                 .hasValueSatisfying(result ->
@@ -76,7 +76,7 @@ class UserDaoImplTest {
     @DisplayName("insert(rowId, name, birthday, login, email)")
     void testInsertByIdNameBirthdayLoginEmail() {
         dao.insert(103L, "Максим2", LocalDate.of(1995, 5, 24), "Maxim2", "maxim2@email.ru");
-        Optional<User> optional = dao.findUser(100L);
+        Optional<User> optional = dao.find(100L);
         assertThat(optional)
                 .isPresent()
                 .hasValueSatisfying(result ->
@@ -87,7 +87,7 @@ class UserDaoImplTest {
     @Test
     @DisplayName("update(rowId, name, birthday, login, email)")
     void testUpdate() {
-        Optional<User> optional = dao.findUser(100L);
+        Optional<User> optional = dao.find(100L);
         assertThat(optional)
                 .isPresent()
                 .hasValueSatisfying(result ->
@@ -106,24 +106,24 @@ class UserDaoImplTest {
     @Test
     @DisplayName("delete()")
     void testDeleteAllRows() {
-        dao.delete();
-        List<User> result = dao.findAllUsers();
+        dao.deleteAll();
+        List<User> result = dao.findAll();
         assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(rowId)")
     void testDeleteRowById() {
-        dao.delete(100L);
-        List<User> result = dao.findAllUsers();
+        dao.deleteAll(100L);
+        List<User> result = dao.findAll();
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("delete(login)")
     void testDeleteRowByLogin() {
-        dao.delete("Maxim");
-        List<User> result = dao.findAllUsers();
+        dao.deleteAll("Maxim");
+        List<User> result = dao.findAll();
         assertEquals(result.size(), 2);
     }
 }

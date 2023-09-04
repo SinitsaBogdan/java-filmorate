@@ -1,35 +1,36 @@
 package ru.yandex.practicum.filmorete.sql.dao;
 
 import ru.yandex.practicum.filmorete.model.Film;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface FilmDao {
 
-    List<Film> findAllFilms();
+    List<Film> findAll();
+
+    List<Film> findAll(String query, List<String> by);
 
     Optional<Film> findFilm(Long rowId);
 
-    Optional<Film> findFilm(String filmName);
+    Long insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
 
-    void insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
-
-    void insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
+    Long insert(Long rowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
 
     void update(Long searchRowId, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration);
 
     void update(String searchName, Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer duration);
 
-    void delete();
+    void deleteAll();
 
-    void delete(Long rowId);
+    void deleteByFilmId(Long filmId);
 
-    void delete(String name);
+    void deleteAll(String filmName);
 
-    void delete(LocalDate releaseDate);
+    void deleteAll(LocalDate releaseDate);
 
-    void delete(Integer duration);
+    void deleteAllIsDuration(Integer duration);
 
-    void deleteByRating(Integer mpaId);
+    void deleteAllMpa(Integer mpaId);
 }

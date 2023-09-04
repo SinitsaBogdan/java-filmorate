@@ -1,75 +1,116 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.*;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
+
 import java.util.*;
 
+import static ru.yandex.practicum.filmorete.sql.requests.TotalFilmLikeRequests.*;
 
-@Slf4j
 @Component
-@Qualifier("TotalFilmLikeDaoImpl")
+@RequiredArgsConstructor
 public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final TotalGenreFilmDao totalGenreFilmDao;
-
-    private final FilmDaoImpl filmDao;
-
-    private final UserDaoImpl userDao;
-
-    private TotalFilmLikeDaoImpl(JdbcTemplate jdbcTemplate, TotalGenreFilmDao totalGenreFilmDao, FilmDaoImpl filmDao, UserDaoImpl userDao) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.totalGenreFilmDao = totalGenreFilmDao;
-        this.filmDao = filmDao;
-        this.userDao = userDao;
+    @Override
+    public Optional<TotalLikeFilm> find(Long filmId, Long userId) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__TOTAL_FILM_LIKE__FILM_USER.getSql(), filmId, userId);
+        if (row.next()) return Optional.of(FactoryModel.buildTotalLikeFilm(row));
+        else return Optional.empty();
     }
 
     @Override
-    public List<Film> findPopularFilms(Integer limit) {
+    public List<Film> findPopularIsLimit(Integer limit) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "f.id AS film_id, " +
-                        "f.name AS film_name, " +
-                        "f.description AS film_description, " +
-                        "f.release_date AS film_release_date, " +
-                        "f.duration AS film_duration, " +
-                        "r.id AS mpa_id, " +
-                        "r.name AS mpa_name, " +
-                        "g.id AS genre_id, " +
-                        "g.name AS genre_name, " +
-                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
-                    "FROM FILMS AS f " +
-                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                    "WHERE f.id IN ( " +
-                        "SELECT f.id FROM FILMS AS f " +
-                        "ORDER BY ( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) DESC " +
-                    "LIMIT ? " +
-                    ");",
-                limit
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS_POPULAR__LIMIT.getSql(), limit);
+
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
+        }
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
+    }
+
+    @Override
+    public List<Film> findPopularIsLimitAndGenre(Integer limit, Integer searchGenreId) {
+        Map<Long, Film> result = new HashMap<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                SELECT_ALL__FILMS_POPULAR__LIMIT_GENRE.getSql(),
+                limit, searchGenreId
         );
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
+
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
+        }
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
+    }
+
+    @Override
+    public List<Film> findPopularIsLimitAndYear(Integer limit, Integer searchYear) {
+        Map<Long, Film> result = new HashMap<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                SELECT_ALL__FILMS_POPULAR__LIMIT_YEAR.getSql(),
+                limit, searchYear
+        );
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
+        }
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
+    }
+
+    @Override
+    public List<Film> findPopularIsLimitAndGenreAndYear(Integer limit, Integer searchGenreId, Integer searchYear) {
+        Map<Long, Film> result = new HashMap<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                SELECT_ALL__FILMS_POPULAR__SORT_YEAR.getSql(),
+                limit, searchGenreId, searchYear
+        );
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
@@ -78,125 +119,151 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     @Override
     public List<User> findUserToLikeFilm(Long filmId) {
         List<User> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * " +
-                    "FROM USERS " +
-                    "WHERE id IN (" +
-                        "SELECT user_id FROM TOTAL_FILM_LIKE " +
-                        "WHERE film_id = ?" +
-                    ");",
-                filmId
-        );
-        while (rows.next()) result.add(userDao.buildModel(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS_TOTAL_FILM_LIKE__FILM.getSql(), filmId);
+        while (row.next()) result.add(FactoryModel.buildUser(row));
         return result;
     }
 
     @Override
     public List<Film> findFilmToLikeUser(Long userId) {
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT " +
-                        "f.id AS film_id, " +
-                        "f.name AS film_name, " +
-                        "f.description AS film_description, " +
-                        "f.release_date AS film_release_date, " +
-                        "f.duration AS film_duration, " +
-                        "r.id AS mpa_id, " +
-                        "r.name AS mpa_name, " +
-                        "g.id AS genre_id, " +
-                        "g.name AS genre_name, " +
-                        "( SELECT COUNT(*) FROM TOTAL_FILM_LIKE AS l WHERE l.film_id = f.id ) AS size_like " +
-                    "FROM FILMS AS f " +
-                    "INNER JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-                    "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-                    "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-                    "WHERE f.id IN (SELECT film_id FROM TOTAL_FILM_LIKE WHERE user_id = ?);",
-                userId
-        );
-        while (rows.next()) {
-            Long filmId = rows.getLong("FILM_ID");
-            Integer genreId = rows.getInt("GENRE_ID");
-            String genreName = rows.getString("GENRE_NAME");
-            if (!result.containsKey(filmId)) {
-                Film film = filmDao.buildModel(rows);
-                result.put(filmId, film);
-            }
-            if (genreName != null) {
-                Genre genre = Genre.builder().id(genreId).name(genreName).build();
-                result.get(filmId).addGenre(genre);
-            }
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS_TOTAL_FILM_LIKE__USER.getSql(), userId);
+
+        while (row.next()) {
+            Long filmId = row.getLong("FILM_ID");
+
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
     }
 
     @Override
-    public List<TotalFilmLike> findAllTotalFilmLike() {
-        List<TotalFilmLike> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_FILM_LIKE;"
-        );
-        while (rows.next()) result.add(buildModel(rows));
+    public List<TotalLikeFilm> findAll() {
+        List<TotalLikeFilm> result = new ArrayList<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_FILM_LIKE.getSql());
+        while (row.next()) result.add(FactoryModel.buildTotalLikeFilm(row));
         return result;
     }
 
     @Override
-    public List<TotalFilmLike> findAllTotalFilmLikeByFilmId(Long filmId) {
-        List<TotalFilmLike> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_FILM_LIKE WHERE film_id = ?;",
-                filmId
-        );
-        while (rows.next()) result.add(buildModel(rows));
+    public List<TotalLikeFilm> findAllIsFilmId(Long filmId) {
+        List<TotalLikeFilm> result = new ArrayList<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_FILM_LIKE__FILM.getSql(), filmId);
+        while (row.next()) result.add(FactoryModel.buildTotalLikeFilm(row));
         return result;
     }
 
     @Override
-    public List<TotalFilmLike> findAllTotalFilmLikeByUserId(Long userId) {
-        List<TotalFilmLike> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM TOTAL_FILM_LIKE WHERE user_id = ?;",
-                userId
-        );
-        while (rows.next()) result.add(buildModel(rows));
+    public List<TotalLikeFilm> findAllIsUserId(Long userId) {
+        List<TotalLikeFilm> result = new ArrayList<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_FILM_LIKE__USER.getSql(), userId);
+        while (row.next()) result.add(FactoryModel.buildTotalLikeFilm(row));
         return result;
+    }
+
+    @Override
+    public List<Film> findCommonFilms(Long firstUserId, Long secondUserId) {
+        Map<Long, Film> result = new HashMap<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__COMMON_FILMS.getSql(), firstUserId, secondUserId);
+
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+        }
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
+    }
+
+    @Override
+    public List<Film> findRecommendationForUser(Long userId) {
+        Optional<Long> friendByFilmsId = findUserLikeToFilm(userId);
+        if (friendByFilmsId.isEmpty()) return Collections.emptyList();
+        Map<Long, Film> result = new HashMap<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__RECOMMENDATION.getSql(), friendByFilmsId.get(), userId);
+
+        while (row.next()) {
+
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
+
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
+        }
+        if (result.values().isEmpty()) return new ArrayList<>();
+        else return new ArrayList<>(result.values());
+    }
+
+    private Optional<Long> findUserLikeToFilm(Long userId) {
+        Map<Long, Set<Long>> userLikeToFilm = new HashMap<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS_FILMS.getSql());
+
+        while (row.next()) {
+
+            Long userLikeId = row.getLong("user_id");
+            Long filmId = row.getLong("film_id");
+
+            if (!userLikeToFilm.containsKey(userLikeId)) {
+                Set<Long> idLikedFilms = new HashSet<>();
+                idLikedFilms.add(filmId);
+                userLikeToFilm.put(userLikeId, idLikedFilms);
+            } else {
+                Set<Long> idLikedFilms = userLikeToFilm.get(userLikeId);
+                idLikedFilms.add(filmId);
+            }
+        }
+
+        if (!userLikeToFilm.containsKey(userId)) return Optional.empty();
+
+        Map<Long, Integer> userPoints = new HashMap<>();
+        Set<Long> userIdFilms = userLikeToFilm.get(userId);
+        userLikeToFilm.remove(userId);
+        for (Long id : userLikeToFilm.keySet()) {
+            Set<Long> filmsIds = userLikeToFilm.get(id);
+            filmsIds.retainAll(userIdFilms);
+            userPoints.put(id, filmsIds.size());
+        }
+        Optional<Map.Entry<Long, Integer>> entry = userPoints.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue());
+
+        if (entry.isEmpty() || entry.get().getValue() == 0) return Optional.empty();
+        return entry.map(Map.Entry::getKey);
     }
 
     @Override
     public void insert(Long filmId, Long userId) {
-        jdbcTemplate.update(
-                "INSERT INTO TOTAL_FILM_LIKE (film_id, user_id) VALUES(?, ?);",
-                filmId, userId
-        );
+        jdbcTemplate.update(INSERT_ONE__TOTAL_FILM_LIKE__FILM_USER.getSql(), filmId, userId);
     }
 
     @Override
     public void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId) {
         jdbcTemplate.update(
-                "UPDATE TOTAL_FILM_LIKE SET film_id = ?, user_id = ? WHERE film_id = ? AND user_id = ?;",
+                UPDATE_ONE__TOTAL_FILM_LIKE__SET_FILM_USER__FILM_USER.getSql(),
                 filmId, userId, searchFilmId, searchUserId
         );
     }
 
     @Override
-    public void delete() {
-        jdbcTemplate.update(
-                "DELETE FROM TOTAL_FILM_LIKE;"
-        );
+    public void deleteAll() {
+        jdbcTemplate.update(DELETE_ALL__TOTAL_FILM_LIKE.getSql());
     }
 
     @Override
-    public void delete(Long filmId, Long userId) {
-        jdbcTemplate.update(
-                "DELETE FROM TOTAL_FILM_LIKE WHERE film_id = ? AND user_id = ?;",
-                filmId, userId
-        );
-    }
-
-    protected TotalFilmLike buildModel(@NotNull SqlRowSet row) {
-        return TotalFilmLike.builder()
-                .filmId(row.getLong("film_id"))
-                .userId(row.getLong("user_id"))
-                .build();
+    public void deleteAll(Long filmId, Long userId) {
+        jdbcTemplate.update(DELETE_ONE__TOTAL_FILM_LIKE__FILM_USER.getSql(), filmId, userId);
     }
 }

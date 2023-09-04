@@ -1,122 +1,81 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import java.util.*;
+import static ru.yandex.practicum.filmorete.sql.requests.RosterGenreRequests.*;
 
-
-@Slf4j
 @Component
-@Qualifier("RosterGenreDaoImpl")
+@RequiredArgsConstructor
 public class RosterGenreDaoImpl implements RosterGenreDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private RosterGenreDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     @Override
-    public List<String> findAllName() {
+    public List<String> findAllColumnName() {
         List<String> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT name FROM ROSTER_GENRE;"
-        );
-        while (rows.next()) result.add(rows.getString("name"));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_GENRE__COLUMN_NAME.getSql());
+        while (row.next()) result.add(row.getString("name"));
         return result;
     }
 
     @Override
-    public List<Genre> findAllGenre() {
+    public List<Genre> findAll() {
         List<Genre> result = new ArrayList<>();
-        SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE ORDER BY id ASC;"
-        );
-        while (rows.next()) result.add(buildModel(rows));
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__ROSTER_GENRE__NAME.getSql());
+        while (row.next()) result.add(FactoryModel.buildGenre(row));
         return result;
     }
 
     @Override
-    public Optional<Genre> findGenre(Integer rowId) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE WHERE id = ?;",
-                rowId
-        );
-        if (row.next()) return Optional.of(buildModel(row));
+    public Optional<Genre> findAll(Integer rowId) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__ROSTER_GENRE.getSql(), rowId);
+        if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
     }
 
     @Override
-    public Optional<Genre> findGenre(String name) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE WHERE name = ?;",
-                name
-        );
-        if (row.next()) return Optional.of(buildModel(row));
+    public Optional<Genre> findAll(String name) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__ROSTER_GENRE__NAME.getSql(), name);
+        if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
     }
 
     @Override
     public void insert(String name) {
-        jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (name) VALUES(?);",
-                name
-        );
+        jdbcTemplate.update(INSERT_ONE__ROSTER_GENRE__NAME.getSql(), name);
     }
 
     @Override
     public void insert(Integer rowId, String name) {
-        jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (id, name) VALUES(?, ?);",
-                rowId, name
-        );
+        jdbcTemplate.update(INSERT_ONE__ROSTER_GENRE__FULL.getSql(), rowId, name);
     }
 
     @Override
     public void update(Integer searchRowId, String name) {
-        jdbcTemplate.update(
-                "UPDATE ROSTER_GENRE SET name = ? WHERE id = ?;",
-                name, searchRowId
-        );
+        jdbcTemplate.update(UPDATE_ONE__ROSTER_GENRE__SET_NAME__ID.getSql(), name, searchRowId);
     }
 
     @Override
-    public void delete() {
-        jdbcTemplate.update(
-                "DELETE FROM ROSTER_GENRE;"
-        );
-
+    public void deleteAll() {
+        jdbcTemplate.update(DELETE_ALL__ROSTER_GENRE.getSql(), "DELETE FROM ROSTER_GENRE;");
     }
 
     @Override
-    public void delete(Integer rowId) {
-        jdbcTemplate.update(
-                "DELETE FROM ROSTER_GENRE " +
-                    "WHERE id = ?;",
-                rowId
-        );
+    public void deleteAll(Integer rowId) {
+        jdbcTemplate.update(DELETE_ONE__ROSTER_GENRE__ID.getSql(), rowId);
     }
 
     @Override
-    public void delete(String name) {
-        jdbcTemplate.update(
-                "DELETE FROM ROSTER_GENRE " +
-                    "WHERE name = ?;",
-                name
-        );
-    }
-
-    protected Genre buildModel(@NotNull SqlRowSet row) {
-        return Genre.builder()
-                .id(row.getInt("id"))
-                .name(row.getString("name"))
-                .build();
+    public void deleteAll(String name) {
+        jdbcTemplate.update(DELETE_ONE__ROSTER_GENRE__NAME.getSql(), name);
     }
 }
