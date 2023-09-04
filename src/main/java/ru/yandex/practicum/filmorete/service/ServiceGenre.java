@@ -21,7 +21,7 @@ public class ServiceGenre {
     }
 
     public Genre getGenresSearchId(Integer genreId) {
-        Optional<Genre> optional = genreDao.findAll(genreId);
+        Optional<Genre> optional = genreDao.findAllByRowId(genreId);
         if (optional.isPresent()) return optional.get();
         else throw new ExceptionNotFoundGenreStorage(SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS);
     }
@@ -44,6 +44,6 @@ public class ServiceGenre {
     }
 
     public void deleteSearchId(Integer genreId) {
-        genreDao.deleteAll(genreId);
+        genreDao.deleteAllByRowId(genreId);
     }
 }

@@ -36,14 +36,14 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     }
 
     @Override
-    public Optional<Genre> findAll(Integer rowId) {
+    public Optional<Genre> findAllByRowId(Integer rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__ROSTER_GENRE.getSql(), rowId);
         if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
     }
 
     @Override
-    public Optional<Genre> findAll(String name) {
+    public Optional<Genre> findAllByName(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__ROSTER_GENRE__NAME.getSql(), name);
         if (row.next()) return Optional.of(FactoryModel.buildGenre(row));
         else return Optional.empty();
@@ -70,12 +70,12 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     }
 
     @Override
-    public void deleteAll(Integer rowId) {
+    public void deleteAllByRowId(Integer rowId) {
         jdbcTemplate.update(DELETE_ONE__ROSTER_GENRE__ID.getSql(), rowId);
     }
 
     @Override
-    public void deleteAll(String name) {
+    public void deleteAllByName(String name) {
         jdbcTemplate.update(DELETE_ONE__ROSTER_GENRE__NAME.getSql(), name);
     }
 }

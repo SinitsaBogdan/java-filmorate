@@ -13,9 +13,9 @@ public interface EventsDao {
 
     List<Event> findById(Long userId);
 
-    List<Event> findAll(EventType eventType, Long entityId);
+    List<Event> findAllByEventTypeAndEntityId(EventType eventType, Long entityId);
 
-    Optional<Event> findOne(EventType eventType, Long entityId, Long userId);
+    Optional<Event> findOneByEventTypeAndEntityIdAndUserId(EventType eventType, Long entityId, Long userId);
 
     Optional<Event> findOneByEventId(Long eventId);
 
@@ -29,9 +29,9 @@ public interface EventsDao {
 
     void deleteByEventType(EventType eventType);
 
-    void deleteAll(EventType eventType, Long entityId);
+    void deleteByEventTypeAndEntityId(EventType eventType, Long entityId);
 
-    void deleteAll(EventOperation operation);
+    void deleteAllByEventOperation(EventOperation operation);
 
     void deleteAllIsEventId(Long eventId);
 

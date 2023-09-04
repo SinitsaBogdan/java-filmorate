@@ -46,7 +46,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Optional<Film> findFilm(Long rowId) {
+    public Optional<Film> findFilmById(Long rowId) {
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILM__ID.getSql(), rowId);
         while (row.next()) {
@@ -108,12 +108,12 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void deleteAll(String filmName) {
+    public void deleteAllByFilmName(String filmName) {
         jdbcTemplate.update(DELETE_ONE__FILMS__NAME.getSql(), filmName);
     }
 
     @Override
-    public void deleteAll(LocalDate releaseDate) {
+    public void deleteAllByReleaseDate(LocalDate releaseDate) {
         jdbcTemplate.update(DELETE_ONE__FILMS__RELEASE_DATE.getSql(), releaseDate);
     }
 
@@ -123,7 +123,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void deleteAllMpa(Integer mpaId) {
+    public void deleteAllByMpaId(Integer mpaId) {
         jdbcTemplate.update(DELETE_ONE__FILMS__MPA.getSql(), mpaId);
     }
 

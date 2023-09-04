@@ -14,7 +14,7 @@ public interface TotalFilmLikeDao {
 
     List<TotalLikeFilm> findAllIsUserId(Long userId);
 
-    Optional<TotalLikeFilm> find(Long filmId, Long userId);
+    Optional<TotalLikeFilm> findIsFilmIdAndUserId(Long filmId, Long userId);
 
     List<Film> findPopularIsLimit(Integer limit);
 

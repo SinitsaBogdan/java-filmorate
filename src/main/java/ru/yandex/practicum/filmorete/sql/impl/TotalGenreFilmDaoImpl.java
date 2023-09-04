@@ -83,7 +83,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     }
 
     @Override
-    public void delete(Long filmId, Integer genreId) {
+    public void deleteByFilmIdAndGenreId(Long filmId, Integer genreId) {
         jdbcTemplate.update(DELETE_ONE__TOTAL_GENRE_FILM__FILM_GENRE.getSql(), filmId, genreId);
     }
 

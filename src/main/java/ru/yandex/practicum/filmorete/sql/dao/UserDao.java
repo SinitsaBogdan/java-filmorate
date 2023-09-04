@@ -9,9 +9,9 @@ public interface UserDao {
 
     List<User> findAll();
 
-    Optional<User> find(Long rowId);
+    Optional<User> findByRowId(Long rowId);
 
-    Optional<User> find(String email);
+    Optional<User> findByEmail(String email);
 
     void insert(String name, LocalDate birthday, String login, String email);
 
@@ -21,7 +21,7 @@ public interface UserDao {
 
     void deleteAll();
 
-    void deleteAll(Long rowId);
+    void deleteAllByRowId(Long rowId);
 
-    void deleteAll(String login);
+    void deleteAllByLogin(String login);
 }

@@ -85,7 +85,7 @@ public class ServiceFilm {
     }
 
     public Film getFilm(Long id) {
-        Optional<Film> optional = filmDao.findFilm(id);
+        Optional<Film> optional = filmDao.findFilmById(id);
         if (optional.isPresent()) return optional.get();
         else throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
     }
@@ -97,7 +97,7 @@ public class ServiceFilm {
                 film.getReleaseDate(), film.getDuration()
         );
 
-        Optional<Film> optionalFilm = filmDao.findFilm(filmId);
+        Optional<Film> optionalFilm = filmDao.findFilmById(filmId);
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
                 totalGenreFilmDao.insert(optionalFilm.get().getId(), genre.getId());
@@ -109,12 +109,12 @@ public class ServiceFilm {
                 totalDirectorFilmDao.insert(optionalFilm.get().getId(), director.getId());
             }
         }
-        return filmDao.findFilm(filmId).get();
+        return filmDao.findFilmById(filmId).get();
     }
 
     public Film updateFilm(Film film) {
         checkValidFilm(film);
-        Optional<Film> optionalFilm = filmDao.findFilm(film.getId());
+        Optional<Film> optionalFilm = filmDao.findFilmById(film.getId());
         if (optionalFilm.isPresent()) {
             filmDao.update(
                     film.getId(), film.getMpa().getId(),
@@ -141,18 +141,18 @@ public class ServiceFilm {
                 if (totalGenreFilm.isEmpty()) totalGenreFilmDao.insert(film.getId(), genreFilm.getId());
             }
         }
-        return filmDao.findFilm(film.getId()).get();
+        return filmDao.findFilmById(film.getId()).get();
     }
 
     public void removeFilmSearchId(@NotNull Long filmId) {
-        Optional<Film> optionalFilm = filmDao.findFilm(filmId);
+        Optional<Film> optionalFilm = filmDao.findFilmById(filmId);
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         filmDao.deleteByFilmId(filmId);
     }
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
-        Optional<Film> optionalFilm = filmDao.findFilm(filmId);
-        Optional<User> optionalUser = userDao.find(userId);
+        Optional<Film> optionalFilm = filmDao.findFilmById(filmId);
+        Optional<User> optionalUser = userDao.findByRowId(userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
@@ -161,9 +161,9 @@ public class ServiceFilm {
     }
 
     public void addLike(Long filmId, Long userId) {
-        Optional<Film> optionalFilm = filmDao.findFilm(filmId);
-        Optional<User> optionalUser = userDao.find(userId);
-        Optional<TotalLikeFilm> optionalTotalLikeFilm = totalFilmLikeDao.find(filmId, userId);
+        Optional<Film> optionalFilm = filmDao.findFilmById(filmId);
+        Optional<User> optionalUser = userDao.findByRowId(userId);
+        Optional<TotalLikeFilm> optionalTotalLikeFilm = totalFilmLikeDao.findIsFilmIdAndUserId(filmId, userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);

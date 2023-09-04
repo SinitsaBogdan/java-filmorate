@@ -12,7 +12,7 @@ public interface TotalLikeReviewDao {
 
     void update(Long reviewId, Long userId, Boolean type);
 
-    void delete(Long reviewId, Long userId);
+    void deleteByReviewIdAndUserId(Long reviewId, Long userId);
 
     void deleteAll();
 }

@@ -26,7 +26,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
-    public List<Review> findAll(Long userId) {
+    public List<Review> findAllByUserId(Long userId) {
         List<Review> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__REVIEWS__USER_ID.getSql(), userId);
         while (row.next()) result.add(FactoryModel.buildReview(row));
@@ -50,7 +50,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
-    public List<Review> findAll(Boolean isPositive) {
+    public List<Review> findAllIsPositive(Boolean isPositive) {
         List<Review> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__REVIEWS__IS_POSITIVE.getSql(), isPositive);
         while (row.next()) result.add(FactoryModel.buildReview(row));

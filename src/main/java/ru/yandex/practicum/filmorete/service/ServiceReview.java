@@ -124,7 +124,7 @@ public class ServiceReview {
         Optional<User> optionalUser = userDao.find(userId);
         if (optionalReview.isEmpty()) throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        totalReviewLikeDao.delete(reviewLikeId, userId);
+        totalReviewLikeDao.deleteByReviewIdAndUserId(reviewLikeId, userId);
         reviewDao.recalculationPositive(reviewLikeId);
     }
 }
