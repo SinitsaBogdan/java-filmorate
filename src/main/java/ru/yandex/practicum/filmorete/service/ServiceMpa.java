@@ -23,7 +23,7 @@ public class ServiceMpa {
     }
 
     public Mpa getSearchId(Integer mpaId) {
-        Optional<Mpa> optional = mpaDao.findMpaByRowId(mpaId);
+        Optional<Mpa> optional = mpaDao.findMpaById(mpaId);
         if (optional.isEmpty()) throw new ExceptionNotFoundMpaStorage(ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
         return optional.get();
     }
@@ -33,13 +33,13 @@ public class ServiceMpa {
     }
 
     public void add(@NotNull Mpa mpa) {
-        Optional<Mpa> optionalMpa = mpaDao.findMpaByRowId(mpa.getId());
+        Optional<Mpa> optionalMpa = mpaDao.findMpaById(mpa.getId());
         if (optionalMpa.isEmpty()) throw new ExceptionNotFoundMpaStorage(ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
         mpaDao.insert(mpa.getName(), mpa.getDescription());
     }
 
     public void update(@NotNull Mpa mpa) {
-        Optional<Mpa> optionalMpa = mpaDao.findMpaByRowId(mpa.getId());
+        Optional<Mpa> optionalMpa = mpaDao.findMpaById(mpa.getId());
         if (optionalMpa.isEmpty()) throw new ExceptionNotFoundMpaStorage(ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
         mpaDao.update(mpa.getId(), mpa.getName(), mpa.getDescription());
     }
@@ -49,8 +49,8 @@ public class ServiceMpa {
     }
 
     public void deleteSearchId(Integer mpaId) {
-        Optional<Mpa> optionalMpa = mpaDao.findMpaByRowId(mpaId);
+        Optional<Mpa> optionalMpa = mpaDao.findMpaById(mpaId);
         if (optionalMpa.isEmpty()) throw new ExceptionNotFoundMpaStorage(ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
-        mpaDao.deleteByRowId(mpaId);
+        mpaDao.deleteById(mpaId);
     }
 }

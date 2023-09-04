@@ -58,14 +58,14 @@ public class ServiceFilm {
     }
 
     public List<Film> getFilmsToLikeUser(Long userId) {
-        Optional<User> optional = userDao.findByRowId(userId);
+        Optional<User> optional = userDao.findById(userId);
         if (optional.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         return totalFilmLikeDao.findFilmToLikeUser(userId);
     }
 
     public List<Film> getCommonFilms(Long userId, Long friendId) {
-        Optional<User> optionalUser = userDao.findByRowId(userId);
-        Optional<User> optionalFriend = userDao.findByRowId(friendId);
+        Optional<User> optionalUser = userDao.findById(userId);
+        Optional<User> optionalFriend = userDao.findById(friendId);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         if (optionalFriend.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         return totalFilmLikeDao.findCommonFilms(userId, friendId);
@@ -148,7 +148,7 @@ public class ServiceFilm {
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
         Optional<Film> optionalFilm = filmDao.findFilmById(filmId);
-        Optional<User> optionalUser = userDao.findByRowId(userId);
+        Optional<User> optionalUser = userDao.findById(userId);
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalFilmLikeDao.deleteAll(filmId, userId);
@@ -157,7 +157,7 @@ public class ServiceFilm {
 
     public void addLike(Long filmId, Long userId) {
         Optional<Film> optionalFilm = filmDao.findFilmById(filmId);
-        Optional<User> optionalUser = userDao.findByRowId(userId);
+        Optional<User> optionalUser = userDao.findById(userId);
         Optional<TotalLikeFilm> optionalTotalLikeFilm = totalFilmLikeDao.findIsFilmIdAndUserId(filmId, userId);
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);

@@ -41,7 +41,7 @@ class FilmDaoImplTest {
         daoTotalGenreFilm.delete();
         userDao.deleteAll();
         daoTotalFilmLike.deleteAll();
-        directorDao.delete();
+        directorDao.deleteAll();
         daoTotalDirectorFilm.delete();
 
         enumMpaDao.insert(1, "P", "Описание");
@@ -172,7 +172,7 @@ class FilmDaoImplTest {
     @Test
     @DisplayName("getFilmsBySearchParam(query,director)")
     public void testGetFilmsBySearchParamDirector() {
-        directorDao.insertByName("Director-1");
+        directorDao.insert("Director-1");
         daoTotalDirectorFilm.insert(1L, 2L);
 
         List<Film> searchParam = daoFilm.findAll("Director", Collections.singletonList("director"));
@@ -188,7 +188,7 @@ class FilmDaoImplTest {
     @Test
     @DisplayName("getFilmsBySearchParam(query,title&director)")
     public void testGetFilmsBySearchParamTitleAndDirector() {
-        directorDao.insertByName("Director-1");
+        directorDao.insert("Director-1");
         daoTotalDirectorFilm.insert(2L, 1L);
 
         List<Film> searchParam = daoFilm.findAll("1", List.of("title", "director"));

@@ -44,7 +44,7 @@ class DirectorControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        directorDao.delete();
+        directorDao.deleteAll();
         directorDao.insert(1L, listDirector.get(0).getName());
         directorDao.insert(2L, listDirector.get(1).getName());
     }

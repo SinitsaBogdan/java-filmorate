@@ -46,7 +46,7 @@ class UserDaoImplTest {
     @Test
     @DisplayName("find(rowId)")
     void testFindRowById() {
-        Optional<User> optional = dao.findByRowId(100L);
+        Optional<User> optional = dao.findById(100L);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getId(), 100L);
     }
@@ -64,7 +64,7 @@ class UserDaoImplTest {
     void testInsertByNameBirthdayLoginEmail() {
         dao.insert("Максим2", LocalDate.of(1995, 5, 24), "Maxim2", "maxim2@email.ru");
         Long lastId = dao.findLastIdUser().get();
-        Optional<User> optional = dao.findByRowId(lastId);
+        Optional<User> optional = dao.findById(lastId);
         assertThat(optional)
                 .isPresent()
                 .hasValueSatisfying(result ->
@@ -76,7 +76,7 @@ class UserDaoImplTest {
     @DisplayName("insert(rowId, name, birthday, login, email)")
     void testInsertByIdNameBirthdayLoginEmail() {
         dao.insert(103L, "Максим2", LocalDate.of(1995, 5, 24), "Maxim2", "maxim2@email.ru");
-        Optional<User> optional = dao.findByRowId(100L);
+        Optional<User> optional = dao.findById(100L);
         assertThat(optional)
                 .isPresent()
                 .hasValueSatisfying(result ->
@@ -87,7 +87,7 @@ class UserDaoImplTest {
     @Test
     @DisplayName("update(rowId, name, birthday, login, email)")
     void testUpdate() {
-        Optional<User> optional = dao.findByRowId(100L);
+        Optional<User> optional = dao.findById(100L);
         assertThat(optional)
                 .isPresent()
                 .hasValueSatisfying(result ->
@@ -114,7 +114,7 @@ class UserDaoImplTest {
     @Test
     @DisplayName("delete(rowId)")
     void testDeleteRowById() {
-        dao.deleteAllByRowId(100L);
+        dao.deleteById(100L);
         List<User> result = dao.findAll();
         assertEquals(result.size(), 2);
     }
@@ -122,7 +122,7 @@ class UserDaoImplTest {
     @Test
     @DisplayName("delete(login)")
     void testDeleteRowByLogin() {
-        dao.deleteAllByLogin("Maxim");
+        dao.deleteByLogin("Maxim");
         List<User> result = dao.findAll();
         assertEquals(result.size(), 2);
     }

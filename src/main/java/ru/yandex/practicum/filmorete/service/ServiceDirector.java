@@ -34,7 +34,7 @@ public class ServiceDirector {
      * Запрос всех режиссёров из таблицы DIRECTORS [ DIRECTORS ].
      */
     public List<Director> getAllDirector() {
-        return directorDao.find();
+        return directorDao.findAll();
     }
 
     /**
@@ -43,7 +43,7 @@ public class ServiceDirector {
     public Director add(@NotNull Director director) {
         Optional<Director> optionalDirector = directorDao.findByName(director.getName());
         if (optionalDirector.isPresent()) throw new ExceptionNotFoundDirectorStorage(ERROR_DIRECTOR_DUPLICATE_IN_COLLECTIONS);
-        Long id = directorDao.insertByName(director.getName());
+        Long id = directorDao.insert(director.getName());
         return directorDao.findById(id).get();
     }
 
@@ -54,15 +54,14 @@ public class ServiceDirector {
         Optional<Director> optionalDirector = directorDao.findById(director.getId());
         if (optionalDirector.isEmpty()) throw new ExceptionNotFoundDirectorStorage(ERROR_DIRECTOR_NOT_IN_COLLECTIONS);
         directorDao.update(director.getId(), director.getName());
-        Optional<Director> result = directorDao.findById(director.getId());
-        return result.orElse(null);
+        return directorDao.findById(director.getId()).get();
     }
 
     /**
      * Удаление всех режиссёров [ DIRECTORS ].
      */
     public void deleteAll() {
-        directorDao.delete();
+        directorDao.deleteAll();
     }
 
     /**

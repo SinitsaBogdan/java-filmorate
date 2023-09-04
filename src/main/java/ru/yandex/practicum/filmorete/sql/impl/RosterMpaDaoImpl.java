@@ -44,10 +44,10 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public Optional<Mpa> findMpaByRowId(Integer rowId) {
+    public Optional<Mpa> findMpaById(Integer id) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ONE__ROSTER_MPA__ID.getSql(),
-                rowId
+                id
         );
         if (row.next()) return Optional.of(FactoryModel.buildMpa(row));
         else return Optional.empty();
@@ -66,18 +66,18 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public void insert(Integer rowId, String name, String description) {
+    public void insert(Integer id, String name, String description) {
         jdbcTemplate.update(
                 INSERT_ONE__ROSTER_MPA_FULL__ID.getSql(),
-                rowId, name, description
+                id, name, description
         );
     }
 
     @Override
-    public void update(Integer searchRowId, String name, String description) {
+    public void update(Integer searchId, String name, String description) {
         jdbcTemplate.update(
                 UPDATE_ONE__ROSTER_MPA__SET_NAME_DESCRIPTION__ID.getSql(),
-                name, description, searchRowId
+                name, description, searchId
         );
     }
 
@@ -95,8 +95,8 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public void deleteByRowId(Integer rowId) {
-        jdbcTemplate.update(DELETE_ONE__ROSTER_MPA__ID.getSql(), rowId);
+    public void deleteById(Integer id) {
+        jdbcTemplate.update(DELETE_ONE__ROSTER_MPA__ID.getSql(), id);
     }
 
     @Override

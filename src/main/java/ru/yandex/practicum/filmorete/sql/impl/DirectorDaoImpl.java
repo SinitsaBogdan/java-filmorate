@@ -18,7 +18,7 @@ public class DirectorDaoImpl implements DirectorDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Director> find() {
+    public List<Director> findAll() {
         List<Director> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__DIRECTOR.getSql());
         while (row.next()) result.add(FactoryModel.buildDirector(row));
@@ -40,7 +40,7 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
-    public Long insertByName(String name) {
+    public Long insert(String name) {
         jdbcTemplate.update(INSERT_ONE__DIRECTOR__NAME.getSql(), name);
         return jdbcTemplate.queryForObject(SELECT_MAX_ID__DIRECTOR.getSql(), Long.class);
     }
@@ -56,7 +56,7 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
-    public void delete() {
+    public void deleteAll() {
         jdbcTemplate.update(DELETE_ALL__DIRECTOR.getSql());
     }
 

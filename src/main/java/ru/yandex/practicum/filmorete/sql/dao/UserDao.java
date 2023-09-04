@@ -9,7 +9,7 @@ public interface UserDao {
 
     List<User> findAll();
 
-    Optional<User> findByRowId(Long rowId);
+    Optional<User> findById(Long id);
 
     Optional<User> findByEmail(String email);
 
@@ -21,7 +21,7 @@ public interface UserDao {
 
     void deleteAll();
 
-    void deleteAllByRowId(Long rowId);
+    void deleteById(Long id);
 
-    void deleteAllByLogin(String login);
+    void deleteByLogin(String login);
 }

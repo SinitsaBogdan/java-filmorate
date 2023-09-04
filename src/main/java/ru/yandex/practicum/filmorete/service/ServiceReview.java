@@ -65,7 +65,7 @@ public class ServiceReview {
      * Добавление нового отзыва [ REVIEWS ].
      */
     public Review add(@NotNull Review reviews) {
-        Optional<User> optionalUser = userDao.findByRowId(reviews.getUserId());
+        Optional<User> optionalUser = userDao.findById(reviews.getUserId());
         Optional<Film> optionalFilm = filmDao.findFilmById(reviews.getFilmId());
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
@@ -117,7 +117,7 @@ public class ServiceReview {
      */
     public void deleteReviewLike(Long reviewLikeId, Long userId) {
         Optional<Review> optionalReview = reviewDao.findByReviewId(reviewLikeId);
-        Optional<User> optionalUser = userDao.findByRowId(userId);
+        Optional<User> optionalUser = userDao.findById(userId);
         if (optionalReview.isEmpty()) throw new ExceptionNotFoundReviewStorage(ERROR_REVIEW_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalReviewLikeDao.deleteByReviewIdAndUserId(reviewLikeId, userId);
