@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -18,7 +17,6 @@ import java.util.Optional;
 
 import static ru.yandex.practicum.filmorete.sql.requests.TotalUserFriendsRequests.*;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {

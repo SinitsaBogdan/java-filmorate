@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorete.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMess
 import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidFilm;
 
-@Slf4j
 @Service
 public class ServiceFilm {
 

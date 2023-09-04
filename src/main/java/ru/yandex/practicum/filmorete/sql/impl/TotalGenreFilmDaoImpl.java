@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,6 @@ import java.util.Optional;
 
 import static ru.yandex.practicum.filmorete.sql.requests.TotalGenreFilmRequests.*;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {

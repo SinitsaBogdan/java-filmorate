@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorete.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
 import ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage;
@@ -13,7 +12,6 @@ import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ServiceEvent {

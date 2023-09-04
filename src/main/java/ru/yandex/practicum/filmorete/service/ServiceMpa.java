@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorete.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import java.util.Optional;
 
 import static ru.yandex.practicum.filmorete.exeptions.message.MpaErrorMessage.SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS;
 
-@Slf4j
 @Service
 public class ServiceMpa {
 
