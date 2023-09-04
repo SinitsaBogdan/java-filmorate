@@ -19,7 +19,7 @@ public class ServiceEvent {
     private final UserDao userDao;
 
     public List<Event> getAllEventByUserId(Long userId) {
-        Optional<User> user = userDao.find(userId);
+        Optional<User> user = userDao.findByRowId(userId);
         if (user.isEmpty()) throw new ExceptionNotFoundUserStorage(UserErrorMessage.ERROR_USER_ID_NOT_IN_COLLECTIONS);
         return eventsDao.findById(userId);
     }

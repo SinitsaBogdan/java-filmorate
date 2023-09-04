@@ -70,7 +70,7 @@ public class ServiceUser {
     public List<User> getFriends(Long id) {
         Optional<User> optional = userDao.findByRowId(id);
         if (optional.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        return totalUserFriendsDao.findAll(id);
+        return totalUserFriendsDao.findAllByUserId(id);
     }
 
     public List<User> getUsersToLikeFilm(Long filmId) {
