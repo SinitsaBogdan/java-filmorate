@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static ru.yandex.practicum.filmorete.enums.RequestPathParameter.YEAR;
 import static ru.yandex.practicum.filmorete.exeptions.message.FilmErrorMessage.SERVICE_ERROR_COLLECTIONS_IN_NULL;
 import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.ERROR_USER_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidFilm;
 
 @Slf4j
@@ -155,7 +155,7 @@ public class ServiceFilm {
         Optional<User> optionalUser = userDao.find(userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalFilmLikeDao.deleteAll(filmId, userId);
         eventsDao.insert(EventType.LIKE, EventOperation.REMOVE, userId, filmId);
     }
@@ -166,7 +166,7 @@ public class ServiceFilm {
         Optional<TotalLikeFilm> optionalTotalLikeFilm = totalFilmLikeDao.find(filmId, userId);
 
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
 
         if (optionalTotalLikeFilm.isEmpty()) totalFilmLikeDao.insert(filmId, userId);
 
