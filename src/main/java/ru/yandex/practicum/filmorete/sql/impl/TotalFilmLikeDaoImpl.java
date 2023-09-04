@@ -186,7 +186,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     @Override
     public List<Film> findRecommendationForUser(Long userId) {
-        Optional<Long> friendByFilmsId = findFriendByFilmsId(userId);
+        Optional<Long> friendByFilmsId = findUserLikeToFilm(userId);
         if (friendByFilmsId.isEmpty()) return Collections.emptyList();
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__RECOMMENDATION.getSql(), friendByFilmsId.get(), userId);
@@ -207,7 +207,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         else return new ArrayList<>(result.values());
     }
 
-    private Optional<Long> findFriendByFilmsId(Long userId) {
+    private Optional<Long> findUserLikeToFilm(Long userId) {
         Map<Long, Set<Long>> userLikeToFilm = new HashMap<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS_FILMS.getSql());
 

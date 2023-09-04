@@ -42,7 +42,7 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
-    public List<Review> findAll(Long filmId, Integer count) {
+    public List<Review> findAllIsFilmIdAndCount(Long filmId, Integer count) {
         List<Review> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__REVIEWS__FILM_ID_COUNT.getSql(), filmId, count);
         while (row.next()) result.add(FactoryModel.buildReview(row));

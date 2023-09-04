@@ -139,7 +139,7 @@ public class ServiceFilm {
     public void removeFilmSearchId(@NotNull Long filmId) {
         Optional<Film> optionalFilm = filmDao.findFilm(filmId);
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        filmDao.deleteAll(filmId);
+        filmDao.deleteByFilmId(filmId);
     }
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {

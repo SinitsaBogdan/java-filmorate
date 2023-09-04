@@ -47,7 +47,7 @@ public class ServiceReview {
     }
 
     public List<Review> getAllReviewIsFilmId(Long filmId, Integer count) {
-        return reviewDao.findAll(filmId, count);
+        return reviewDao.findAllIsFilmIdAndCount(filmId, count);
     }
 
     /**

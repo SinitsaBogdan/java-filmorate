@@ -32,7 +32,7 @@ public class EventsDaoImpl implements EventsDao {
     }
 
     @Override
-    public List<Event> findAll(Long userId) {
+    public List<Event> findById(Long userId) {
         List<Event> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__EVENTS__USER.getSql(), userId);
         while (row.next()) result.add(FactoryModel.buildEvent(row));
@@ -40,7 +40,7 @@ public class EventsDaoImpl implements EventsDao {
     }
 
     @Override
-    public Optional<Event> findOne(Long eventId) {
+    public Optional<Event> findOneByEventId(Long eventId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__EVENTS__ID.getSql(), eventId);
         if (row.next()) return Optional.of(FactoryModel.buildEvent(row));
         else return Optional.empty();
@@ -107,7 +107,7 @@ public class EventsDaoImpl implements EventsDao {
     }
 
     @Override
-    public void deleteAll(EventType eventType) {
+    public void deleteByEventType(EventType eventType) {
         jdbcTemplate.update(DELETE_ALL__EVENTS__TYPE.getSql(), eventType.name());
     }
 

@@ -61,14 +61,14 @@ public class EventsDaoImplTest {
     @Test
     @DisplayName("findRow(userId)")
     public void testFindAllByUserId() {
-        List<Event> result = eventsDao.findAll(3L);
+        List<Event> result = eventsDao.findById(3L);
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRow(eventId)")
     public void testFindByEventId() {
-        Optional<Event> optional = eventsDao.findOne(1L);
+        Optional<Event> optional = eventsDao.findOneByEventId(1L);
         assertEquals(optional.get().getEventId(), 1L);
     }
 
@@ -84,7 +84,7 @@ public class EventsDaoImplTest {
     @DisplayName("update(id, type, operation, userId, entityId)")
     public void testUpdate() {
         eventsDao.update(5L, EventType.FRIEND, EventOperation.UPDATE, 3L, 25L);
-        Optional<Event> optional = eventsDao.findOne(5L);
+        Optional<Event> optional = eventsDao.findOneByEventId(5L);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getEventId(), 5L);
         assertEquals(optional.get().getEventType(), EventType.FRIEND);
@@ -107,16 +107,16 @@ public class EventsDaoImplTest {
         eventsDao.deleteAllIsEventId(1L);
         List<Event> result = eventsDao.findAll();
         assertEquals(result.size(), 4);
-        assertTrue(eventsDao.findOne(1L).isEmpty());
+        assertTrue(eventsDao.findOneByEventId(1L).isEmpty());
     }
 
     @Test
     @DisplayName("deleteAll(eventType)")
     public void testDeleteAll() {
-        eventsDao.deleteAll(EventType.FRIEND);
+        eventsDao.deleteByEventType(EventType.FRIEND);
         List<Event> result = eventsDao.findAll();
         assertEquals(result.size(), 4);
-        assertTrue(eventsDao.findOne(2L).isEmpty());
+        assertTrue(eventsDao.findOneByEventId(2L).isEmpty());
     }
 
     @Test
@@ -125,7 +125,7 @@ public class EventsDaoImplTest {
         eventsDao.deleteAll(EventOperation.REMOVE);
         List<Event> result = eventsDao.findAll();
         assertEquals(result.size(), 4);
-        assertTrue(eventsDao.findOne(3L).isEmpty());
+        assertTrue(eventsDao.findOneByEventId(3L).isEmpty());
     }
 
     @Test
@@ -134,6 +134,6 @@ public class EventsDaoImplTest {
         eventsDao.deleteAllIsUserId(2L);
         List<Event> result = eventsDao.findAll();
         assertEquals(result.size(), 4);
-        assertTrue(eventsDao.findAll(2L).isEmpty());
+        assertTrue(eventsDao.findById(2L).isEmpty());
     }
 }

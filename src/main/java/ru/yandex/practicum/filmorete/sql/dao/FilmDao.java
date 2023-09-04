@@ -24,7 +24,7 @@ public interface FilmDao {
 
     void deleteAll();
 
-    void deleteAll(Long filmId);
+    void deleteByFilmId(Long filmId);
 
     void deleteAll(String filmName);
 
