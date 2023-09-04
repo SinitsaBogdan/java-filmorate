@@ -24,7 +24,10 @@ public class ReviewController {
      * Получение всех отзывов по идентификатору фильма.
      * */
     @GetMapping
-    public List<Review> getAllReviewsFilm(@RequestParam(defaultValue = "") Long filmId, @RequestParam(defaultValue = "10") Integer count) {
+    public List<Review> getAllReviewsFilm(
+            @RequestParam(required = false) Long filmId,
+            @RequestParam(defaultValue = "10") Integer count
+    ) {
         if (filmId == null && count == 10) return serviceReview.getAllReview(10);
         else if (filmId == null) return serviceReview.getAllReview(count);
         else return serviceReview.getAllReviewIsFilmId(filmId, count);

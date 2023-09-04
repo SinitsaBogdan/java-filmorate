@@ -62,8 +62,8 @@ public class FilmController {
     @GetMapping("/popular")
     public List<Film> getPopularFilms(
             @RequestParam(defaultValue = "10") Integer count,
-            @RequestParam(defaultValue = "") Integer genreId,
-            @RequestParam(defaultValue = "") Integer year) {
+            @RequestParam(required = false) Integer genreId,
+            @RequestParam(required = false) Integer year) {
         return serviceFilms.getPopularFilms(count, genreId, year);
     }
 
@@ -79,7 +79,10 @@ public class FilmController {
      * Поиск фильмов по режиссеру и/или названию.
      */
     @GetMapping("/search")
-    public List<Film> getFilmsBySearchParam(@RequestParam String query, @RequestParam List<String> by) {
+    public List<Film> getFilmsBySearchParam(
+            @RequestParam String query,
+            @RequestParam List<String> by
+    ) {
         return serviceFilms.getFilmsBySearchParam(query, by);
     }
 
@@ -128,7 +131,10 @@ public class FilmController {
      * отсортированных по количеству лайков или году выпуска.
      */
     @GetMapping("/director/{directorId}")
-    public List<Film> getFilmsByDirectorSortedByParam(@PathVariable Long directorId, @RequestParam(defaultValue = "likes") String sortBy) {
+    public List<Film> getFilmsByDirectorSortedByParam(
+            @PathVariable Long directorId,
+            @RequestParam(defaultValue = "likes") String sortBy
+    ) {
         return serviceFilms.getFilmsToDirector(directorId, sortBy);
     }
 }
