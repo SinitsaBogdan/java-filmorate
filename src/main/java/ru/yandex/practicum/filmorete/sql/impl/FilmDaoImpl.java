@@ -101,7 +101,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void deleteAll(Long filmId) {
+    public void deleteByFilmId(Long filmId) {
         jdbcTemplate.update(DELETE_ONE__FILMS__ID.getSql(), filmId);
     }
 

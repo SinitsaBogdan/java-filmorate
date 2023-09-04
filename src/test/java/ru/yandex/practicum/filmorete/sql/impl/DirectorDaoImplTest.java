@@ -40,7 +40,7 @@ class DirectorDaoImplTest {
     @Test
     @DisplayName("findById()")
     public void testFindRowSearchId() {
-        Optional<Director> optional = dao.find(20L);
+        Optional<Director> optional = dao.findById(20L);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "director-2");
     }
@@ -65,7 +65,7 @@ class DirectorDaoImplTest {
     @DisplayName("update(Long id, String name)")
     public void testUpdateRowSearchIdByName() {
         dao.update(10L, "updateDirector-1");
-        Optional<Director> optional = dao.find(10L);
+        Optional<Director> optional = dao.findById(10L);
         assertTrue(optional.isPresent());
         assertEquals(optional.get().getName(), "updateDirector-1");
     }
@@ -81,7 +81,7 @@ class DirectorDaoImplTest {
     @Test
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
-        dao.delete(10L);
+        dao.deleteById(10L);
         List<Director> result = dao.find();
         assertEquals(result.size(), 2);
     }
@@ -89,7 +89,7 @@ class DirectorDaoImplTest {
     @Test
     @DisplayName("delete(name)")
     public void testDeleteRowSearchName() {
-        dao.delete("director-1");
+        dao.deleteByName("director-1");
         List<Director> result = dao.find();
         assertEquals(result.size(), 2);
     }

@@ -9,7 +9,7 @@ public interface DirectorDao {
 
     List<Director> find();
 
-    Optional<Director> find(Long rowId);
+    Optional<Director> findById(Long rowId);
 
     Long insert(String name);
 
@@ -19,7 +19,7 @@ public interface DirectorDao {
 
     void delete();
 
-    void delete(Long rowId);
+    void deleteById(Long rowId);
 
-    void delete(String name);
+    void deleteByName(String name);
 }

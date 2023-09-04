@@ -13,7 +13,7 @@ public interface ReviewDao {
 
     List<Review> findAll(Boolean isPositive);
 
-    List<Review> findAll(Long filmId, Integer count);
+    List<Review> findAllIsFilmIdAndCount(Long filmId, Integer count);
 
     List<Review> findAllIsCount(Integer count);
 

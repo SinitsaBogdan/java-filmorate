@@ -117,7 +117,7 @@ class FilmDaoImplTest {
     @Test
     @DisplayName("delete(rowId)")
     public void testDeleteAllRowsSearchId() {
-        daoFilm.deleteAll(1L);
+        daoFilm.deleteByFilmId(1L);
         List<Film> result = daoFilm.findAll();
         assertEquals(result.size(), 2);
         assertTrue(daoFilm.findFilm(1L).isEmpty());

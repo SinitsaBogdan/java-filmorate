@@ -26,7 +26,7 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
-    public Optional<Director> find(Long rowId) {
+    public Optional<Director> findById(Long rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__DIRECTOR__ID.getSql(), rowId);
         if (row.next()) return Optional.of(FactoryModel.buildDirector(row));
         else return Optional.empty();
@@ -54,12 +54,12 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
-    public void delete(Long rowId) {
+    public void deleteById(Long rowId) {
         jdbcTemplate.update(DELETE_ONE__DIRECTOR__ID.getSql(), rowId);
     }
 
     @Override
-    public void delete(String name) {
+    public void deleteByName(String name) {
         jdbcTemplate.update(DELETE_ONE__DIRECTOR__NAME.getSql(), name);
     }
 }

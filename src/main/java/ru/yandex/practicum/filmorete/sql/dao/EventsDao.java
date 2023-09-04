@@ -11,13 +11,13 @@ public interface EventsDao {
 
     List<Event> findAll();
 
-    List<Event> findAll(Long userId);
+    List<Event> findById(Long userId);
 
     List<Event> findAll(EventType eventType, Long entityId);
 
     Optional<Event> findOne(EventType eventType, Long entityId, Long userId);
 
-    Optional<Event> findOne(Long eventId);
+    Optional<Event> findOneByEventId(Long eventId);
 
     void insert(EventType eventType, EventOperation operation, Long userId, Long entityId);
 
@@ -27,7 +27,7 @@ public interface EventsDao {
 
     void deleteAll();
 
-    void deleteAll(EventType eventType);
+    void deleteByEventType(EventType eventType);
 
     void deleteAll(EventType eventType, Long entityId);
 
