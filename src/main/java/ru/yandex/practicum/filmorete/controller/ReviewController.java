@@ -27,7 +27,9 @@ public class ReviewController {
     public List<Review> getAllReviewsFilm(
             @RequestParam(required = false) Long filmId,
             @RequestParam(defaultValue = "10") Integer count
-    ) {
+    )
+    {
+        log.info("GET [http://localhost:8080/reviews?filmId={}&count={}] : Запрос на получение всех отзывов", filmId, count);
         if (filmId == null && count == 10) return serviceReview.getAllReview(10); //логи внутри
         else if (filmId == null) return serviceReview.getAllReview(count);
         else return serviceReview.getAllReviewIsFilmId(filmId, count);
@@ -38,7 +40,7 @@ public class ReviewController {
      * */
     @PostMapping
     public Review create(@Valid @RequestBody Review review) {
-        log.info("Post-запрос: добавление нового отзыва: {}.", review);
+        log.info("POST [http://localhost:8080/reviews] : Запрос на добавление нового отзыва: {}", review);
         return serviceReview.add(review);
     }
 
@@ -47,7 +49,7 @@ public class ReviewController {
      * */
     @PutMapping
     public Review update(@Valid @RequestBody Review review) {
-        log.info("Put-запрос: редактирование имеющегося отзыва: {}.", review);
+        log.info("PUT [http://localhost:8080/reviews] : Запрос на обновление имеющегося отзыва: {}", review);
         return serviceReview.update(review);
     }
 
@@ -56,7 +58,7 @@ public class ReviewController {
      * */
     @DeleteMapping
     public void removeAll() {
-        log.info("Delete-запрос: удаление всех отзывов.");
+        log.info("DELETE [http://localhost:8080/reviews] : Запрос на удаление всех отзывов");
         serviceReview.delete();
     }
 
@@ -65,7 +67,7 @@ public class ReviewController {
      * */
     @GetMapping("/{reviewId}")
     public Review getSearchId(@PathVariable Long reviewId) {
-        log.info("Get-запрос: получение отзыва по id {}.", reviewId);
+        log.info("GET [http://localhost:8080/reviews/{}] : Запрос на получение отзыва по id", reviewId);
         return serviceReview.getReviewSearchId(reviewId);
     }
 
@@ -74,7 +76,7 @@ public class ReviewController {
      * */
     @DeleteMapping("/{reviewId}")
     public void removeSearchId(@PathVariable Long reviewId) {
-        log.info("Delete-запрос: удаление отзыва по id {}.", reviewId);
+        log.info("DELETE [http://localhost:8080/reviews/{}] : Запрос на удаление отзыва по id", reviewId);
         serviceReview.delete(reviewId);
     }
 
@@ -83,7 +85,7 @@ public class ReviewController {
      * */
     @PutMapping("/{reviewId}/like/{userId}")
     public void addLikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-        log.info("Put-запрос: пользователь {} ставит лайк отзыву по id {}.", userId, reviewId);
+        log.info("PUT [http://localhost:8080/reviews/{}/like/{}] : Запрос пользователь ставит лайк отзыву по id", reviewId, userId);
         serviceReview.add(TotalLikeReview.builder().reviewId(reviewId).typeLike(true).userId(userId).build());
     }
 
@@ -92,7 +94,7 @@ public class ReviewController {
      * */
     @DeleteMapping("/{reviewId}/like/{userId}")
     public void deleteLikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-        log.info("Delete-запрос: пользователь {} удаляет лайк у отзыва по id {}.", userId, reviewId);
+        log.info("DELETE [http://localhost:8080/reviews/{}/like/{}] : Запрос пользователь удаляет лайк у отзыва по id.", reviewId, userId);
         serviceReview.deleteReviewLike(reviewId, userId);
     }
 
@@ -101,7 +103,7 @@ public class ReviewController {
      * */
     @PutMapping("/{reviewId}/dislike/{userId}")
     public void addDislikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-        log.info("Put-запрос: пользователь {} ставит дизлайк отзыву по id {}.", userId, reviewId);
+        log.info("PUT [http://localhost:8080/reviews/{}/dislike/{}] : Запрос пользователь ставит дизлайк отзыву по id.", reviewId, userId);
         serviceReview.add(TotalLikeReview.builder().reviewId(reviewId).typeLike(false).userId(userId).build());
     }
 
@@ -110,7 +112,7 @@ public class ReviewController {
      * */
     @DeleteMapping("/{reviewId}/dislike/{userId}")
     public void deleteDislikeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-        log.info("Delete-запрос: пользователь {} удаляет дизлайк у отзыва по id {}.", userId, reviewId);
+        log.info("DELETE [http://localhost:8080/reviews/{}/dislike/{}] : Запрос пользователь удаляет дизлайк у отзыва по id.", reviewId, userId);
         serviceReview.deleteReviewLike(reviewId, userId);
     }
 }

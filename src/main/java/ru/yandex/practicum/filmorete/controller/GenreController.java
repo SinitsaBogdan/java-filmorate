@@ -24,7 +24,7 @@ public class GenreController {
      */
     @GetMapping
     public List<Genre> getAllGenres() {
-        log.info("GET-запрос: получение списка всех жанров.");
+        log.info("GET [http://localhost:8080/genres] : Запрос списка всех жанров");
         return serviceGenre.getAllGenres();
     }
 
@@ -33,7 +33,7 @@ public class GenreController {
      */
     @PostMapping
     public void post(@Valid @RequestBody Genre genre) {
-        log.info("Post-запрос: добавление нового жанра: {}.", genre);
+        log.info("POST [http://localhost:8080/genres] : Запрос добавление нового жанра {}", genre);
         serviceGenre.add(genre);
     }
 
@@ -42,7 +42,7 @@ public class GenreController {
      */
     @DeleteMapping
     public void deleteAll() {
-        log.info("Delete-запрос: удаление всех жанров.");
+        log.info("DELETE [http://localhost:8080/genres] : Запрос удаления всех жанров");
         serviceGenre.deleteAll();
     }
 
@@ -51,7 +51,7 @@ public class GenreController {
      */
     @PutMapping
     public void put(@Valid @RequestBody Genre genre) {
-        log.info("Put-запрос: обновление существующего жанра: {}.", genre);
+        log.info("PUT [http://localhost:8080/genres] : Запрос обновления существующего жанра {}", genre);
         serviceGenre.update(genre);
     }
 
@@ -60,7 +60,7 @@ public class GenreController {
      */
     @GetMapping("/{genreId}")
     public Genre getGenresSearchId(@PathVariable Integer genreId) {
-        log.info("GET-запрос: получение жанра по id {}.", genreId);
+        log.info("GET [http://localhost:8080/genres/{}] : Запрос существующего жанра по id", genreId);
         return serviceGenre.getGenresSearchId(genreId);
     }
 
@@ -69,7 +69,7 @@ public class GenreController {
      */
     @DeleteMapping("/{genreId}")
     public void deleteMpaSearchId(@PathVariable Integer genreId) {
-        log.info("Delete-запрос: удаление жанра по id {}.", genreId);
+        log.info("DELETE [http://localhost:8080/genres/{}] : Запрос удаления жанра по id", genreId);
         serviceGenre.deleteSearchId(genreId);
     }
 }

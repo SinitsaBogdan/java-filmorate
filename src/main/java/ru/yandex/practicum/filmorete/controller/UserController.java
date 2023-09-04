@@ -35,7 +35,7 @@ public class UserController {
      */
     @GetMapping
     public List<User> findAll() {
-        log.info("Get-запрос: получение списка всех пользователей.");
+        log.info("GET [http://localhost:8080/users] : Запрос на получение списка всех пользователей");
         return serviceUser.getAllUsers();
     }
 
@@ -44,7 +44,7 @@ public class UserController {
      */
     @PostMapping
     public User create(@Valid @RequestBody User user) throws ExceptionValidation {
-        log.info("Post-запрос: добавление нового пользователя: {}.", user);
+        log.info("POST [http://localhost:8080/users] : Запрос на добавление нового пользователя: {}", user);
         return serviceUser.createUser(user);
     }
 
@@ -53,7 +53,7 @@ public class UserController {
      */
     @PutMapping
     public User update(@Valid @RequestBody User user) throws ExceptionValidation {
-        log.info("Put-запрос: обновление существующего пользователя: {}.", user);
+        log.info("PUT [http://localhost:8080/users] : Запрос на обновление существующего пользователя: {}", user);
         return serviceUser.updateUser(user);
     }
 
@@ -62,7 +62,7 @@ public class UserController {
      */
     @DeleteMapping
     public void clear() {
-        log.info("Delete-запрос: удаление всех пользователей.");
+        log.info("DELETE [http://localhost:8080/users] : Запрос на удаление всех пользователей");
         serviceUser.clearStorage();
     }
 
@@ -71,7 +71,7 @@ public class UserController {
      */
     @GetMapping("/{userId}")
     public User findToId(@PathVariable Long userId) {
-        log.info("Get-запрос: получение пользователя по id {}.", userId);
+        log.info("GET [http://localhost:8080/users/{}] : Запрос на получение пользователя по id", userId);
         return serviceUser.getUser(userId);
     }
 
@@ -80,7 +80,7 @@ public class UserController {
      */
     @DeleteMapping("/{userId}")
     public void removeById(@PathVariable Long userId) {
-        log.info("Delete-запрос: удаление пользователя по id {}.", userId);
+        log.info("DELETE [http://localhost:8080/users/{}] : Запрос на удаление пользователя по id", userId);
         serviceUser.removeUser(userId);
     }
 
@@ -89,7 +89,7 @@ public class UserController {
      */
     @GetMapping("{id}/feed")
     public List<Event> getEvents(@PathVariable("id") Long id) {
-        log.info("Get-запрос: получение ленты событий пользователя по id {}.", id);
+        log.info("GET [http://localhost:8080/users/{}/feed] : Запрос на получение ленты событий пользователя по id", id);
         return serviceEvent.getAllEventByUserId(id);
     }
 
@@ -98,7 +98,7 @@ public class UserController {
      */
     @GetMapping("/{userId}/to-like")
     public List<Film> getUsersToLikeFilm(@PathVariable Long userId) {
-        log.info("Get-запрос: получение списка фильмов, понравившихся пользователю по id {}.", userId);
+        log.info("GET [http://localhost:8080/users/{}/to-like] : Запрос на получение списка фильмов, понравившихся пользователю по id", userId);
         return serviceFilm.getFilmsToLikeUser(userId);
     }
 
@@ -107,7 +107,7 @@ public class UserController {
      */
     @GetMapping("/{userId}/recommendations")
     public List<Film> getRecommendedFilms(@PathVariable Long userId) {
-        log.info("Get-запрос: получение списка рекомендованных фильмов для пользователя по id {}.", userId);
+        log.info("GET [http://localhost:8080/users/{}/recommendations] : Запрос на получение списка рекомендованных фильмов для пользователя по id ", userId);
         return serviceUser.getRecommendation(userId);
     }
 
@@ -116,7 +116,7 @@ public class UserController {
      */
     @GetMapping("/{userId}/friends")
     public List<User> getFriends(@PathVariable Long userId) {
-        log.info("Get-запрос: получение списка друзей пользователя по id {}.", userId);
+        log.info("GET [http://localhost:8080/users/{}/friends] : Запрос на получение списка друзей пользователя по id", userId);
         return serviceUser.getFriends(userId);
     }
 
@@ -125,7 +125,7 @@ public class UserController {
      */
     @PutMapping("/{userId}/friends/{friendId}")
     public void addFriends(@PathVariable Long friendId, @PathVariable Long userId) {
-        log.info("Put-запрос: добавление пользователя {} в друзья пользователю {}.", friendId, userId);
+        log.info("PUT [http://localhost:8080/users/{}/friends/{}] : Добавление пользователя {} в друзья пользователю {}.", userId, friendId, friendId, userId);
         serviceUser.addFriend(friendId, userId);
     }
 
@@ -134,7 +134,7 @@ public class UserController {
      */
     @DeleteMapping("/{userId}/friends/{friendId}")
     public void deleteFriends(@PathVariable Long userId, @PathVariable Long friendId) {
-        log.info("Delete-запрос: удаление пользователя {} из списка друзей пользователя {}.", friendId, userId);
+        log.info("DELETE [http://localhost:8080/users/{}/friends/{}] : Удаление пользователя {} из списка друзей пользователя {}.", userId, friendId, friendId, userId);
         serviceUser.removeFriend(userId, friendId);
     }
 
@@ -143,7 +143,7 @@ public class UserController {
      */
     @GetMapping("/{userId}/friends/common/{friendId}")
     public List<User> getFriendsCommon(@PathVariable Long userId, @PathVariable Long friendId) {
-        log.info("Get-запрос: получение списка общих друзей у пользователей {} и {}.", userId, friendId);
+        log.info("GET [http://localhost:8080/users/{}/friends/common/{}] : Запрос на получение списка общих друзей у пользователей {} и {}.", userId, friendId, userId, friendId);
         return serviceUser.getFriendsCommon(userId, friendId);
     }
 }
