@@ -44,8 +44,7 @@ public class ServiceDirector {
         Optional<Director> optionalDirector = directorDao.findByName(director.getName());
         if (optionalDirector.isPresent()) throw new ExceptionNotFoundDirectorStorage(ERROR_DIRECTOR_DUPLICATE_IN_COLLECTIONS);
         Long id = directorDao.insertByName(director.getName());
-        Optional<Director> result = directorDao.findById(id);
-        return result.orElse(null);
+        return directorDao.findById(id).get();
     }
 
     /**
