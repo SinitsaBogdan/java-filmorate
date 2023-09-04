@@ -3,27 +3,27 @@ package ru.yandex.practicum.filmorete.exeptions.message;
 
 public enum ValidFilmErrorMessage {
 
-    VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS(
+    ERROR_FILM_ID_NOT_IN_COLLECTIONS(
         "Ошибка обработки поля id",
         "Указанный ID фильма отсутствует в коллекции!",
         404
     ),
-    VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS(
+    ERROR_FILM_DOUBLE_IN_COLLECTIONS(
             "Ошибка добавления фильма",
             "Фильм уже есть в коллекции!",
             203
     ),
-    VALID_ERROR_FILM_NOT_DURATION(
+    ERROR_FILM_NOT_DURATION(
         "Ошибка формирования запроса",
         "Не указана продолжительность фильма!",
         400
     ),
-    VALID_ERROR_FILM_DURATION_MIN(
+    ERROR_FILM_DURATION_MIN(
         "Ошибка валидации поля duration",
         "Продолжительность фильма должна быть положительным числом!",
         400
     ),
-    VALID_ERROR_FILM_RELEASED_MIN(
+    ERROR_FILM_RELEASED_MIN(
         "Ошибка валидации поля released",
         "Дата релиза фильма не должна быть ранее 28 декабря 1895 года!",
         400

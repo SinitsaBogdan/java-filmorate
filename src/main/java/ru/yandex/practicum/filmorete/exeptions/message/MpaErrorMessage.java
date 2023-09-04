@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorete.exeptions.message;
 
 public enum MpaErrorMessage {
 
-    SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS(
+    ERROR_MPA_NOT_IN_MPA_COLLECTIONS(
             "Рейтинг не найден.",
             "Рейтинг отсутствует в списке!",
             404

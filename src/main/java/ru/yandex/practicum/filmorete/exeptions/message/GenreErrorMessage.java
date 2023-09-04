@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorete.exeptions.message;
 
 public enum GenreErrorMessage {
 
-    SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS(
+    ERROR_GENRE_NOT_IN_COLLECTIONS(
             "Жанр не найден.",
             "Жанр отсутствует в списке!",
             404
