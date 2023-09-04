@@ -1,42 +1,29 @@
 package ru.yandex.practicum.filmorete.sql.dao;
 
 import ru.yandex.practicum.filmorete.model.Film;
-import ru.yandex.practicum.filmorete.model.TotalLikeFilm;
+import ru.yandex.practicum.filmorete.model.TotalFilmLike;
 import ru.yandex.practicum.filmorete.model.User;
 import java.util.List;
-import java.util.Optional;
 
 public interface TotalFilmLikeDao {
 
-    List<TotalLikeFilm> findAll();
+    List<Film> findPopularFilms(Integer limit);
 
-    List<TotalLikeFilm> findAllIsFilmId(Long filmId);
-
-    List<TotalLikeFilm> findAllIsUserId(Long userId);
-
-    Optional<TotalLikeFilm> find(Long filmId, Long userId);
-
-    List<Film> findPopularIsLimit(Integer limit);
-
-    List<Film> findPopularIsLimitAndYear(Integer limit, Integer year);
-
-    List<Film> findPopularIsLimitAndGenre(Integer limit, Integer genreId);
-
-    List<Film> findPopularIsLimitAndGenreAndYear(Integer limit, Integer searchGenreId, Integer year);
+    List<User> findUserToLikeFilm(Long filmId);
 
     List<Film> findFilmToLikeUser(Long userId);
 
-    List<Film> findCommonFilms(Long firstId, Long secondId);
+    List<TotalFilmLike> findAllTotalFilmLike();
 
-    List<Film> findRecommendationForUser(Long userId);
+    List<TotalFilmLike> findAllTotalFilmLikeByFilmId(Long filmId);
 
-    List<User> findUserToLikeFilm(Long filmId);
+    List<TotalFilmLike> findAllTotalFilmLikeByUserId(Long userId);
 
     void insert(Long filmId, Long userId);
 
     void update(Long searchFilmId, Long searchUserId, Long filmId, Long userId);
 
-    void deleteAll();
+    void delete();
 
-    void deleteAll(Long filmId, Long userId);
+    void delete(Long filmId, Long userId);
 }

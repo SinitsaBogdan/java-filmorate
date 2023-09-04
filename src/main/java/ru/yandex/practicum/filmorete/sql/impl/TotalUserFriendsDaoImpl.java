@@ -1,127 +1,181 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorete.enums.StatusFriend;
-import ru.yandex.practicum.filmorete.factory.FactoryModel;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
-import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
+import ru.yandex.practicum.filmorete.model.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.TotalUserFriendsRequests.*;
 
+@Slf4j
 @Component
-@RequiredArgsConstructor
+@Qualifier("TotalUserFriendsDaoImpl")
 public class TotalUserFriendsDaoImpl implements TotalUserFriendsDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private final UserDaoImpl userDao;
+
+    private TotalUserFriendsDaoImpl(JdbcTemplate jdbcTemplate, UserDaoImpl userDao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.userDao = userDao;
+    }
+
     @Override
-    public List<User> findAll(Long userId) {
+    public List<User> findFriendsByUser(Long userId) {
         List<User> users = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS__ID.getSql(), userId);
-        while (row.next()) users.add(FactoryModel.buildUser(row));
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM USERS " +
+                    "WHERE id IN (" +
+                        "SELECT friend_id FROM TOTAL_USER_FRIENDS " +
+                        "WHERE user_id = ? AND status_id = 2" +
+                    ") " +
+                    "ORDER BY id ASC;",
+                userId
+        );
+        while (rows.next()) users.add(userDao.buildModel(rows));
         return users;
     }
 
     @Override
     public List<User> findFriendsCommon(Long userId, Long friendId) {
         List<User> users = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USER_COMMON_FRIENDS__USER_FRIEND.getSql(), userId, friendId);
-        while (row.next()) users.add(FactoryModel.buildUser(row));
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM USERS " +
+                    "WHERE id IN (" +
+                        "SELECT friend_id " +
+                        "FROM TOTAL_USER_FRIENDS " +
+                        "WHERE user_id = ? AND status_id = 2 AND friend_id IN (" +
+                            "SELECT friend_id " +
+                            "FROM TOTAL_USER_FRIENDS " +
+                            "WHERE user_id = ? AND status_id = 2" +
+                        ")" +
+                    ");",
+                userId, friendId
+        );
+        while (rows.next()) users.add(userDao.buildModel(rows));
         return users;
     }
 
     @Override
-    public List<TotalUserFriends> findAll() {
+    public List<TotalUserFriends> findAllTotalUserFriend() {
         List<TotalUserFriends> result = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS.getSql());
-        while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
-        return result;
-    }
-
-    @Override
-    public List<TotalUserFriends> findAllIsUser(Long userId) {
-        List<TotalUserFriends> result = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS__USER.getSql(), userId);
-        while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
-        return result;
-    }
-
-    @Override
-    public List<TotalUserFriends> findAllIsFriend(Long friendId) {
-        List<TotalUserFriends> result = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_USER_FRIENDS__FRIEND.getSql(), friendId);
-        while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
-        return result;
-    }
-
-    @Override
-    public List<TotalUserFriends> findAll(StatusFriend status) {
-        List<TotalUserFriends> result = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_ALL__TOTAL_USER_FRIENDS__STATUS.getSql(),
-                status.toString()
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM TOTAL_USER_FRIENDS;"
         );
-        while (row.next()) result.add(FactoryModel.buildTotalUserFriends(row));
+        while (rows.next()) result.add(buildModel(rows));
         return result;
     }
 
     @Override
-    public Optional<TotalUserFriends> find(Long userId, Long friendId) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(
-                SELECT_ONE__TOTAL_USER_FRIENDS__USER_FRIEND.getSql(),
+    public List<TotalUserFriends> findAllTotalFriendByUserId(Long userId) {
+        List<TotalUserFriends> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM TOTAL_USER_FRIENDS WHERE user_id = ?;",
+                userId
+        );
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
+    }
+
+    @Override
+    public List<TotalUserFriends> findAllTotalUserByFriendId(Long friendId) {
+        List<TotalUserFriends> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM TOTAL_USER_FRIENDS WHERE friend_id = ?;",
+                friendId
+        );
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
+    }
+
+    @Override
+    public List<TotalUserFriends> findAllTotalByStatusId(Integer statusId) {
+        List<TotalUserFriends> result = new ArrayList<>();
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM TOTAL_USER_FRIENDS WHERE status_id = ?;",
+                statusId
+        );
+        while (rows.next()) result.add(buildModel(rows));
+        return result;
+    }
+
+    @Override
+    public Optional<TotalUserFriends> findTotalUserFriend(Long userId, Long friendId) {
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM TOTAL_USER_FRIENDS WHERE user_id = ? AND friend_id = ?;",
                 userId, friendId
         );
-        if (row.next()) return Optional.of(FactoryModel.buildTotalUserFriends(row));
+        if (rows.next()) return Optional.of(buildModel(rows));
         else return Optional.empty();
     }
 
     @Override
-    public void insert(Long userId, Long friendId, @NotNull StatusFriend status) {
+    public void insert(Long userId, Long friendId, Integer statusId) {
         jdbcTemplate.update(
-                INSERT_ONE__TOTAL_USER_FRIENDS__USER_FRIEND_STATUS.getSql(),
-                userId, friendId, status.toString()
+                "INSERT INTO TOTAL_USER_FRIENDS (user_id, friend_id, status_id) VALUES(?, ?, ?);",
+                userId, friendId, statusId
         );
     }
 
     @Override
-    public void update(Long searchUserId, Long searchFriendId, StatusFriend status) {
+    public void update(Long searchUserId, Long searchFriendId, Integer statusId) {
         jdbcTemplate.update(
-                UPDATE_ONE_TOTAL_USER_FRIENDS__SET_STATUS__USER_FRIEND.getSql(),
-                status.toString(), searchUserId, searchFriendId
+                "UPDATE TOTAL_USER_FRIENDS SET status_id = ? WHERE user_id = ? AND friend_id = ?;",
+                statusId, searchUserId, searchFriendId
         );
     }
 
     @Override
-    public void deleteAll() {
-        jdbcTemplate.update(DELETE_ALL__TOTAL_USER_FRIENDS.getSql());
+    public void delete() {
+        jdbcTemplate.update(
+                "DELETE FROM TOTAL_USER_FRIENDS;"
+        );
     }
 
     @Override
-    public void deleteAll(Long userId, Long friendId) {
-        jdbcTemplate.update(DELETE_ONE__TOTAL_USER_FRIENDS__USER_FRIEND.getSql(), userId, friendId);
+    public void delete(Long userId, Long friendId) {
+        jdbcTemplate.update(
+                "DELETE FROM TOTAL_USER_FRIENDS WHERE user_id = ? AND friend_id = ?;",
+                userId, friendId
+        );
     }
 
     @Override
     public void deleteAllUserId(Long userId) {
-        jdbcTemplate.update(DELETE_ALL__TOTAL_USER_FRIENDS__USER.getSql(), userId);
+        jdbcTemplate.update(
+                "DELETE FROM TOTAL_USER_FRIENDS WHERE user_id = ?;",
+                userId
+        );
     }
 
     @Override
     public void deleteAllFriendId(Long friendId) {
-        jdbcTemplate.update(DELETE_ALL__TOTAL_USER_FRIENDS__FRIEND.getSql(), friendId);
+        jdbcTemplate.update(
+                "DELETE FROM TOTAL_USER_FRIENDS WHERE friend_id = ?;",
+                friendId
+        );
     }
 
     @Override
-    public void deleteAll(StatusFriend status) {
-        jdbcTemplate.update(DELETE_ALL__TOTAL_USER_FRIENDS__STATUS.getSql(), status.toString());
+    public void deleteAllStatusId(Integer statusId) {
+        jdbcTemplate.update(
+                "DELETE FROM TOTAL_USER_FRIENDS WHERE status_id = ?;",
+                statusId
+        );
+    }
+
+    protected TotalUserFriends buildModel(@NotNull SqlRowSet row) {
+        return TotalUserFriends.builder()
+                .userId(row.getLong("user_id"))
+                .friendId(row.getLong("friend_id"))
+                .statusId(row.getLong("status_id"))
+                .build();
     }
 }

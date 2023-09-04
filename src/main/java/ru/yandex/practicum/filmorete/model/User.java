@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 @Jacksonized
 public class User {
+
     @Positive
     private Long id;
 

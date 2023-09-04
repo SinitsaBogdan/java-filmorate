@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class TotalGenreFilm {
+public class StatusFriends {
 
-    private Long filmId;
+    private Long id;
 
-    private Long genreId;
+    private String status;
 }

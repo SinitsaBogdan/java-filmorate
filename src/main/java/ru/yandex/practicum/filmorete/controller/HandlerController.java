@@ -10,14 +10,14 @@ import ru.yandex.practicum.filmorete.exeptions.*;
 @ControllerAdvice
 public class HandlerController {
 
-    @ExceptionHandler(ExceptionTotalFilmLikeStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionTotalFilmLikeStorage exception) {
+    @ExceptionHandler(ExceptionValidationFilm.class)
+    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionValidationFilm exception) {
         ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
         return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
     }
 
-    @ExceptionHandler(ExceptionValidation.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionValidation exception) {
+    @ExceptionHandler(ExceptionValidationUser.class)
+    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionValidationUser exception) {
         ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
         return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
     }
@@ -42,18 +42,6 @@ public class HandlerController {
 
     @ExceptionHandler(ExceptionNotFoundMpaStorage.class)
     public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundMpaStorage exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionNotFoundDirectorStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundDirectorStorage exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionNotFoundReviewStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundReviewStorage exception) {
         ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
         return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
     }

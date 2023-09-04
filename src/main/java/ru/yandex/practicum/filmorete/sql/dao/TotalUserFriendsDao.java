@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorete.sql.dao;
 
-import ru.yandex.practicum.filmorete.enums.StatusFriend;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
 import ru.yandex.practicum.filmorete.model.User;
 import java.util.List;
@@ -8,31 +7,31 @@ import java.util.Optional;
 
 public interface TotalUserFriendsDao {
 
-    List<TotalUserFriends> findAll();
-
-    List<TotalUserFriends> findAll(StatusFriend statusFriend);
-
-    List<TotalUserFriends> findAllIsUser(Long userId);
-
-    List<TotalUserFriends> findAllIsFriend(Long friendId);
-
-    Optional<TotalUserFriends> find(Long userId, Long friendId);
-
-    List<User> findAll(Long userId);
+    List<User> findFriendsByUser(Long userId);
 
     List<User> findFriendsCommon(Long userId, Long friendId);
 
-    void insert(Long userId, Long friendId, StatusFriend status);
+    List<TotalUserFriends> findAllTotalUserFriend();
 
-    void update(Long searchUserId, Long searchFriendId, StatusFriend status);
+    List<TotalUserFriends> findAllTotalFriendByUserId(Long userId);
 
-    void deleteAll();
+    List<TotalUserFriends> findAllTotalUserByFriendId(Long friendId);
 
-    void deleteAll(Long userId, Long friendId);
+    List<TotalUserFriends> findAllTotalByStatusId(Integer statusId);
 
-    void deleteAll(StatusFriend status);
+    Optional<TotalUserFriends> findTotalUserFriend(Long userId, Long friendId);
+
+    void insert(Long userId, Long friendId, Integer statusId);
+
+    void update(Long searchUserId, Long searchFriendId, Integer statusId);
+
+    void delete();
+
+    void delete(Long userId, Long friendId);
 
     void deleteAllUserId(Long userId);
 
     void deleteAllFriendId(Long friendId);
+
+    void deleteAllStatusId(Integer statusId);
 }

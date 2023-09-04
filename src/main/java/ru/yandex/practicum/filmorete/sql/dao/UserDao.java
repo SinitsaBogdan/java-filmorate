@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    List<User> findAll();
+    List<User> findAllUsers();
 
-    Optional<User> find(Long rowId);
+    Optional<User> findUser(Long rowId);
 
-    Optional<User> find(String email);
+    Optional<User> findUser(String email);
 
     void insert(String name, LocalDate birthday, String login, String email);
 
@@ -19,9 +19,9 @@ public interface UserDao {
 
     void update(Long rowId, String name, LocalDate birthday, String login, String email);
 
-    void deleteAll();
+    void delete();
 
-    void deleteAll(Long rowId);
+    void delete(Long rowId);
 
-    void deleteAll(String login);
+    void delete(String login);
 }

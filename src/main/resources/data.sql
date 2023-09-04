@@ -19,3 +19,10 @@ VALUES  ('Комедия'),
         ('Документальный'),
         ('Боевик')
 ;
+
+-- TABLE ROSTER_STATUS_FRIENDS
+
+INSERT INTO ROSTER_STATUS_FRIENDS (name)
+VALUES  ('Не подтвержденная'),
+        ('Подтвержденная')
+;

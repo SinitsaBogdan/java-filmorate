@@ -6,20 +6,20 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorete.model.Genre;
-import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
+import ru.yandex.practicum.filmorete.model.StatusFriends;
+import ru.yandex.practicum.filmorete.sql.dao.RosterStatusFriendsDao;
 
 import java.util.*;
 
 
 @Slf4j
 @Component
-@Qualifier("RosterGenreDaoImpl")
-public class RosterGenreDaoImpl implements RosterGenreDao {
+@Qualifier("RosterStatusFriendsDaoImpl")
+public class RosterStatusFriendsDaoImpl implements RosterStatusFriendsDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private RosterGenreDaoImpl(JdbcTemplate jdbcTemplate) {
+    private RosterStatusFriendsDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -27,26 +27,26 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     public List<String> findAllName() {
         List<String> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT name FROM ROSTER_GENRE;"
+                "SELECT name FROM ROSTER_STATUS_FRIENDS;"
         );
         while (rows.next()) result.add(rows.getString("name"));
         return result;
     }
 
     @Override
-    public List<Genre> findAllGenre() {
-        List<Genre> result = new ArrayList<>();
+    public List<StatusFriends> findAllStatusFriends() {
+        List<StatusFriends> result = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE ORDER BY id ASC;"
+                "SELECT * FROM ROSTER_STATUS_FRIENDS;"
         );
         while (rows.next()) result.add(buildModel(rows));
         return result;
     }
 
     @Override
-    public Optional<Genre> findGenre(Integer rowId) {
+    public Optional<StatusFriends> findStatusFriends(Long rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE WHERE id = ?;",
+                "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE id = ?;",
                 rowId
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -54,9 +54,9 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     }
 
     @Override
-    public Optional<Genre> findGenre(String name) {
+    public Optional<StatusFriends> findStatusFriends(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM ROSTER_GENRE WHERE name = ?;",
+                "SELECT * FROM ROSTER_STATUS_FRIENDS WHERE name = ?;",
                 name
         );
         if (row.next()) return Optional.of(buildModel(row));
@@ -66,23 +66,23 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void insert(String name) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (name) VALUES(?);",
+                "INSERT INTO ROSTER_STATUS_FRIENDS (name) VALUES(?);",
                 name
         );
     }
 
     @Override
-    public void insert(Integer rowId, String name) {
+    public void insert(Long rowId, String name) {
         jdbcTemplate.update(
-                "INSERT INTO ROSTER_GENRE (id, name) VALUES(?, ?);",
+                "INSERT INTO ROSTER_STATUS_FRIENDS (id, name) VALUES(?, ?);",
                 rowId, name
         );
     }
 
     @Override
-    public void update(Integer searchRowId, String name) {
+    public void update(Long searchRowId, String name) {
         jdbcTemplate.update(
-                "UPDATE ROSTER_GENRE SET name = ? WHERE id = ?;",
+                "UPDATE ROSTER_STATUS_FRIENDS SET name = ? WHERE id = ?;",
                 name, searchRowId
         );
     }
@@ -90,16 +90,14 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void delete() {
         jdbcTemplate.update(
-                "DELETE FROM ROSTER_GENRE;"
+                "DELETE FROM ROSTER_STATUS_FRIENDS;"
         );
-
     }
 
     @Override
-    public void delete(Integer rowId) {
+    public void delete(Long rowId) {
         jdbcTemplate.update(
-                "DELETE FROM ROSTER_GENRE " +
-                    "WHERE id = ?;",
+                "DELETE FROM ROSTER_STATUS_FRIENDS WHERE id = ?;",
                 rowId
         );
     }
@@ -107,16 +105,15 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
     @Override
     public void delete(String name) {
         jdbcTemplate.update(
-                "DELETE FROM ROSTER_GENRE " +
-                    "WHERE name = ?;",
+                "DELETE FROM ROSTER_STATUS_FRIENDS WHERE name = ?;",
                 name
         );
     }
 
-    protected Genre buildModel(@NotNull SqlRowSet row) {
-        return Genre.builder()
-                .id(row.getInt("id"))
-                .name(row.getString("name"))
+    protected StatusFriends buildModel(@NotNull SqlRowSet row) {
+        return StatusFriends.builder()
+                .id(row.getLong("id"))
+                .status(row.getString("name"))
                 .build();
     }
 }

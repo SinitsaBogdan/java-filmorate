@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorete.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundGenreStorage;
@@ -9,8 +10,9 @@ import ru.yandex.practicum.filmorete.sql.dao.RosterGenreDao;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorete.exeptions.message.GenreErrorMessage.SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.MessageErrorServiceGenre.SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS;
 
+@Slf4j
 @Service
 public class ServiceGenre {
 
@@ -21,29 +23,45 @@ public class ServiceGenre {
     }
 
     public Genre getGenresSearchId(Integer genreId) {
-        Optional<Genre> optional = genreDao.findAll(genreId);
-        if (optional.isPresent()) return optional.get();
-        else throw new ExceptionNotFoundGenreStorage(SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS);
+
+        Optional<Genre> optional = genreDao.findGenre(genreId);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            throw new ExceptionNotFoundGenreStorage(SERVICE_ERROR_GENRE_NOT_IN_COLLECTIONS);
+        }
     }
 
     public List<Genre> getAllGenres() {
-        return genreDao.findAll();
+        return genreDao.findAllGenre();
     }
 
     public void add(@NotNull Genre genre) {
-        if (genre.getId() == null) genreDao.insert(genre.getName());
-        else genreDao.insert(genre.getId(), genre.getName());
+        if (genre.getId() == null) {
+            genreDao.insert(
+                    genre.getName()
+            );
+        } else {
+            genreDao.insert(
+                    genre.getId(), genre.getName()
+            );
+        }
     }
 
     public void update(@NotNull Genre genre) {
-        if (genre.getId() != null) genreDao.update(genre.getId(), genre.getName());
+        if (genre.getId() != null) {
+            genreDao.update(
+                    genre.getId(),
+                    genre.getName()
+            );
+        }
     }
 
     public void deleteAll() {
-        genreDao.deleteAll();
+        genreDao.delete();
     }
 
     public void deleteSearchId(Integer genreId) {
-        genreDao.deleteAll(genreId);
+        genreDao.delete(genreId);
     }
 }

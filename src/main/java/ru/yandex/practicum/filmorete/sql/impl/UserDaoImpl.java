@@ -1,58 +1,71 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorete.factory.FactoryModel;
-import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
+import ru.yandex.practicum.filmorete.model.User;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static ru.yandex.practicum.filmorete.sql.requests.UserRequests.*;
 
+@Slf4j
 @Component
-@RequiredArgsConstructor
+@Qualifier("UserDaoImpl")
 public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private UserDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     public Optional<Long> findLastIdUser() {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_MAX_ID__ID.getSql());
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT MAX(id) AS last_id FROM USERS;"
+        );
         if (row.next()) return Optional.of(row.getLong("last_id"));
         else return Optional.empty();
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAllUsers() {
         List<User> result = new ArrayList<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS.getSql());
-        while (row.next()) result.add(FactoryModel.buildUser(row));
+        SqlRowSet rows = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM USERS;"
+        );
+        while (rows.next()) result.add(buildModel(rows));
         return result;
     }
 
     @Override
-    public Optional<User> find(Long userId) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__USER__ID.getSql(), userId);
-        if (row.next()) return Optional.of(FactoryModel.buildUser(row));
+    public Optional<User> findUser(Long userId) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM USERS WHERE id = ?;",
+                userId
+        );
+        if (row.next()) return Optional.of(buildModel(row));
         else return Optional.empty();
     }
 
     @Override
-    public Optional<User> find(String email) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__USER__EMAIL.getSql(), email);
-        if (row.next()) return Optional.of(FactoryModel.buildUser(row));
+    public Optional<User> findUser(String email) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM USERS WHERE email = ?;",
+                email
+        );
+        if (row.next()) return Optional.of(buildModel(row));
         else return Optional.empty();
     }
 
     @Override
     public void insert(Long id, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                INSERT_ONE__USER__FULL.getSql(),
+                "INSERT INTO USERS (id, name, birthday, login, email) VALUES (?, ?, ?, ?, ?);",
                 id, name, birthday, login, email
         );
     }
@@ -60,7 +73,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                INSERT_ONE__USER__NAME_BIRTHDAY_LOGIN_EMAIL.getSql(),
+                "INSERT INTO USERS (name, birthday, login, email) VALUES (?, ?, ?, ?);",
                 name, birthday, login, email
         );
     }
@@ -68,23 +81,41 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(Long rowId, String name, LocalDate birthday, String login, String email) {
         jdbcTemplate.update(
-                UPDATE_ONE__USER__SET_NAME_BIRTHDAY_LOGIN_EMAIL__ID.getSql(),
+                "UPDATE USERS SET name = ?, birthday = ?, login = ?, email = ? WHERE  id = ?;",
                 name, birthday, login, email, rowId
         );
     }
 
     @Override
-    public void deleteAll() {
-        jdbcTemplate.update(DELETE_ALL__USERS.getSql());
+    public void delete() {
+        jdbcTemplate.update(
+                "DELETE FROM USERS;"
+        );
     }
 
     @Override
-    public void deleteAll(Long rowId) {
-        jdbcTemplate.update(DELETE_ONE__USER__ID.getSql(), rowId);
+    public void delete(Long rowId) {
+        jdbcTemplate.update(
+                "DELETE FROM USERS WHERE id = ?;",
+                rowId
+        );
     }
 
     @Override
-    public void deleteAll(String login) {
-        jdbcTemplate.update(DELETE_ONE__USER__LOGIN.getSql(), login);
+    public void delete(String login) {
+        jdbcTemplate.update(
+                "DELETE FROM USERS WHERE login = ?;",
+                login
+        );
+    }
+
+    protected User buildModel(@NotNull SqlRowSet row) {
+        return User.builder()
+                .id(row.getLong("id"))
+                .name(row.getString("name"))
+                .birthday(Objects.requireNonNull(row.getDate("birthday")).toLocalDate())
+                .login(row.getString("login"))
+                .email(row.getString("email"))
+                .build();
     }
 }
