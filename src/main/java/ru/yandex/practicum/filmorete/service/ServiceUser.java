@@ -5,26 +5,26 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.enums.EventOperation;
 import ru.yandex.practicum.filmorete.enums.EventType;
 import ru.yandex.practicum.filmorete.enums.StatusFriend;
+import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
 import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.TotalUserFriends;
 import ru.yandex.practicum.filmorete.model.User;
-import ru.yandex.practicum.filmorete.sql.dao.EventsDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
-import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
-import ru.yandex.practicum.filmorete.sql.dao.UserDao;
+import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.util.List;
 import java.util.Optional;
 
 import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidUser;
 
 @Service
 public class ServiceUser {
 
     private final UserDao userDao;
+    private final FilmDao filmDao;
 
     private final TotalUserFriendsDao totalUserFriendsDao;
 
@@ -33,8 +33,9 @@ public class ServiceUser {
     private final EventsDao eventsDao;
 
     @Autowired
-    private ServiceUser(UserDao userDao, TotalUserFriendsDao totalUserFriendsDao, TotalFilmLikeDao totalFilmLikeDao, EventsDao eventsDao) {
+    private ServiceUser(UserDao userDao, FilmDao filmDao, TotalUserFriendsDao totalUserFriendsDao, TotalFilmLikeDao totalFilmLikeDao, EventsDao eventsDao) {
         this.userDao = userDao;
+        this.filmDao = filmDao;
         this.totalUserFriendsDao = totalUserFriendsDao;
         this.totalFilmLikeDao = totalFilmLikeDao;
         this.eventsDao = eventsDao;
@@ -49,19 +50,17 @@ public class ServiceUser {
     public User createUser(User user) {
         checkValidUser(user);
         Optional<User> optional = userDao.find(user.getEmail());
-        if (optional.isEmpty()) {
-            userDao.insert(user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
-            return userDao.find(user.getEmail()).get();
-        } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
+        if (optional.isPresent()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
+        userDao.insert(user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
+        return userDao.find(user.getEmail()).get();
     }
 
     public User updateUser(User user) {
         checkValidUser(user);
         Optional<User> optional = userDao.find(user.getId());
-        if (optional.isPresent()) {
-            userDao.update(user.getId(), user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
-            return user;
-        } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optional.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        userDao.update(user.getId(), user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
+        return user;
     }
 
     public List<User> getAllUsers() {
@@ -70,20 +69,28 @@ public class ServiceUser {
 
     public List<User> getFriends(Long id) {
         Optional<User> optional = userDao.find(id);
-        if (optional.isPresent()) {
-            return totalUserFriendsDao.findAll(id);
-        } else throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optional.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        return totalUserFriendsDao.findAll(id);
     }
 
     public List<User> getUsersToLikeFilm(Long filmId) {
+        Optional<Film> optional = filmDao.findFilm(filmId);
+        if (optional.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         return totalFilmLikeDao.findUserToLikeFilm(filmId);
     }
 
     public List<User> getFriendsCommon(Long userId, Long friendId) {
-        return totalUserFriendsDao.findFriendsCommon(userId, friendId);
+        Optional<User> optionalUser = userDao.find(userId);
+        Optional<User> optionalFriend = userDao.find(userId);
+        if (optionalUser.isEmpty() || optionalFriend.isEmpty()) {
+            throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        }
+        else return totalUserFriendsDao.findFriendsCommon(userId, friendId);
     }
 
     public List<Film> getRecommendation(Long userId) {
+        Optional<User> optionalUser = userDao.find(userId);
+        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(VALID_ERROR_USER_ID_NOT_IN_COLLECTIONS);
         return totalFilmLikeDao.findRecommendationForUser(userId);
     }
 
