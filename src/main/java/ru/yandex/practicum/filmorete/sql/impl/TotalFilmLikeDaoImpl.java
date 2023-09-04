@@ -208,40 +208,10 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     }
 
     private Optional<Long> findUserLikeToFilm(Long userId) {
-        Map<Long, Set<Long>> userLikeToFilm = new HashMap<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS_FILMS.getSql());
-
-        while (row.next()) {
-
-            Long userLikeId = row.getLong("user_id");
-            Long filmId = row.getLong("film_id");
-
-            if (!userLikeToFilm.containsKey(userLikeId)) {
-                Set<Long> idLikedFilms = new HashSet<>();
-                idLikedFilms.add(filmId);
-                userLikeToFilm.put(userLikeId, idLikedFilms);
-            } else {
-                Set<Long> idLikedFilms = userLikeToFilm.get(userLikeId);
-                idLikedFilms.add(filmId);
-            }
-        }
-
-        if (!userLikeToFilm.containsKey(userId)) return Optional.empty();
-
-        Map<Long, Integer> userPoints = new HashMap<>();
-        Set<Long> userIdFilms = userLikeToFilm.get(userId);
-        userLikeToFilm.remove(userId);
-        for (Long id : userLikeToFilm.keySet()) {
-            Set<Long> filmsIds = userLikeToFilm.get(id);
-            filmsIds.retainAll(userIdFilms);
-            userPoints.put(id, filmsIds.size());
-        }
-        Optional<Map.Entry<Long, Integer>> entry = userPoints.entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue());
-
-        if (entry.isEmpty() || entry.get().getValue() == 0) return Optional.empty();
-        return entry.map(Map.Entry::getKey);
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_USER_BY_COUNT_FILM_LIKES.getSql(), userId, userId);
+        if (!row.next())
+            return Optional.empty();
+        return row.getLong("common_likes") != 0 ? Optional.of(row.getLong("user_id")) : Optional.empty();
     }
 
     @Override
