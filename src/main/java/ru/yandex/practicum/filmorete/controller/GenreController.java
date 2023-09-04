@@ -24,6 +24,7 @@ public class GenreController {
      */
     @GetMapping
     public List<Genre> getAllGenres() {
+        log.info("GET-запрос: получение списка всех жанров.");
         return serviceGenre.getAllGenres();
     }
 
@@ -32,6 +33,7 @@ public class GenreController {
      */
     @PostMapping
     public void post(@Valid @RequestBody Genre genre) {
+        log.info("Post-запрос: добавление нового жанра: {}.", genre);
         serviceGenre.add(genre);
     }
 
@@ -40,6 +42,7 @@ public class GenreController {
      */
     @DeleteMapping
     public void deleteAll() {
+        log.info("Delete-запрос: удаление всех жанров.");
         serviceGenre.deleteAll();
     }
 
@@ -48,6 +51,7 @@ public class GenreController {
      */
     @PutMapping
     public void put(@Valid @RequestBody Genre genre) {
+        log.info("Put-запрос: обновление существующего жанра: {}.", genre);
         serviceGenre.update(genre);
     }
 
@@ -56,6 +60,7 @@ public class GenreController {
      */
     @GetMapping("/{genreId}")
     public Genre getGenresSearchId(@PathVariable Integer genreId) {
+        log.info("GET-запрос: получение жанра по id {}.", genreId);
         return serviceGenre.getGenresSearchId(genreId);
     }
 
@@ -64,6 +69,7 @@ public class GenreController {
      */
     @DeleteMapping("/{genreId}")
     public void deleteMpaSearchId(@PathVariable Integer genreId) {
+        log.info("Delete-запрос: удаление жанра по id {}.", genreId);
         serviceGenre.deleteSearchId(genreId);
     }
 }
