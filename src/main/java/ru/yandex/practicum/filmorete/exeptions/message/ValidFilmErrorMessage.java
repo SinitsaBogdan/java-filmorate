@@ -8,6 +8,11 @@ public enum ValidFilmErrorMessage {
         "Указанный ID фильма отсутствует в коллекции!",
         404
     ),
+    VALID_ERROR_FILM_DOUBLE_IN_COLLECTIONS(
+            "Ошибка добавления фильма",
+            "Фильм уже есть в коллекции!",
+            203
+    ),
     VALID_ERROR_FILM_NOT_DURATION(
         "Ошибка формирования запроса",
         "Не указана продолжительность фильма!",

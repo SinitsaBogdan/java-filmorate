@@ -33,6 +33,13 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
+    public Optional<Director> findByName(String name) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__DIRECTOR__NAME.getSql(), name);
+        if (row.next()) return Optional.of(FactoryModel.buildDirector(row));
+        else return Optional.empty();
+    }
+
+    @Override
     public Long insertByName(String name) {
         jdbcTemplate.update(INSERT_ONE__DIRECTOR__NAME.getSql(), name);
         return jdbcTemplate.queryForObject(SELECT_MAX_ID__DIRECTOR.getSql(), Long.class);

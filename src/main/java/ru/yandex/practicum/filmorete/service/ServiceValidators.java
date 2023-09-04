@@ -24,7 +24,6 @@ public class ServiceValidators {
 
     public static void checkValidFilm(@NotNull Film film) {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            log.error("Некорректная дата релиза фильма {}.", film);
             throw new ExceptionValidation(VALID_ERROR_FILM_RELEASED_MIN);
         }
         if (film.getDuration() == null) throw new ExceptionValidation(VALID_ERROR_FILM_NOT_DURATION);
