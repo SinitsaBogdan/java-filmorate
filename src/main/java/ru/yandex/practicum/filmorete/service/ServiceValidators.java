@@ -24,10 +24,10 @@ public class ServiceValidators {
 
     public static void checkValidFilm(@NotNull Film film) {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new ExceptionValidation(VALID_ERROR_FILM_RELEASED_MIN);
+            throw new ExceptionValidation(ERROR_FILM_RELEASED_MIN);
         }
-        if (film.getDuration() == null) throw new ExceptionValidation(VALID_ERROR_FILM_NOT_DURATION);
-        if (film.getDuration() < 0) throw new ExceptionValidation(VALID_ERROR_FILM_DURATION_MIN);
+        if (film.getDuration() == null) throw new ExceptionValidation(ERROR_FILM_NOT_DURATION);
+        if (film.getDuration() < 0) throw new ExceptionValidation(ERROR_FILM_DURATION_MIN);
         log.error("Успешная валидация FILM {}", film);
     }
 }

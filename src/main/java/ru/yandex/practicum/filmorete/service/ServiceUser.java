@@ -15,9 +15,9 @@ import ru.yandex.practicum.filmorete.sql.dao.*;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.USER_DOUBLE_EMAIL_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.ERROR_USER_ID_NOT_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidUser;
 
 @Service
@@ -50,7 +50,7 @@ public class ServiceUser {
     public User createUser(User user) {
         checkValidUser(user);
         Optional<User> optional = userDao.findByEmail(user.getEmail());
-        if (optional.isPresent()) throw new ExceptionNotFoundUserStorage(ERROR_USER_DOUBLE_EMAIL_IN_COLLECTIONS);
+        if (optional.isPresent()) throw new ExceptionNotFoundUserStorage(USER_DOUBLE_EMAIL_IN_COLLECTIONS);
         userDao.insert(user.getName(), user.getBirthday(), user.getLogin(), user.getEmail());
         return userDao.findByEmail(user.getEmail()).get();
     }
@@ -75,7 +75,7 @@ public class ServiceUser {
 
     public List<User> getUsersToLikeFilm(Long filmId) {
         Optional<Film> optional = filmDao.findFilmById(filmId);
-        if (optional.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        if (optional.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
         return totalFilmLikeDao.findUserToLikeFilm(filmId);
     }
 

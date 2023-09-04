@@ -81,10 +81,10 @@ public class ReviewsDaoImpl implements ReviewDao {
     }
 
     @Override
-    public Long insert(String content, Boolean isPositive, Long userId, Long filmId) {
+    public Long insert(Review review) {
         jdbcTemplate.update(
                 INSERT_ONE__REVIEWS_FULL__CONTENT_IS_POSITIVE_USER_FILM.getSql(),
-                content, isPositive, userId, filmId
+                review.getContent(), review.getIsPositive(), review.getUserId(), review.getFilmId()
         );
         return jdbcTemplate.queryForObject(SELECT_MAX_ID__REVIEWS__ID.getSql(), Long.class);
     }

@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorete.sql.dao.RosterMpaDao;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorete.exeptions.message.MpaErrorMessage.SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.MpaErrorMessage.ERROR_MPA_NOT_IN_MPA_COLLECTIONS;
 
 @Service
 public class ServiceMpa {
@@ -24,7 +24,7 @@ public class ServiceMpa {
 
     public Mpa getSearchId(Integer mpaId) {
         Optional<Mpa> optional = mpaDao.findMpaByRowId(mpaId);
-        if (optional.isEmpty()) throw new ExceptionNotFoundMpaStorage(SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
+        if (optional.isEmpty()) throw new ExceptionNotFoundMpaStorage(ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
         return optional.get();
     }
 
@@ -34,13 +34,13 @@ public class ServiceMpa {
 
     public void add(@NotNull Mpa mpa) {
         Optional<Mpa> optionalMpa = mpaDao.findMpaByRowId(mpa.getId());
-        if (optionalMpa.isEmpty()) throw new ExceptionNotFoundMpaStorage(SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
+        if (optionalMpa.isEmpty()) throw new ExceptionNotFoundMpaStorage(ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
         mpaDao.insert(mpa.getName(), mpa.getDescription());
     }
 
     public void update(@NotNull Mpa mpa) {
         Optional<Mpa> optionalMpa = mpaDao.findMpaByRowId(mpa.getId());
-        if (optionalMpa.isEmpty()) throw new ExceptionNotFoundMpaStorage(SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
+        if (optionalMpa.isEmpty()) throw new ExceptionNotFoundMpaStorage(ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
         mpaDao.update(mpa.getId(), mpa.getName(), mpa.getDescription());
     }
 
@@ -50,7 +50,7 @@ public class ServiceMpa {
 
     public void deleteSearchId(Integer mpaId) {
         Optional<Mpa> optionalMpa = mpaDao.findMpaByRowId(mpaId);
-        if (optionalMpa.isEmpty()) throw new ExceptionNotFoundMpaStorage(SERVICE_ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
+        if (optionalMpa.isEmpty()) throw new ExceptionNotFoundMpaStorage(ERROR_MPA_NOT_IN_MPA_COLLECTIONS);
         mpaDao.deleteByRowId(mpaId);
     }
 }

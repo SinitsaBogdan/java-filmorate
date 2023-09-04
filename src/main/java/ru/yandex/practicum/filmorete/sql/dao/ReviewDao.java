@@ -21,7 +21,7 @@ public interface ReviewDao {
 
     Optional<Review> findByReviewId(Long reviewId);
 
-    Long insert(String content, Boolean isPositive, Long userId, Long filmId);
+    Long insert(Review reviews);
 
     void insert(Long id, String content, Boolean isPositive, Long userId, Long filmId);
 

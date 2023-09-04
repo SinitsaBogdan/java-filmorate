@@ -17,8 +17,8 @@ import ru.yandex.practicum.filmorete.sql.dao.*;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorete.exeptions.message.ReviewErrorMessage.SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.ReviewErrorMessage.ERROR_REVIEW_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.ERROR_USER_ID_NOT_IN_COLLECTIONS;
 
 @Slf4j
@@ -61,7 +61,7 @@ public class ServiceReview {
      */
     public Review getReviewSearchId(Long reviewId) {
         Optional<Review> result = reviewDao.findByReviewId(reviewId);
-        if (result.isEmpty()) throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
+        if (result.isEmpty()) throw new ExceptionNotFoundReviewStorage(ERROR_REVIEW_NOT_IN_COLLECTIONS);
         return result.get();
     }
 
@@ -72,8 +72,8 @@ public class ServiceReview {
         Optional<User> optionalUser = userDao.findByRowId(reviews.getUserId());
         Optional<Film> optionalFilm = filmDao.findFilmById(reviews.getFilmId());
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(VALID_ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        Long reviewId = reviewDao.insert(reviews.getContent(), reviews.getIsPositive(), reviews.getUserId(), reviews.getFilmId());
+        if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        Long reviewId = reviewDao.insert(reviews);
         eventsDao.insert(EventType.REVIEW, EventOperation.ADD, reviews.getUserId(), reviewId);
         return reviewDao.findByReviewId(reviewId).get();
     }
@@ -83,7 +83,7 @@ public class ServiceReview {
      */
     public Review update(@NotNull Review reviews) {
         Optional<Review> optional = reviewDao.findByReviewId(reviews.getReviewId());
-        if (optional.isEmpty()) throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
+        if (optional.isEmpty()) throw new ExceptionNotFoundReviewStorage(ERROR_REVIEW_NOT_IN_COLLECTIONS);
         reviewDao.update(reviews.getReviewId(), reviews.getContent(), reviews.getIsPositive());
         eventsDao.insert(EventType.REVIEW, EventOperation.UPDATE, optional.get().getUserId(), reviews.getReviewId());
         return reviewDao.findByReviewId(reviews.getReviewId()).get();
@@ -101,7 +101,7 @@ public class ServiceReview {
      */
     public void delete(Long reviewId) {
         Optional<Review> optional = reviewDao.findByReviewId(reviewId);
-        if (optional.isEmpty()) throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
+        if (optional.isEmpty()) throw new ExceptionNotFoundReviewStorage(ERROR_REVIEW_NOT_IN_COLLECTIONS);
         reviewDao.deleteAllIsReviewId(reviewId);
         eventsDao.insert(EventType.REVIEW, EventOperation.REMOVE, optional.get().getUserId(), reviewId);
     }
@@ -111,7 +111,7 @@ public class ServiceReview {
      */
     public void add(@NotNull TotalLikeReview reviewLike) {
         Optional<Review> optionalReview = reviewDao.findByReviewId(reviewLike.getReviewId());
-        if (optionalReview.isEmpty()) throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
+        if (optionalReview.isEmpty()) throw new ExceptionNotFoundReviewStorage(ERROR_REVIEW_NOT_IN_COLLECTIONS);
         totalReviewLikeDao.insert(reviewLike.getReviewId(), reviewLike.getUserId(), reviewLike.isTypeLike());
         reviewDao.recalculationPositive(reviewLike.getReviewId());
     }
@@ -122,7 +122,7 @@ public class ServiceReview {
     public void deleteReviewLike(Long reviewLikeId, Long userId) {
         Optional<Review> optionalReview = reviewDao.findByReviewId(reviewLikeId);
         Optional<User> optionalUser = userDao.findByRowId(userId);
-        if (optionalReview.isEmpty()) throw new ExceptionNotFoundReviewStorage(SERVICE_ERROR_REVIEW_NOT_IN_COLLECTIONS);
+        if (optionalReview.isEmpty()) throw new ExceptionNotFoundReviewStorage(ERROR_REVIEW_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalReviewLikeDao.deleteByReviewIdAndUserId(reviewLikeId, userId);
         reviewDao.recalculationPositive(reviewLikeId);
