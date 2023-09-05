@@ -17,7 +17,7 @@ public class ServiceValidators {
         if (user.getName() == null || user.getName().isEmpty()) user.setName(user.getLogin());
         if (user.getLogin().isBlank()) throw new FilmorateException(ERROR__USER__NOT_LOGIN);
         if (user.getLogin().contains(" ")) throw new FilmorateException(ERROR__USER__LOGIN_IS_WHITESPACE);
-        log.error("Успешная валидация USER {}", user);
+        log.info("Успешная валидация USER {}", user);
     }
 
     public static void checkValidFilm(@NotNull Film film) {
@@ -26,6 +26,6 @@ public class ServiceValidators {
         }
         if (film.getDuration() == null) throw new FilmorateException(ERROR__FILM__NOT_DURATION);
         if (film.getDuration() < 0) throw new FilmorateException(ERROR__FILM__DURATION_MIN);
-        log.error("Успешная валидация FILM {}", film);
+        log.info("Успешная валидация FILM {}", film);
     }
 }

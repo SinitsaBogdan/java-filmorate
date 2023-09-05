@@ -307,7 +307,7 @@ public enum TotalFilmLikeRequests {
                 "AND NOT tfl2.user_id = ? " +
                 "GROUP BY tfl2.user_id " +
                 "ORDER BY common_likes DESC " +
-                "LIMIT 1"
+                "LIMIT 10"
     ),
 
     INSERT_ONE__TOTAL_FILM_LIKE__FILM_USER(
