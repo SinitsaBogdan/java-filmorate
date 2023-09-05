@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.enums.EventOperation;
 import ru.yandex.practicum.filmorete.enums.EventType;
-import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundFilmStorage;
-import ru.yandex.practicum.filmorete.exeptions.ExceptionNotFoundUserStorage;
+import ru.yandex.practicum.filmorete.exeptions.FilmorateException;
 import ru.yandex.practicum.filmorete.model.*;
 import ru.yandex.practicum.filmorete.sql.dao.*;
 
@@ -16,10 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorete.enums.RequestPathParameter.YEAR;
-import static ru.yandex.practicum.filmorete.exeptions.message.FilmErrorMessage.ERROR_COLLECTIONS_IN_NULL;
-import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.ERROR_FILM_DOUBLE_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.ERROR_FILM_ID_NOT_IN_COLLECTIONS;
-import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.ERROR_USER_ID_NOT_IN_COLLECTIONS;
+import static ru.yandex.practicum.filmorete.exeptions.ResponseErrorMessage.*;
 import static ru.yandex.practicum.filmorete.service.ServiceValidators.checkValidFilm;
 
 @Service
@@ -59,15 +55,15 @@ public class ServiceFilm {
 
     public List<Film> getFilmsToLikeUser(Long userId) {
         Optional<User> optional = userDao.findById(userId);
-        if (optional.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optional.isEmpty()) throw new FilmorateException(ERROR__USER__ID_NOT_IN_COLLECTIONS);
         return totalFilmLikeDao.findFilmToLikeUser(userId);
     }
 
     public List<Film> getCommonFilms(Long userId, Long friendId) {
         Optional<User> optionalUser = userDao.findById(userId);
         Optional<User> optionalFriend = userDao.findById(friendId);
-        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
-        if (optionalFriend.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optionalUser.isEmpty()) throw new FilmorateException(ERROR__USER__ID_NOT_IN_COLLECTIONS);
+        if (optionalFriend.isEmpty()) throw new FilmorateException(ERROR__USER__ID_NOT_IN_COLLECTIONS);
         return totalFilmLikeDao.findCommonFilms(userId, friendId);
     }
 
@@ -80,7 +76,7 @@ public class ServiceFilm {
 
     public Film getFilm(Long id) {
         Optional<Film> optional = filmDao.findFilmById(id);
-        if (optional.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        if (optional.isEmpty()) throw new FilmorateException(ERROR__FILM__ID_NOT_IN_COLLECTIONS);
         return optional.get();
     }
 
@@ -88,7 +84,7 @@ public class ServiceFilm {
         checkValidFilm(film);
 
         Optional<Film> optionalFilm = filmDao.findFilmById(film.getId());
-        if (optionalFilm.isPresent()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_DOUBLE_IN_COLLECTIONS);
+        if (optionalFilm.isPresent()) throw new FilmorateException(ERROR__FILM__DOUBLE_IN_COLLECTIONS);
 
         Long filmId = filmDao.insert(
                 film.getMpa().getId(), film.getName(), film.getDescription(),
@@ -113,7 +109,7 @@ public class ServiceFilm {
     public Film updateFilm(Film film) {
         checkValidFilm(film);
         Optional<Film> optionalFilm = filmDao.findFilmById(film.getId());
-        if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        if (optionalFilm.isEmpty()) throw new FilmorateException(ERROR__FILM__ID_NOT_IN_COLLECTIONS);
         filmDao.update(
                 film.getId(), film.getMpa().getId(),
                 film.getName(), film.getDescription(),
@@ -142,15 +138,15 @@ public class ServiceFilm {
 
     public void removeFilmSearchId(@NotNull Long filmId) {
         Optional<Film> optionalFilm = filmDao.findFilmById(filmId);
-        if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
+        if (optionalFilm.isEmpty()) throw new FilmorateException(ERROR__FILM__ID_NOT_IN_COLLECTIONS);
         filmDao.deleteByFilmId(filmId);
     }
 
     public void removeLike(@NotNull Long filmId, @NotNull Long userId) {
         Optional<Film> optionalFilm = filmDao.findFilmById(filmId);
         Optional<User> optionalUser = userDao.findById(userId);
-        if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optionalFilm.isEmpty()) throw new FilmorateException(ERROR__FILM__ID_NOT_IN_COLLECTIONS);
+        if (optionalUser.isEmpty()) throw new FilmorateException(ERROR__USER__ID_NOT_IN_COLLECTIONS);
         totalFilmLikeDao.deleteAll(filmId, userId);
         eventsDao.insert(EventType.LIKE, EventOperation.REMOVE, userId, filmId);
     }
@@ -159,8 +155,8 @@ public class ServiceFilm {
         Optional<Film> optionalFilm = filmDao.findFilmById(filmId);
         Optional<User> optionalUser = userDao.findById(userId);
         Optional<TotalLikeFilm> optionalTotalLikeFilm = totalFilmLikeDao.findIsFilmIdAndUserId(filmId, userId);
-        if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
-        if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
+        if (optionalFilm.isEmpty()) throw new FilmorateException(ERROR__FILM__ID_NOT_IN_COLLECTIONS);
+        if (optionalUser.isEmpty()) throw new FilmorateException(ERROR__USER__ID_NOT_IN_COLLECTIONS);
         if (optionalTotalLikeFilm.isEmpty()) totalFilmLikeDao.insert(filmId, userId);
         eventsDao.insert(EventType.LIKE, EventOperation.ADD, userId, filmId);
     }
@@ -172,7 +168,7 @@ public class ServiceFilm {
         } else {
             result = totalDirectorFilmDao.findPopularFilmsByDirector(directorId);
         }
-        if (result.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_COLLECTIONS_IN_NULL);
+        if (result.isEmpty()) throw new FilmorateException(GLOBAL_ERROR__COLLECTIONS_IS_EMPTY);
         else return result;
     }
 

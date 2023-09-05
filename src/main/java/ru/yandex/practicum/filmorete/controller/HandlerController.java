@@ -10,51 +10,14 @@ import ru.yandex.practicum.filmorete.exeptions.*;
 @ControllerAdvice
 public class HandlerController {
 
-    @ExceptionHandler(ExceptionTotalFilmLikeStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionTotalFilmLikeStorage exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionValidation.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionValidation exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionNotFoundUserStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundUserStorage exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionNotFoundFilmStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundFilmStorage exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionNotFoundGenreStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundGenreStorage exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionNotFoundMpaStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundMpaStorage exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionNotFoundDirectorStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundDirectorStorage exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
-    }
-
-    @ExceptionHandler(ExceptionNotFoundReviewStorage.class)
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ExceptionNotFoundReviewStorage exception) {
-        ErrorResponse response = new ErrorResponse(exception.getName(), exception.getDescription());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(exception.getHttpStatusCode()));
+    @ExceptionHandler
+    public ResponseEntity<ResponseError> handleException(@NotNull FilmorateException exception) {
+        return new ResponseEntity<>(
+                ResponseError.builder()
+                        .name(exception.getName())
+                        .description(exception.getDescription())
+                        .build(),
+                HttpStatus.valueOf(exception.getHttpStatusCode())
+        );
     }
 }
