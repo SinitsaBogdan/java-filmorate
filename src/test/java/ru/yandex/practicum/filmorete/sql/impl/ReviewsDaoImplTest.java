@@ -108,7 +108,7 @@ class ReviewsDaoImplTest {
     @Test
     @DisplayName("insert(content, isPositive, userId, filmId)")
     public void insert__Content_IsPositive_UserId_FilmId() {
-        reviewDao.insert("Содержание отзыва 3", true, 100L, 100L);
+        reviewDao.insert(150L,"Содержание отзыва 3", true, 100L, 100L);
         assertEquals(reviewDao.findAll().size(), 3);
     }
 
