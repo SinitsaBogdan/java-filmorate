@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorete.model.Review;
+import ru.yandex.practicum.filmorete.model.TotalLikeReview;
 import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.time.LocalDate;
