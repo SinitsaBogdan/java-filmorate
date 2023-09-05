@@ -62,10 +62,11 @@ class ReviewControllerTest {
         userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
         userDao.insert(3L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
 
-        reviewDao.insert(101L, "content-1", true, 1L, 1L);
-        reviewDao.insert(102L, "content-2", true, 2L, 1L);
-        reviewDao.insert(103L, "content-3", true, 2L, 2L);
-        reviewDao.insert(104L, "content-4", false, 3L, 3L);
+        reviewDao.insert(new Review(101L, "content-1", true, 1L, 1L,1));
+        reviewDao.insert(new Review(102L, "content-2", true, 2L, 1L,2));
+        reviewDao.insert(new Review(103L, "content-3", true, 2L, 2L,3));
+        reviewDao.insert(new Review(104L, "content-4", false, 3L, 3L,4));
+
     }
 
     @Nested
