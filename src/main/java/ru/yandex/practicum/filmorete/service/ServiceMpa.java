@@ -34,7 +34,7 @@ public class ServiceMpa {
 
     public void add(@NotNull Mpa mpa) {
         Optional<Mpa> optionalMpa = mpaDao.findMpaById(mpa.getId());
-        if (optionalMpa.isEmpty()) throw new FilmorateException(ERROR__MPA__NOT_IN_MPA_COLLECTIONS);
+        if (optionalMpa.isPresent()) throw new FilmorateException(ERROR__MPA__NOT_IN_MPA_COLLECTIONS);
         mpaDao.insert(mpa.getName(), mpa.getDescription());
     }
 

@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorete.model.Review;
+import ru.yandex.practicum.filmorete.model.TotalLikeReview;
 import ru.yandex.practicum.filmorete.sql.dao.*;
 
 import java.time.LocalDate;
@@ -37,6 +38,9 @@ class ReviewControllerTest {
     private TotalGenreFilmDao totalGenreFilmDao;
 
     @Autowired
+    private TotalLikeReviewDao totalLikeReviewDao;
+
+    @Autowired
     private UserDao userDao;
 
     @Autowired
@@ -45,28 +49,21 @@ class ReviewControllerTest {
     @BeforeEach
     public void beforeEach() {
 
-        totalGenreFilmDao.delete();
         filmDao.deleteAll();
         userDao.deleteAll();
         reviewDao.deleteAll();
+        totalLikeReviewDao.deleteAll();
 
-        filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
-        filmDao.insert(2L, 2, "Фильм 2", "", LocalDate.parse("2000-01-01"), 90);
-        filmDao.insert(3L, 2, "Фильм 3", "", LocalDate.parse("2000-01-01"), 90);
+        filmDao.insert(101L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
 
-        totalGenreFilmDao.insert(1L, 1);
-        totalGenreFilmDao.insert(2L, 2);
-        totalGenreFilmDao.insert(3L, 3);
+        userDao.insert(101L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
+        userDao.insert(102L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
+        userDao.insert(103L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
 
-        userDao.insert(1L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
-        userDao.insert(2L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
-        userDao.insert(3L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
+        reviewDao.insert(101L, "content-1", true, 101L, 101L);
 
-        reviewDao.insert(new Review(101L, "content-1", true, 1L, 1L,1));
-        reviewDao.insert(new Review(102L, "content-2", true, 2L, 1L,2));
-        reviewDao.insert(new Review(103L, "content-3", true, 2L, 2L,3));
-        reviewDao.insert(new Review(104L, "content-4", false, 3L, 3L,4));
-
+        totalLikeReviewDao.insert(101L, 101L, true);
+        totalLikeReviewDao.insert(101L, 102L, false);
     }
 
     @Nested
@@ -81,8 +78,8 @@ class ReviewControllerTest {
                     .andExpect(jsonPath("$.reviewId").value(101))
                     .andExpect(jsonPath("$.content").value("content-1"))
                     .andExpect(jsonPath("$.isPositive").value("true"))
-                    .andExpect(jsonPath("$.userId").value(1))
-                    .andExpect(jsonPath("$.filmId").value(1))
+                    .andExpect(jsonPath("$.userId").value(101))
+                    .andExpect(jsonPath("$.filmId").value(101))
                     .andExpect(jsonPath("$.useful").value(0))
             ;
         }
@@ -108,7 +105,7 @@ class ReviewControllerTest {
         void methodGet_AllReviews() throws Exception {
             mockMvc.perform(get("/reviews"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(3))
+                    .andExpect(jsonPath("$.length()").value(1))
             ;
         }
     }
@@ -173,7 +170,7 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Обновление отзыва")
         void methodPut_ReviewValidTrueTest() throws Exception {
-            Review review = Review.builder().reviewId(102L).content("Обновление").isPositive(true).userId(3L).filmId(2L).build();
+            Review review = Review.builder().reviewId(101L).content("Обновление").isPositive(true).userId(3L).filmId(2L).build();
             mockMvc.perform(put("/reviews")
                             .content(objectMapper.writeValueAsString(review))
                             .contentType(MediaType.APPLICATION_JSON)
@@ -233,7 +230,7 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Обновление отзыва - useful : -1")
         public void methodPut_ReviewValidFalse_UsefulNegativeTest() throws Exception {
-            Review review = Review.builder().reviewId(102L).content("Обновление").isPositive(true).userId(3L).filmId(2L).useful(-1).build();
+            Review review = Review.builder().reviewId(101L).content("Обновление").isPositive(true).userId(3L).filmId(2L).useful(-1).build();
             mockMvc.perform(put("/reviews")
                             .content(objectMapper.writeValueAsString(review))
                             .contentType(MediaType.APPLICATION_JSON)
@@ -245,7 +242,7 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Добавление лайка к отзыву")
         public void methodPut_ReviewAddLikeTest() throws Exception {
-            mockMvc.perform(put("/reviews/101/like/1")
+            mockMvc.perform(put("/reviews/101/like/103")
                             .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isOk())
@@ -255,7 +252,7 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Добавление дизлайка к отзыву")
         public void methodPut_ReviewAddDislikeTest() throws Exception {
-            mockMvc.perform(put("/reviews/101/dislike/1")
+            mockMvc.perform(put("/reviews/101/dislike/103")
                             .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isOk())
@@ -278,7 +275,7 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Удаление лайка отзыва")
         void methodDelete_ReviewDeleteLike() throws Exception {
-            mockMvc.perform(delete("/reviews/101/like/1"))
+            mockMvc.perform(delete("/reviews/101/like/101"))
                     .andExpect(status().isOk())
             ;
         }
@@ -286,7 +283,7 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Удаление дизлайка отзыва")
         void methodDelete_ReviewDeleteDislike() throws Exception {
-            mockMvc.perform(delete("/reviews/104/dislike/3"))
+            mockMvc.perform(delete("/reviews/101/dislike/102"))
                     .andExpect(status().isOk())
             ;
         }

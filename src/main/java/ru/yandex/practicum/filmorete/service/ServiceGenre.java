@@ -39,7 +39,7 @@ public class ServiceGenre {
     }
 
     public void update(@NotNull Genre genre) {
-        Optional<Genre> optional = genreDao.findAllByName(genre.getName());
+        Optional<Genre> optional = genreDao.findAllByRowId(genre.getId());
         if (optional.isEmpty()) throw new FilmorateException(ERROR__GENRE__NOT_IN_COLLECTIONS);
         genreDao.update(genre.getId(), genre.getName());
     }

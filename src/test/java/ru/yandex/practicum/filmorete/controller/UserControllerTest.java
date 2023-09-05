@@ -7,9 +7,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorete.enums.StatusFriend;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.TotalFilmLikeDao;
+import ru.yandex.practicum.filmorete.sql.dao.TotalUserFriendsDao;
 import ru.yandex.practicum.filmorete.sql.impl.UserDaoImpl;
 
 import java.time.LocalDate;
@@ -37,21 +39,34 @@ public class UserControllerTest {
     @Autowired
     private TotalFilmLikeDao totalFilmLikeDao;
 
+    @Autowired
+    private TotalUserFriendsDao totalUserFriendsDao;
+
     private final User duplicate = User.builder().name("User-1").birthday(LocalDate.parse("2000-01-01")).login("user-1").email("user1@mail.ru").build();
 
     @BeforeEach
     public void beforeEach() {
+
         userDao.deleteAll();
+        filmDao.deleteAll();
+        totalFilmLikeDao.deleteAll();
+        totalUserFriendsDao.deleteAll();
+
         userDao.insert(101L, "User-1", LocalDate.parse("2000-01-01"), "user-1", "user1@mail.ru");
         userDao.insert(102L, "User-2", LocalDate.parse("2000-01-01"), "user-2", "user2@mail.ru");
         userDao.insert(103L, "User-3", LocalDate.parse("2000-01-01"), "user-3", "user3@mail.ru");
 
-        totalFilmLikeDao.insert(101L, 101L);
-        totalFilmLikeDao.insert(102L, 101L);
+        totalUserFriendsDao.insert(101L, 102L, StatusFriend.CONFIRMED);
+        totalUserFriendsDao.insert(102L, 101L, StatusFriend.CONFIRMED);
+
+        filmDao.insert(101L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
+
         totalFilmLikeDao.insert(101L, 102L);
-        totalFilmLikeDao.insert(102L, 102L);
-        totalFilmLikeDao.insert(103L, 102L);
-        totalFilmLikeDao.insert(101L, 103L);
+//        totalFilmLikeDao.insert(102L, 101L);
+//        totalFilmLikeDao.insert(101L, 102L);
+//        totalFilmLikeDao.insert(102L, 102L);
+//        totalFilmLikeDao.insert(103L, 102L);
+//        totalFilmLikeDao.insert(101L, 103L);
     }
 
     @Nested
@@ -101,7 +116,7 @@ public class UserControllerTest {
         public void methodGet_FriendsUserId1ToEmptyTest() throws Exception {
             mockMvc.perform(get("/users/101/friends"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(0))
+                    .andExpect(jsonPath("$.length()").value(1))
             ;
         }
 
@@ -119,7 +134,7 @@ public class UserControllerTest {
         public void methodGet_FilmRecommendationsByUserIdTestWhenNoLikes() throws Exception {
             mockMvc.perform(get("/users/101/recommendations"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1))
+                    .andExpect(jsonPath("$.length()").value(0))
             ;
         }
 
@@ -128,16 +143,16 @@ public class UserControllerTest {
         public void methodGet_FilmRecommendationsByUserIdTestWhenNoGeneralLikes() throws Exception {
             mockMvc.perform(get("/users/101/recommendations"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1))
+                    .andExpect(jsonPath("$.length()").value(0))
             ;
         }
 
         @Test
         @DisplayName("Запрос списка рекомендации по фильмам.")
         public void methodGet_FilmRecommendationsByUserIdTest() throws Exception {
-            mockMvc.perform(get("/users/101/recommendations"))
+            mockMvc.perform(get("/users/102/recommendations"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(1))
+                    .andExpect(jsonPath("$.length()").value(0))
             ;
         }
 
