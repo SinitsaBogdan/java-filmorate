@@ -36,7 +36,6 @@ public class MpaControllerTest {
             Mpa.builder().id(4).name("GD").description("").build()
     );
 
-
     @BeforeEach
     public void beforeEach() {
         enumMpaDao.delete();
@@ -88,7 +87,7 @@ public class MpaControllerTest {
         @DisplayName("Добавление новой записи")
         public void testGetSearchId() throws Exception {
             mockMvc.perform(post("/mpa")
-                            .content(objectMapper.writeValueAsString(listMpa.get(2)))
+                            .content(objectMapper.writeValueAsString(listMpa.get(3)))
                             .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isOk());
@@ -96,8 +95,8 @@ public class MpaControllerTest {
             mockMvc.perform(get("/mpa"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(3))
-                    .andExpect(jsonPath("$.[2].id").value(3))
-                    .andExpect(jsonPath("$.[2].name").value("G"))
+                    .andExpect(jsonPath("$.[2].id").value(6))
+                    .andExpect(jsonPath("$.[2].name").value("GD"))
                     .andExpect(jsonPath("$.[2].description").value(""));
         }
     }

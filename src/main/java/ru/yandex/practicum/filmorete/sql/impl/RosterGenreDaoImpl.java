@@ -66,7 +66,7 @@ public class RosterGenreDaoImpl implements RosterGenreDao {
 
     @Override
     public void deleteAll() {
-        jdbcTemplate.update(DELETE_ALL__ROSTER_GENRE.getSql(), "DELETE FROM ROSTER_GENRE;");
+        jdbcTemplate.update(DELETE_ALL__ROSTER_GENRE.getSql());
     }
 
     @Override
