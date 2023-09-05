@@ -24,7 +24,7 @@ public class MpaController {
      */
     @GetMapping
     public List<Mpa> getAll() {
-        log.info("GET [http://localhost:8080/genres] : Запрос получение списка всех mpa");
+        log.info("   GET [http://localhost:8080/genres] : Запрос получение списка всех mpa");
         return serviceMpa.getAll();
     }
 
@@ -33,7 +33,7 @@ public class MpaController {
      */
     @PostMapping
     public void post(@Valid @RequestBody Mpa mpa) {
-        log.info("POST [http://localhost:8080/mpa] : Запрос на добавление нового mpa: {}", mpa);
+        log.info("  POST [http://localhost:8080/mpa] : Запрос на добавление нового mpa: {}", mpa);
         serviceMpa.add(mpa);
     }
 
@@ -42,7 +42,7 @@ public class MpaController {
      */
     @PutMapping
     public void put(@Valid @RequestBody Mpa mpa) {
-        log.info("PUT [http://localhost:8080/mpa] : Запрос на обновление существующего mpa: {}", mpa);
+        log.info("   PUT [http://localhost:8080/mpa] : Запрос на обновление существующего mpa: {}", mpa);
         serviceMpa.update(mpa);
     }
 
@@ -60,7 +60,7 @@ public class MpaController {
      */
     @GetMapping("/{mpaId}")
     public Mpa getSearchId(@PathVariable Integer mpaId) {
-        log.info("GET [http://localhost:8080/mpa/{}] : Запрос на получение mpa по id", mpaId);
+        log.info("   GET [http://localhost:8080/mpa/{}] : Запрос на получение mpa по id", mpaId);
         return serviceMpa.getSearchId(mpaId);
     }
 
