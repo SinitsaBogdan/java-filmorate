@@ -89,7 +89,7 @@ class RosterGenreDaoImplTest {
     @Test
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
-        dao.deleteAllByRowId(101);
+        dao.deleteAllById(101);
         List<Genre> result = dao.findAll();
         assertEquals(result.size(), 2);
     }

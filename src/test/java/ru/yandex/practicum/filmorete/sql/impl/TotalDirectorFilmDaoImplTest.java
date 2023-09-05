@@ -34,7 +34,7 @@ class TotalDirectorFilmDaoImplTest {
     public void beforeEach() {
 
         directorFilmDao.delete();
-        directorDao.delete();
+        directorDao.deleteAll();
         filmDao.deleteAll();
         enumMpaDao.delete();
         userDao.deleteAll();

@@ -43,7 +43,7 @@ public class TotalGenreFilmDaoImpl implements TotalGenreFilmDao {
     }
 
     @Override
-    public List<TotalGenreFilm> findTotalGenreFilm() {
+    public List<TotalGenreFilm> findAllTotalGenreFilm() {
         List<TotalGenreFilm> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__TOTAL_GENRE_FILM.getSql());
         while (row.next()) result.add(FactoryModel.buildTotalGenreFilm(row));

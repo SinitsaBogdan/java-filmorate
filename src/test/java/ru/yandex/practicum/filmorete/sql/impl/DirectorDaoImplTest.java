@@ -23,7 +23,7 @@ class DirectorDaoImplTest {
 
     @BeforeEach
     public void beforeEach() {
-        dao.delete();
+        dao.deleteAll();
         dao.insert(10L, "director-1");
         dao.insert(20L, "director-2");
         dao.insert(30L, "director-3");
@@ -32,7 +32,7 @@ class DirectorDaoImplTest {
     @Test
     @DisplayName("findAll()")
     public void testFindAllRows() {
-        List<Director> result = dao.find();
+        List<Director> result = dao.findAll();
         assertEquals(result.size(), 3);
         assertEquals(result.get(0).getName(), "director-1");
     }
@@ -48,8 +48,8 @@ class DirectorDaoImplTest {
     @Test
     @DisplayName("insert(name)")
     public void testInsertName() {
-        dao.insertByName("director-4");
-        List<Director> result = dao.find();
+        dao.insert("director-4");
+        List<Director> result = dao.findAll();
         assertEquals(result.size(), 4);
     }
 
@@ -57,7 +57,7 @@ class DirectorDaoImplTest {
     @DisplayName("insert")
     public void testInsert() {
         dao.insert(4L, "director-4");
-        List<Director> result = dao.find();
+        List<Director> result = dao.findAll();
         assertEquals(result.size(), 4);
     }
 
@@ -73,8 +73,8 @@ class DirectorDaoImplTest {
     @Test
     @DisplayName("delete()")
     public void testDeleteAllRows() {
-        dao.delete();
-        List<Director> result = dao.find();
+        dao.deleteAll();
+        List<Director> result = dao.findAll();
         assertEquals(result.size(), 0);
     }
 
@@ -82,7 +82,7 @@ class DirectorDaoImplTest {
     @DisplayName("delete(rowId)")
     public void testDeleteRowSearchId() {
         dao.deleteById(10L);
-        List<Director> result = dao.find();
+        List<Director> result = dao.findAll();
         assertEquals(result.size(), 2);
     }
 
@@ -90,7 +90,7 @@ class DirectorDaoImplTest {
     @DisplayName("delete(name)")
     public void testDeleteRowSearchName() {
         dao.deleteByName("director-1");
-        List<Director> result = dao.find();
+        List<Director> result = dao.findAll();
         assertEquals(result.size(), 2);
     }
 }

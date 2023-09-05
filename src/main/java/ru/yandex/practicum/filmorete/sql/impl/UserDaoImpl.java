@@ -36,7 +36,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> findByRowId(Long userId) {
+    public Optional<User> findById(Long userId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__USER__ID.getSql(), userId);
         if (row.next()) return Optional.of(FactoryModel.buildUser(row));
         else return Optional.empty();
@@ -79,12 +79,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void deleteAllByRowId(Long rowId) {
+    public void deleteById(Long rowId) {
         jdbcTemplate.update(DELETE_ONE__USER__ID.getSql(), rowId);
     }
 
     @Override
-    public void deleteAllByLogin(String login) {
+    public void deleteByLogin(String login) {
         jdbcTemplate.update(DELETE_ONE__USER__LOGIN.getSql(), login);
     }
 }

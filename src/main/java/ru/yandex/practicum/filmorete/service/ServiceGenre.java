@@ -50,6 +50,6 @@ public class ServiceGenre {
     public void deleteSearchId(Integer genreId) {
         Optional<Genre> optional = genreDao.findAllByRowId(genreId);
         if (optional.isEmpty()) throw new ExceptionNotFoundGenreStorage(ERROR_GENRE_NOT_IN_COLLECTIONS);
-        genreDao.deleteAllByRowId(genreId);
+        genreDao.deleteAllById(genreId);
     }
 }

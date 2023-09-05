@@ -7,19 +7,19 @@ import java.util.Optional;
 
 public interface DirectorDao {
 
-    List<Director> find();
+    List<Director> findAll();
 
     Optional<Director> findById(Long rowId);
 
     Optional<Director> findByName(String name);
 
-    Long insertByName(String name);
+    Long insert(String name);
 
     void insert(Long rowId, String name);
 
     void update(Long id, String name);
 
-    void delete();
+    void deleteAll();
 
     void deleteById(Long rowId);
 

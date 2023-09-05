@@ -65,7 +65,7 @@ public class FilmControllerTest {
         totalFilmLikeDao.deleteAll();
         filmDao.deleteAll();
         userDao.deleteAll();
-        directorDao.delete();
+        directorDao.deleteAll();
         totalDirectorFilmDao.delete();
 
         filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
@@ -289,7 +289,7 @@ public class FilmControllerTest {
         @DisplayName("Запрос фильма по режиссёру")
         public void methodGet_SearchFilmsByDirector() throws Exception {
 
-            directorDao.insertByName("Director-1");
+            directorDao.insert("Director-1");
             totalDirectorFilmDao.insert(1L, 2L);
 
             mockMvc.perform(get("/films/search?query=dir&by=director"))
@@ -302,7 +302,7 @@ public class FilmControllerTest {
         @DisplayName("Запрос фильма по названию и режиссёру")
         public void methodGet_SearchFilmsByTitleAndDirector() throws Exception {
 
-            directorDao.insertByName("Director-1");
+            directorDao.insert("Director-1");
             totalDirectorFilmDao.insert(2L, 1L);
 
             mockMvc.perform(get("/films/search?query=1&by=title,director"))

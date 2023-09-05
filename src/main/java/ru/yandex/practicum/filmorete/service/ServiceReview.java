@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorete.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorete.enums.EventOperation;
@@ -21,7 +20,6 @@ import static ru.yandex.practicum.filmorete.exeptions.message.ReviewErrorMessage
 import static ru.yandex.practicum.filmorete.exeptions.message.ValidFilmErrorMessage.ERROR_FILM_ID_NOT_IN_COLLECTIONS;
 import static ru.yandex.practicum.filmorete.exeptions.message.UserErrorMessage.ERROR_USER_ID_NOT_IN_COLLECTIONS;
 
-@Slf4j
 @Service
 public class ServiceReview {
 
@@ -47,12 +45,10 @@ public class ServiceReview {
      * Запрос всех отзывов [ REVIEWS ].
      */
     public List<Review> getAllReview(Integer count) {
-        log.info("GET-запрос: получение списка всех отзывов.");
         return reviewDao.findAllIsCount(count);
     }
 
     public List<Review> getAllReviewIsFilmId(Long filmId, Integer count) {
-        log.info("GET-запрос: получение всех отзывов по идентификатору фильма {}.", filmId);
         return reviewDao.findAllIsFilmIdAndCount(filmId, count);
     }
 
@@ -69,7 +65,7 @@ public class ServiceReview {
      * Добавление нового отзыва [ REVIEWS ].
      */
     public Review add(@NotNull Review reviews) {
-        Optional<User> optionalUser = userDao.findByRowId(reviews.getUserId());
+        Optional<User> optionalUser = userDao.findById(reviews.getUserId());
         Optional<Film> optionalFilm = filmDao.findFilmById(reviews.getFilmId());
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         if (optionalFilm.isEmpty()) throw new ExceptionNotFoundFilmStorage(ERROR_FILM_ID_NOT_IN_COLLECTIONS);
@@ -121,7 +117,7 @@ public class ServiceReview {
      */
     public void deleteReviewLike(Long reviewLikeId, Long userId) {
         Optional<Review> optionalReview = reviewDao.findByReviewId(reviewLikeId);
-        Optional<User> optionalUser = userDao.findByRowId(userId);
+        Optional<User> optionalUser = userDao.findById(userId);
         if (optionalReview.isEmpty()) throw new ExceptionNotFoundReviewStorage(ERROR_REVIEW_NOT_IN_COLLECTIONS);
         if (optionalUser.isEmpty()) throw new ExceptionNotFoundUserStorage(ERROR_USER_ID_NOT_IN_COLLECTIONS);
         totalReviewLikeDao.deleteByReviewIdAndUserId(reviewLikeId, userId);
