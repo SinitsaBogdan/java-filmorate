@@ -79,9 +79,7 @@ public class ServiceUser {
     public List<User> getFriendsCommon(Long userId, Long friendId) {
         Optional<User> optionalUser = userDao.findById(userId);
         Optional<User> optionalFriend = userDao.findById(userId);
-        if (optionalUser.isEmpty() || optionalFriend.isEmpty()) {
-            throw new FilmorateException(ERROR__USER__ID_NOT_IN_COLLECTIONS);
-        }
+        if (optionalUser.isEmpty() || optionalFriend.isEmpty()) throw new FilmorateException(ERROR__USER__ID_NOT_IN_COLLECTIONS);
         else return totalUserFriendsDao.findFriendsCommon(userId, friendId);
     }
 
