@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorete.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorete.exeptions.FilmorateException;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.User;
 import ru.yandex.practicum.filmorete.service.ServiceFilm;

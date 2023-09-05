@@ -10,7 +10,8 @@ public enum EventsRequests {
 
     SELECT_ALL__EVENTS__USER(
         "SELECT * FROM EVENTS " +
-            "WHERE user_id = ?;"
+            "WHERE user_id = ? " +
+            "ORDER BY id;"
     ),
 
     SELECT_ALL__EVENTS__ID(

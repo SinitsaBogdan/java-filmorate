@@ -27,8 +27,7 @@ public class ReviewController {
     public List<Review> getAllReviewsFilm(
             @RequestParam(required = false) Long filmId,
             @RequestParam(defaultValue = "10") Integer count
-    )
-    {
+    ) {
         log.info(
                 "   GET [http://localhost:8080/reviews?filmId={}&count={}] : " +
                         "Запрос на получение всех отзывов",

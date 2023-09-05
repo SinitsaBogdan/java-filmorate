@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorete.exeptions;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 @Getter
