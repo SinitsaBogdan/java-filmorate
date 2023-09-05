@@ -209,8 +209,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     private Optional<Long> findUserLikeToFilm(Long userId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_USER_BY_COUNT_FILM_LIKES.getSql(), userId, userId);
-        if (!row.next())
-            return Optional.empty();
+        if (!row.next()) return Optional.empty();
         return row.getLong("common_likes") != 0 ? Optional.of(row.getLong("user_id")) : Optional.empty();
     }
 
