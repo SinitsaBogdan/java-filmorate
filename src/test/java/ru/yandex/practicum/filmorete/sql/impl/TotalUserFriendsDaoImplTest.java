@@ -106,7 +106,7 @@ class TotalUserFriendsDaoImplTest {
         userDao.insert(
                 203L, "Евгения", LocalDate.of(1995, 6, 17), "Евгения", "евгения@email.ru"
         );
-        totalUserFriendsDao.insert(100L, 103L, StatusFriend.UNCONFIRMED);
+        totalUserFriendsDao.insert(203L, 102L, StatusFriend.UNCONFIRMED);
         List<TotalUserFriends> result = totalUserFriendsDao.findAll();
         assertEquals(result.size(), 7);
     }
