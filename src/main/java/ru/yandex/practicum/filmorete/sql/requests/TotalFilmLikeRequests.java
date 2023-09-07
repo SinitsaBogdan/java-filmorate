@@ -297,7 +297,7 @@ public enum TotalFilmLikeRequests {
             "FROM TOTAL_FILM_LIKE"
     ),
 
-    SELECT_USER_BY_COUNT_FILM_LIKES(
+    SELECT_USERS_BY_COUNT_FILM_LIKES(
             "SELECT tfl2.user_id, COUNT(tfl2.user_id) AS common_likes " +
                 "FROM TOTAL_FILM_LIKE AS tfl2 " +
                 "WHERE tfl2.film_id IN (" +
