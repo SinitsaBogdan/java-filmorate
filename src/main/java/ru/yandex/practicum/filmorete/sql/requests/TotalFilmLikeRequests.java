@@ -260,36 +260,26 @@ public enum TotalFilmLikeRequests {
     ),
 
     SELECT_ALL__RECOMMENDATION(
-        "SELECT " +
-                "f.id AS film_id, " +
-                "f.NAME AS film_name, " +
-                "f.description AS film_description, " +
-                "f.release_date AS film_release_date, " +
-                "f.duration AS film_duration, " +
-                "f.rate AS film_rate, " +
-                "r.id AS mpa_id, " +
-                "r.name AS mpa_name, " +
-                "g.id AS genre_id, " +
-                "g.name AS genre_name, " +
-                "d.id AS director_id, " +
-                "d.name AS director_name " +
+            "SELECT " +
+            "f.id AS film_id, " +
+            "f.NAME AS film_name, " +
+            "f.description AS film_description, " +
+            "f.release_date AS film_release_date, " +
+            "f.duration AS film_duration, " +
+            "f.rate AS film_rate, " +
+            "r.id AS mpa_id, " +
+            "r.name AS mpa_name, " +
+            "g.id AS genre_id, " +
+            "g.name AS genre_name, " +
+            "d.id AS director_id, " +
+            "d.name AS director_name " +
             "FROM FILMS AS f " +
             "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
             "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
             "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
             "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
             "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
-            "WHERE f.id IN ( " +
-                "SELECT tlf.film_id " +
-                "FROM TOTAL_FILM_LIKE AS tlf " +
-                "WHERE tlf.user_id = ? " +
-                ") " +
-            "AND NOT f.id IN ( " +
-                "SELECT tlf.film_id " +
-                "FROM TOTAL_FILM_LIKE AS tlf " +
-                "WHERE tlf.user_id = ? " +
-            ") " +
-            "ORDER BY f.id;"
+            "WHERE f.id IN "
     ),
 
     SELECT_ALL__USERS_FILMS(
@@ -306,8 +296,14 @@ public enum TotalFilmLikeRequests {
                     "WHERE tfl.user_id = ?) " +
                 "AND NOT tfl2.user_id = ? " +
                 "GROUP BY tfl2.user_id " +
+                "HAVING common_likes > 0 " +
                 "ORDER BY common_likes DESC " +
                 "LIMIT 10"
+    ),
+
+    SELECT_FILMS_BY_USERS(
+      "SELECT film_id " +
+          "FROM TOTAL_FILM_LIKE tfl "
     ),
 
     INSERT_ONE__TOTAL_FILM_LIKE__FILM_USER(

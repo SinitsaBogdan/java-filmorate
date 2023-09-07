@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -188,26 +189,56 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     public List<Film> findRecommendationForUser(Long userId) {
         List<Long> friendByFilmsId = findUsersLikeToFilm(userId);
         if (friendByFilmsId.isEmpty()) return Collections.emptyList();
+        List<Long> idFilms = getIdFilmsRecommendations(userId, friendByFilmsId);
         Map<Long, Film> result = new HashMap<>();
-        for (Long id : friendByFilmsId) {
-            SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__RECOMMENDATION.getSql(), id, userId);
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__RECOMMENDATION.getSql() + getIdsForSql(idFilms));
+        while (row.next()) {
+            Long filmId = row.getLong("FILM_ID");
+            Integer genreId = row.getInt("GENRE_ID");
+            String genreName = row.getString("GENRE_NAME");
+            Long dirId = row.getLong("DIRECTOR_ID");
+            String dirName = row.getString("DIRECTOR_NAME");
 
-            while (row.next()) {
-
-                Long filmId = row.getLong("FILM_ID");
-                Integer genreId = row.getInt("GENRE_ID");
-                String genreName = row.getString("GENRE_NAME");
-                Long dirId = row.getLong("DIRECTOR_ID");
-                String dirName = row.getString("DIRECTOR_NAME");
-
-                if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
-                if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
-                if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
-            }
+            if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
+            if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
+            if (dirName != null) result.get(filmId).addDirector(Director.builder().id(dirId).name(dirName).build());
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
     }
+
+    @NotNull
+    private static String getIdsForSql(List<Long> idFilms) {
+        if (idFilms.isEmpty()) return "()";
+        StringBuilder sqlIds = new StringBuilder("(");
+        for (Long id : idFilms) {
+            sqlIds.append(id).append(",");
+        }
+        sqlIds.deleteCharAt(sqlIds.length() - 1);
+        sqlIds.append(")");
+        return sqlIds.toString();
+    }
+
+    private List<Long> getIdFilmsRecommendations(Long userId, List<Long> usersLikeToFilm) {
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(
+                SELECT_FILMS_BY_USERS.getSql() + "WHERE user_id IN " + getIdsForSql(usersLikeToFilm) +
+                    " AND film_id NOT IN " + getIdsForSql(findIdFilmsToLikeUser(userId)));
+        List<Long> result = new ArrayList<>();
+        while (rowSet.next()) {
+            result.add(rowSet.getLong("film_id"));
+        }
+        return result;
+    }
+
+    private List<Long> findIdFilmsToLikeUser(Long userId) {
+        List<Long> result = new ArrayList<>();
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILMS_TOTAL_FILM_LIKE__USER.getSql(), userId);
+        while (row.next()) {
+            result.add(row.getLong("FILM_ID"));
+        }
+        return result;
+    }
+
 
     private List<Long> findUsersLikeToFilm(Long userId) {
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(SELECT_USERS_BY_COUNT_FILM_LIKES.getSql(), userId, userId);
