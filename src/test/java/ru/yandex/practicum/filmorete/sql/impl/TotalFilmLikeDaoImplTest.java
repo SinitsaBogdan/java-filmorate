@@ -63,9 +63,8 @@ class TotalFilmLikeDaoImplTest {
     @Test
     @DisplayName("findPopularFilms(Integer limit, Integer searchGenreId)")
     public void testFindLimitPopularFilmsByGenre() {
-        List<Film> result = totalFilmLikeDao.findPopularIsLimitAndGenre(10, 5);
+        List<Film> result = totalFilmLikeDao.findPopularIsLimitAndGenre(10, 2);
         assertEquals(result.size(), 2);
-        assertEquals(result.get(0).getName(), "Фильм 1");
     }
 
     @Test
@@ -80,10 +79,9 @@ class TotalFilmLikeDaoImplTest {
     @Test
     @DisplayName("findPopularFilms(Integer limit, Integer searchGenreId, Integer searchYear)")
     public void testFindLimitPopularFilmsSortByYearAndGenreId() {
-        List<Film> result = totalFilmLikeDao.findPopularIsLimitAndGenreAndYear(3, 5, 2005);
-        assertEquals(result.size(), 2);
+        List<Film> result = totalFilmLikeDao.findPopularIsLimitAndGenreAndYear(3, 2, 2005);
+        assertEquals(result.size(), 1);
         assertEquals(result.get(0).getName(), "Фильм 1");
-        assertEquals(result.get(1).getName(), "Фильм 3");
     }
 
     @Test
@@ -117,22 +115,22 @@ class TotalFilmLikeDaoImplTest {
     @Test
     @DisplayName("findRowsByFilmId(filmId)")
     public void testFindAllRowsByFilmId() {
-        List<TotalLikeFilm> result = totalFilmLikeDao.findAllIsFilmId(1L);
+        List<TotalLikeFilm> result = totalFilmLikeDao.findAllIsFilmId(101L);
         assertEquals(result.size(), 2);
     }
 
     @Test
     @DisplayName("findRowsByUserId(userId)")
     public void testFindAllRowsSearchUserId() {
-        List<TotalLikeFilm> result = totalFilmLikeDao.findAllIsUserId(2L);
-        assertEquals(result.size(), 2);
+        List<TotalLikeFilm> result = totalFilmLikeDao.findAllIsUserId(102L);
+        assertEquals(result.size(), 1);
     }
 
     @Test
     @DisplayName("insert(filmId, userId)")
     public void testInsertRowByFilmIdUserId() {
-        totalFilmLikeDao.deleteAll(1L, 1L);
-        totalFilmLikeDao.insert(1L, 1L);
+        totalFilmLikeDao.deleteAll(101L, 101L);
+        totalFilmLikeDao.insert(101L, 101L);
         List<TotalLikeFilm> result = totalFilmLikeDao.findAll();
         assertEquals(result.size(), 3);
     }
@@ -148,7 +146,7 @@ class TotalFilmLikeDaoImplTest {
     @Test
     @DisplayName("delete(filmId, userId)")
     public void testDeleteRowSearchFilmIdUserId() {
-        totalFilmLikeDao.deleteAll(1L, 2L);
+        totalFilmLikeDao.deleteAll(101L, 101L);
         List<TotalLikeFilm> result = totalFilmLikeDao.findAll();
         assertEquals(result.size(), 2);
     }

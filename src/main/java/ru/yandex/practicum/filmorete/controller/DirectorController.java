@@ -24,6 +24,7 @@ public class DirectorController {
      */
     @GetMapping()
     public List<Director> getAllDirectors() {
+        log.info("   GET [http://localhost:8080/directors] : Запрос списка всех режиссёров");
         return serviceDirector.getAllDirector();
     }
 
@@ -32,6 +33,11 @@ public class DirectorController {
      */
     @PostMapping
     public Director create(@Valid @RequestBody Director director) {
+        log.info(
+                "  POST [http://localhost:8080/directors] : " +
+                        "Запрос на добавление нового режиссёра {}",
+                director
+        );
         return serviceDirector.add(director);
     }
 
@@ -40,6 +46,11 @@ public class DirectorController {
      */
     @PutMapping()
     public Director update(@Valid @RequestBody Director director) {
+        log.info(
+                "   PUT [http://localhost:8080/directors] : " +
+                        "Запрос на обновление существующего режиссёра: {}",
+                director
+        );
         return serviceDirector.update(director);
     }
 
@@ -48,6 +59,7 @@ public class DirectorController {
      */
     @DeleteMapping()
     public void removeAll() {
+        log.info("DELETE [http://localhost:8080/directors] : Запрос на удаление всех режиссёров");
         serviceDirector.deleteAll();
     }
 
@@ -56,6 +68,7 @@ public class DirectorController {
      */
     @GetMapping("/{directorId}")
     public Director getSearchId(@PathVariable Long directorId) {
+        log.info("   GET [http://localhost:8080/directors/{}] : Запрос на получение режиссёра по id", directorId);
         return serviceDirector.getDirectorSearchId(directorId);
     }
 
@@ -64,6 +77,7 @@ public class DirectorController {
      */
     @DeleteMapping("/{directorId}")
     public void removeSearchId(@PathVariable Long directorId) {
+        log.info("DELETE [http://localhost:8080/directors/{}]: Запрос на удаление режиссёра по id", directorId);
         serviceDirector.deleteSearchId(directorId);
     }
 
@@ -72,6 +86,7 @@ public class DirectorController {
      */
     @DeleteMapping("/name/{directorName}")
     public void removeSearchId(@PathVariable String directorName) {
+        log.info("DELETE [http://localhost:8080/directors/name/{}] : Запрос на удаление режиссёра по имени", directorName);
         serviceDirector.deleteSearchName(directorName);
     }
 }

@@ -47,7 +47,7 @@ public class TotalLikeReviewDaoImpl implements TotalLikeReviewDao {
     }
 
     @Override
-    public void delete(Long reviewId, Long userId) {
+    public void deleteByReviewIdAndUserId(Long reviewId, Long userId) {
         jdbcTemplate.update(DELETE_ONE__TOTAL_LIKE_REVIEW__REVIEW_USER.getSql(), reviewId, userId);
     }
 }

@@ -8,21 +8,21 @@ public interface RosterGenreDao {
 
     List<Genre> findAll();
 
-    Optional<Genre> findAll(Integer rowId);
+    Optional<Genre> findAllByRowId(Integer id);
 
-    Optional<Genre> findAll(String name);
+    Optional<Genre> findAllByName(String name);
 
     List<String> findAllColumnName();
 
     void insert(String name);
 
-    void insert(Integer rowId, String name);
+    void insert(Integer id, String name);
 
-    void update(Integer searchRowId, String name);
+    void update(Integer searchId, String name);
 
     void deleteAll();
 
-    void deleteAll(Integer rowId);
+    void deleteAllById(Integer id);
 
-    void deleteAll(String name);
+    void deleteAllByName(String name);
 }

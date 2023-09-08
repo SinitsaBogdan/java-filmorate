@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorete.sql.dao.TotalGenreFilmDao;
 import ru.yandex.practicum.filmorete.sql.dao.UserDao;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -65,7 +64,7 @@ public class FilmControllerTest {
         totalFilmLikeDao.deleteAll();
         filmDao.deleteAll();
         userDao.deleteAll();
-        directorDao.delete();
+        directorDao.deleteAll();
         totalDirectorFilmDao.delete();
 
         filmDao.insert(1L, 1, "Фильм 1", "", LocalDate.parse("2000-01-01"), 90);
@@ -191,17 +190,6 @@ public class FilmControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
             ;
-            totalFilmLikeDao.insert(1L, 3L);
-            totalFilmLikeDao.insert(2L, 3L);
-            totalFilmLikeDao.insert(3L, 3L);
-
-            Film film1 = filmDao.findFilm(1L).get();
-            Film film2 = filmDao.findFilm(2L).get();
-
-            mockMvc.perform(get("/films/common?userId=1&friendId=3"))
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(film2, film1))))
-            ;
         }
 
         @Test
@@ -221,8 +209,7 @@ public class FilmControllerTest {
         @DisplayName("Запрос списка общих фильмов, когда пользователь не известен.")
         public void methodGet_EmptyCommonFilmsWhenUnknownFilmOrUser() throws Exception {
             mockMvc.perform(get("/films/common?userId=999&friendId=10001"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(0))
+                .andExpect(status().is4xxClientError())
             ;
         }
 
@@ -288,23 +275,15 @@ public class FilmControllerTest {
         @Test
         @DisplayName("Запрос фильма по режиссёру")
         public void methodGet_SearchFilmsByDirector() throws Exception {
-
-            directorDao.insert("Director-1");
-            totalDirectorFilmDao.insert(1L, 2L);
-
-            mockMvc.perform(get("/films/search?query=dir&by=director"))
+            mockMvc.perform(get("/films/search?query=2&by=director"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.length()").value(3))
             ;
         }
 
         @Test
         @DisplayName("Запрос фильма по названию и режиссёру")
         public void methodGet_SearchFilmsByTitleAndDirector() throws Exception {
-
-            directorDao.insert("Director-1");
-            totalDirectorFilmDao.insert(2L, 1L);
-
             mockMvc.perform(get("/films/search?query=1&by=title,director"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))

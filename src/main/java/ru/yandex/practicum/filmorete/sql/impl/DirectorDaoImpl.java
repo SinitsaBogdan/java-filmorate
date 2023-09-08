@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorete.sql.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,6 @@ import java.util.*;
 
 import static ru.yandex.practicum.filmorete.sql.requests.DirectorRequests.*;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DirectorDaoImpl implements DirectorDao {
@@ -20,7 +18,7 @@ public class DirectorDaoImpl implements DirectorDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Director> find() {
+    public List<Director> findAll() {
         List<Director> result = new ArrayList<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__DIRECTOR.getSql());
         while (row.next()) result.add(FactoryModel.buildDirector(row));
@@ -30,6 +28,13 @@ public class DirectorDaoImpl implements DirectorDao {
     @Override
     public Optional<Director> findById(Long rowId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__DIRECTOR__ID.getSql(), rowId);
+        if (row.next()) return Optional.of(FactoryModel.buildDirector(row));
+        else return Optional.empty();
+    }
+
+    @Override
+    public Optional<Director> findByName(String name) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__DIRECTOR__NAME.getSql(), name);
         if (row.next()) return Optional.of(FactoryModel.buildDirector(row));
         else return Optional.empty();
     }
@@ -51,7 +56,7 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
-    public void delete() {
+    public void deleteAll() {
         jdbcTemplate.update(DELETE_ALL__DIRECTOR.getSql());
     }
 

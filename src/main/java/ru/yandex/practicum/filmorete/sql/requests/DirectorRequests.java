@@ -14,6 +14,11 @@ public enum DirectorRequests {
             "WHERE id = ?;"
     ),
 
+    SELECT_ONE__DIRECTOR__NAME(
+        "SELECT * FROM DIRECTORS " +
+            "WHERE name = ?;"
+    ),
+
     SELECT_MAX_ID__DIRECTOR(
         "SELECT MAX(id) FROM DIRECTORS;"
     ),

@@ -9,9 +9,9 @@ public interface ReviewDao {
 
     List<Review> findAll();
 
-    List<Review> findAll(Long userId);
+    List<Review> findAllByUserId(Long userId);
 
-    List<Review> findAll(Boolean isPositive);
+    List<Review> findAllIsPositive(Boolean isPositive);
 
     List<Review> findAllIsFilmIdAndCount(Long filmId, Integer count);
 
@@ -21,7 +21,7 @@ public interface ReviewDao {
 
     Optional<Review> findByReviewId(Long reviewId);
 
-    Long insert(String content, Boolean isPositive, Long userId, Long filmId);
+    Long insert(Review reviews);
 
     void insert(Long id, String content, Boolean isPositive, Long userId, Long filmId);
 

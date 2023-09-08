@@ -36,14 +36,14 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> find(Long userId) {
+    public Optional<User> findById(Long userId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__USER__ID.getSql(), userId);
         if (row.next()) return Optional.of(FactoryModel.buildUser(row));
         else return Optional.empty();
     }
 
     @Override
-    public Optional<User> find(String email) {
+    public Optional<User> findByEmail(String email) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__USER__EMAIL.getSql(), email);
         if (row.next()) return Optional.of(FactoryModel.buildUser(row));
         else return Optional.empty();
@@ -79,12 +79,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void deleteAll(Long rowId) {
+    public void deleteById(Long rowId) {
         jdbcTemplate.update(DELETE_ONE__USER__ID.getSql(), rowId);
     }
 
     @Override
-    public void deleteAll(String login) {
+    public void deleteByLogin(String login) {
         jdbcTemplate.update(DELETE_ONE__USER__LOGIN.getSql(), login);
     }
 }

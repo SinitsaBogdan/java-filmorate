@@ -64,7 +64,7 @@ class TotalGenreFilmDaoImplTest {
     @Test
     @DisplayName("findRows()")
     public void testFindAllRows() {
-        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm();
         assertEquals(result.size(), 4);
     }
 
@@ -86,7 +86,7 @@ class TotalGenreFilmDaoImplTest {
     @DisplayName("insert(filmId, genreId)")
     public void testInsertFilmIdAndGenreId() {
         totalGenreFilmDao.insert(100L, 3);
-        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm();
         assertEquals(result.size(), 5);
     }
 
@@ -94,15 +94,15 @@ class TotalGenreFilmDaoImplTest {
     @DisplayName("delete()")
     public void testDeleteAllRows() {
         totalGenreFilmDao.delete();
-        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm();
         assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("delete(filmId, genreId)")
     public void testDeleteRowSearchFilmIdAndGenreId() {
-        totalGenreFilmDao.delete(100L, 1);
-        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
+        totalGenreFilmDao.deleteByFilmIdAndGenreId(100L, 1);
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm();
         assertEquals(result.size(), 3);
     }
 
@@ -110,7 +110,7 @@ class TotalGenreFilmDaoImplTest {
     @DisplayName("deleteAllFilmId(filmId)")
     public void testDeleteAllRowsSearchFilmId() {
         totalGenreFilmDao.deleteAllFilmId(100L);
-        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm();
         assertEquals(result.size(), 2);
     }
 
@@ -118,7 +118,7 @@ class TotalGenreFilmDaoImplTest {
     @DisplayName("deleteAllGenreId(genreId)")
     public void testDeleteAllRowsSearchGenreId() {
         totalGenreFilmDao.deleteAllGenreId(1);
-        List<TotalGenreFilm> result = totalGenreFilmDao.findTotalGenreFilm();
+        List<TotalGenreFilm> result = totalGenreFilmDao.findAllTotalGenreFilm();
         assertEquals(result.size(), 2);
     }
 }

@@ -44,17 +44,17 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public Optional<Mpa> findMpa(Integer rowId) {
+    public Optional<Mpa> findMpaById(Integer id) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(
                 SELECT_ONE__ROSTER_MPA__ID.getSql(),
-                rowId
+                id
         );
         if (row.next()) return Optional.of(FactoryModel.buildMpa(row));
         else return Optional.empty();
     }
 
     @Override
-    public Optional<Mpa> findMpa(String name) {
+    public Optional<Mpa> findMpaByName(String name) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__ROSTER_MPA__NAME.getSql(), name);
         if (row.next()) return Optional.of(FactoryModel.buildMpa(row));
         else return Optional.empty();
@@ -66,18 +66,18 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public void insert(Integer rowId, String name, String description) {
+    public void insert(Integer id, String name, String description) {
         jdbcTemplate.update(
                 INSERT_ONE__ROSTER_MPA_FULL__ID.getSql(),
-                rowId, name, description
+                id, name, description
         );
     }
 
     @Override
-    public void update(Integer searchRowId, String name, String description) {
+    public void update(Integer searchId, String name, String description) {
         jdbcTemplate.update(
                 UPDATE_ONE__ROSTER_MPA__SET_NAME_DESCRIPTION__ID.getSql(),
-                name, description, searchRowId
+                name, description, searchId
         );
     }
 
@@ -95,12 +95,12 @@ public class RosterMpaDaoImpl implements RosterMpaDao {
     }
 
     @Override
-    public void delete(Integer rowId) {
-        jdbcTemplate.update(DELETE_ONE__ROSTER_MPA__ID.getSql(), rowId);
+    public void deleteById(Integer id) {
+        jdbcTemplate.update(DELETE_ONE__ROSTER_MPA__ID.getSql(), id);
     }
 
     @Override
-    public void delete(String name) {
+    public void deleteByName(String name) {
         jdbcTemplate.update(DELETE_ONE__ROSTER_MPA__NAME.getSql(), name);
     }
 }

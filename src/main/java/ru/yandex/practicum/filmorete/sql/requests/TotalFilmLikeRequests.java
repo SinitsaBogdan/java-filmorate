@@ -261,35 +261,32 @@ public enum TotalFilmLikeRequests {
 
     SELECT_ALL__RECOMMENDATION(
         "SELECT " +
-                "f.id AS film_id, " +
-                "f.NAME AS film_name, " +
-                "f.description AS film_description, " +
-                "f.release_date AS film_release_date, " +
-                "f.duration AS film_duration, " +
-                "f.rate AS film_rate, " +
-                "r.id AS mpa_id, " +
-                "r.name AS mpa_name, " +
-                "g.id AS genre_id, " +
-                "g.name AS genre_name, " +
-                "d.id AS director_id, " +
-                "d.name AS director_name " +
-            "FROM FILMS AS f " +
-            "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-            "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-            "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-            "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
-            "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
-            "WHERE f.id IN ( " +
-                "SELECT tlf.film_id " +
-                "FROM TOTAL_FILM_LIKE AS tlf " +
-                "WHERE tlf.user_id = ? " +
+                "f.id AS film_id, f.NAME AS film_name, f.description AS film_description, " +
+                "f.release_date AS film_release_date, f.duration AS film_duration, f.rate AS film_rate, " +
+                "r.id AS mpa_id, r.name AS mpa_name, g.id AS genre_id, g.name AS genre_name, " +
+                "d.id AS director_id, d.name AS director_name, " +
+                "(SELECT COUNT(*) FROM TOTAL_FILM_LIKE WHERE film_id = f.id) AS count_like " +
+                "FROM FILMS AS f " +
+                "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
+                "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id " +
+                "WHERE f.id IN (" +
+                    "SELECT tlf.film_id FROM TOTAL_FILM_LIKE AS tlf WHERE tlf.user_id IN (" +
+                        "SELECT tfl2.user_id FROM TOTAL_FILM_LIKE AS tfl2 WHERE tfl2.film_id IN (" +
+                            "SELECT tfl.film_id FROM TOTAL_FILM_LIKE AS tfl WHERE tfl.user_id = ?" +
+                        ") " +
+                        "AND NOT tfl2.user_id = ? " +
+                        "GROUP BY tfl2.user_id " +
+                        "ORDER BY COUNT(tfl2.user_id) DESC " +
+                        "LIMIT 10" +
+                    ")" +
                 ") " +
-            "AND NOT f.id IN ( " +
-                "SELECT tlf.film_id " +
-                "FROM TOTAL_FILM_LIKE AS tlf " +
-                "WHERE tlf.user_id = ? " +
-            ") " +
-            "ORDER BY f.id;"
+                "AND NOT f.id IN (" +
+                    "SELECT tlf.film_id FROM TOTAL_FILM_LIKE AS tlf WHERE tlf.user_id = ? " +
+                ") " +
+                "ORDER BY count_like DESC;"
     ),
 
     SELECT_ALL__USERS_FILMS(

@@ -12,7 +12,7 @@ public interface FilmDao {
 
     List<Film> findAll(String query, List<String> by);
 
-    Optional<Film> findFilm(Long rowId);
+    Optional<Film> findFilmById(Long rowId);
 
     Long insert(Integer mpaId, String name, String descriptions, LocalDate releaseDate, Integer durationMinute);
 
@@ -26,11 +26,11 @@ public interface FilmDao {
 
     void deleteByFilmId(Long filmId);
 
-    void deleteAll(String filmName);
+    void deleteAllByFilmName(String filmName);
 
-    void deleteAll(LocalDate releaseDate);
+    void deleteAllByReleaseDate(LocalDate releaseDate);
 
     void deleteAllIsDuration(Integer duration);
 
-    void deleteAllMpa(Integer mpaId);
+    void deleteAllByMpaId(Integer mpaId);
 }

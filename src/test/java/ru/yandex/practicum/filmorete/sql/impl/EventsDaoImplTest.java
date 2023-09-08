@@ -122,7 +122,7 @@ public class EventsDaoImplTest {
     @Test
     @DisplayName("deleteAll(operation)")
     public void testDeleteAllByOperation() {
-        eventsDao.deleteAll(EventOperation.REMOVE);
+        eventsDao.deleteAllByEventOperation(EventOperation.REMOVE);
         List<Event> result = eventsDao.findAll();
         assertEquals(result.size(), 4);
         assertTrue(eventsDao.findOneByEventId(3L).isEmpty());

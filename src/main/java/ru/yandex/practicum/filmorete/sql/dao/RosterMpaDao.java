@@ -12,21 +12,21 @@ public interface RosterMpaDao {
 
     List<Mpa> findAllMpa();
 
-    Optional<Mpa> findMpa(Integer rowId);
+    Optional<Mpa> findMpaById(Integer id);
 
-    Optional<Mpa> findMpa(String name);
+    Optional<Mpa> findMpaByName(String name);
 
     void insert(String name, String description);
 
-    void insert(Integer rowId, String name, String description);
+    void insert(Integer id, String name, String description);
 
-    void update(Integer searchRowId, String name, String description);
+    void update(Integer searchId, String name, String description);
 
     void update(String searchName, String name, String description);
 
     void delete();
 
-    void delete(Integer rowId);
+    void deleteById(Integer id);
 
-    void delete(String name);
+    void deleteByName(String name);
 }

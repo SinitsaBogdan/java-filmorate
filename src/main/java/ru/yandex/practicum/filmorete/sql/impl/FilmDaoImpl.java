@@ -9,8 +9,12 @@ import ru.yandex.practicum.filmorete.model.Director;
 import ru.yandex.practicum.filmorete.model.Film;
 import ru.yandex.practicum.filmorete.model.Genre;
 import ru.yandex.practicum.filmorete.sql.dao.FilmDao;
+
 import java.time.LocalDate;
 import java.util.*;
+
+import static ru.yandex.practicum.filmorete.enums.RequestPathParameter.DIRECTOR;
+import static ru.yandex.practicum.filmorete.enums.RequestPathParameter.TITLE;
 
 import static ru.yandex.practicum.filmorete.sql.requests.FilmRequests.*;
 
@@ -42,7 +46,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Optional<Film> findFilm(Long rowId) {
+    public Optional<Film> findFilmById(Long rowId) {
         Map<Long, Film> result = new HashMap<>();
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__FILM__ID.getSql(), rowId);
         while (row.next()) {
@@ -104,12 +108,12 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void deleteAll(String filmName) {
+    public void deleteAllByFilmName(String filmName) {
         jdbcTemplate.update(DELETE_ONE__FILMS__NAME.getSql(), filmName);
     }
 
     @Override
-    public void deleteAll(LocalDate releaseDate) {
+    public void deleteAllByReleaseDate(LocalDate releaseDate) {
         jdbcTemplate.update(DELETE_ONE__FILMS__RELEASE_DATE.getSql(), releaseDate);
     }
 
@@ -119,7 +123,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void deleteAllMpa(Integer mpaId) {
+    public void deleteAllByMpaId(Integer mpaId) {
         jdbcTemplate.update(DELETE_ONE__FILMS__MPA.getSql(), mpaId);
     }
 
@@ -138,20 +142,21 @@ public class FilmDaoImpl implements FilmDao {
                 "g.name AS genre_name, " +
                 "d.id AS director_id, " +
                 "d.name AS director_name " +
-            "FROM FILMS AS f " +
-            "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
-            "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
-            "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
-            "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
-            "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id ";
+                "FROM FILMS AS f " +
+                "LEFT JOIN ROSTER_MPA AS r ON f.mpa_id = r.id " +
+                "LEFT JOIN TOTAL_GENRE_FILM AS t ON f.id = t.film_id " +
+                "LEFT JOIN ROSTER_GENRE AS g ON t.genre_id = g.id " +
+                "LEFT JOIN TOTAL_FILM_DIRECTOR AS td ON f.id = td.film_id " +
+                "LEFT JOIN DIRECTORS AS d ON td.director_id = d.id ";
 
         StringBuilder sqlBuilder = new StringBuilder(sql);
         sqlBuilder.append("WHERE ");
         List<String> conditions = new ArrayList<>();
 
-        if (by.contains("director") && by.contains("title")) conditions.add("(f.name ILIKE '%" + query + "%' OR d.name ILIKE '%" + query + "%')");
-        else if (by.contains("director")) conditions.add("d.name ILIKE '%" + query + "%'");
-        else if (by.contains("title")) conditions.add("f.name ILIKE '%" + query + "%'");
+        if (by.contains(DIRECTOR.toString().toLowerCase()) && by.contains(TITLE.toString().toLowerCase()))
+            conditions.add("(f.name ILIKE '%" + query + "%' OR d.name ILIKE '%" + query + "%')");
+        else if (by.contains(DIRECTOR.toString().toLowerCase())) conditions.add("d.name ILIKE '%" + query + "%'");
+        else if (by.contains(TITLE.toString().toLowerCase())) conditions.add("f.name ILIKE '%" + query + "%'");
 
         if (!conditions.isEmpty()) sqlBuilder.append(String.join(" OR ", conditions));
         else return Collections.emptyList();
@@ -170,7 +175,8 @@ public class FilmDaoImpl implements FilmDao {
 
             if (!result.containsKey(filmId)) result.put(filmId, FactoryModel.buildFilm(row));
             if (genreName != null) result.get(filmId).addGenre(Genre.builder().id(genreId).name(genreName).build());
-            if (directorName != null) result.get(filmId).addDirector(Director.builder().id(directorId).name(directorName).build());
+            if (directorName != null)
+                result.get(filmId).addDirector(Director.builder().id(directorId).name(directorName).build());
         }
         return new ArrayList<>(result.values());
     }

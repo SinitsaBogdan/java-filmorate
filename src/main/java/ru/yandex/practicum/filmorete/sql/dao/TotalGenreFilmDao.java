@@ -9,7 +9,7 @@ public interface TotalGenreFilmDao {
 
     List<Genre> findAllGenreByFilmId(Long filmId);
 
-    List<TotalGenreFilm> findTotalGenreFilm();
+    List<TotalGenreFilm> findAllTotalGenreFilm();
 
     List<TotalGenreFilm> findAllTotalGenreFilmIsFimId(Long filmId);
 
@@ -21,7 +21,7 @@ public interface TotalGenreFilmDao {
 
     void delete();
 
-    void delete(Long filmId, Integer genreId);
+    void deleteByFilmIdAndGenreId(Long filmId, Integer genreId);
 
     void deleteAllFilmId(Long filmId);
 

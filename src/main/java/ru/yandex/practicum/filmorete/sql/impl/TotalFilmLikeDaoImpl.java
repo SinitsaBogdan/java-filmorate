@@ -19,7 +19,7 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Optional<TotalLikeFilm> find(Long filmId, Long userId) {
+    public Optional<TotalLikeFilm> findIsFilmIdAndUserId(Long filmId, Long userId) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ONE__TOTAL_FILM_LIKE__FILM_USER.getSql(), filmId, userId);
         if (row.next()) return Optional.of(FactoryModel.buildTotalLikeFilm(row));
         else return Optional.empty();
@@ -186,10 +186,8 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
 
     @Override
     public List<Film> findRecommendationForUser(Long userId) {
-        Optional<Long> friendByFilmsId = findUserLikeToFilm(userId);
-        if (friendByFilmsId.isEmpty()) return Collections.emptyList();
         Map<Long, Film> result = new HashMap<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__RECOMMENDATION.getSql(), friendByFilmsId.get(), userId);
+        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__RECOMMENDATION.getSql(), userId, userId, userId);
 
         while (row.next()) {
 
@@ -205,43 +203,6 @@ public class TotalFilmLikeDaoImpl implements TotalFilmLikeDao {
         }
         if (result.values().isEmpty()) return new ArrayList<>();
         else return new ArrayList<>(result.values());
-    }
-
-    private Optional<Long> findUserLikeToFilm(Long userId) {
-        Map<Long, Set<Long>> userLikeToFilm = new HashMap<>();
-        SqlRowSet row = jdbcTemplate.queryForRowSet(SELECT_ALL__USERS_FILMS.getSql());
-
-        while (row.next()) {
-
-            Long userLikeId = row.getLong("user_id");
-            Long filmId = row.getLong("film_id");
-
-            if (!userLikeToFilm.containsKey(userLikeId)) {
-                Set<Long> idLikedFilms = new HashSet<>();
-                idLikedFilms.add(filmId);
-                userLikeToFilm.put(userLikeId, idLikedFilms);
-            } else {
-                Set<Long> idLikedFilms = userLikeToFilm.get(userLikeId);
-                idLikedFilms.add(filmId);
-            }
-        }
-
-        if (!userLikeToFilm.containsKey(userId)) return Optional.empty();
-
-        Map<Long, Integer> userPoints = new HashMap<>();
-        Set<Long> userIdFilms = userLikeToFilm.get(userId);
-        userLikeToFilm.remove(userId);
-        for (Long id : userLikeToFilm.keySet()) {
-            Set<Long> filmsIds = userLikeToFilm.get(id);
-            filmsIds.retainAll(userIdFilms);
-            userPoints.put(id, filmsIds.size());
-        }
-        Optional<Map.Entry<Long, Integer>> entry = userPoints.entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue());
-
-        if (entry.isEmpty() || entry.get().getValue() == 0) return Optional.empty();
-        return entry.map(Map.Entry::getKey);
     }
 
     @Override
